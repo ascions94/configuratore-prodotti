@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Personalizza il tuo prodotto</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="logo">MYCUSTOM</div>
+
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Cuscini</a>
+            <a href="#">T-Shirt</a>
+            <a href="#">Portachiavi</a>
+        </nav>
+
+        <button class="cart-button">
+            Carrello
+            <span id="cartCount">0</span>
+        </button>
+    </header>
+
+
+    <main class="customizer">
+
+        <!-- PANNELLO SINISTRO -->
+        <aside class="tools-panel">
+
+            <h2>Personalizza</h2>
+
+            <div class="tool-section">
+                <label for="productSelect">Prodotto</label>
+
+                <select id="productSelect">
+                    <option value="cushion">
+                        Cuscino 40x40 cm
+                    </option>
+
+                    <option value="tshirt">
+                        T-Shirt
+                    </option>
+
+                    <option value="keychain">
+                        Portachiavi 4,5x4,5 cm
+                    </option>
+                </select>
+            </div>
+
+
+            <!-- OPZIONI T-SHIRT -->
+            <div class="tool-section" id="tshirtOptions">
+
+                <label>Colore T-Shirt</label>
+
+                <div class="color-buttons">
+                    <button
+                        class="color-button white active"
+                        data-color="white"
+                    >
+                        Bianca
+                    </button>
+
+                    <button
+                        class="color-button black"
+                        data-color="black"
+                    >
+                        Nera
+                    </button>
+                </div>
+
+
+                <label>Lato da stampare</label>
+
+                <div class="side-buttons">
+                    <button
+                        class="side-button active"
+                        data-side="front"
+                    >
+                        Fronte
+                    </button>
+
+                    <button
+                        class="side-button"
+                        data-side="back"
+                    >
+                        Retro
+                    </button>
+                </div>
+
+            </div>
+
+            <div id="printFormatOptions">
+
+    <label>Formato stampa foto</label>
+
+    <div class="side-buttons">
+        <button
+            class="print-format-button active"
+            data-format="vertical"
+        >
+            Verticale 20x30
+        </button>
+
+        <button
+            class="print-format-button"
+            data-format="horizontal"
+        >
+            Orizzontale 30x20
+        </button>
+    </div>
+
+</div>
+
+
+            <!-- CARICAMENTO FOTO -->
+            <div class="tool-section">
+
+                <label for="imageUpload">
+                    Carica una foto
+                </label>
+
+                <input
+                    type="file"
+                    id="imageUpload"
+                    accept="image/*"
+                >
+
+            </div>
+
+
+            <!-- TESTO -->
+            <div class="tool-section">
+
+                <label for="textInput">
+                    Aggiungi testo
+                </label>
+
+                <input
+                    type="text"
+                    id="textInput"
+                    placeholder="Scrivi qualcosa..."
+                    maxlength="50"
+                >
+
+            </div>
+
+            <div class="tool-section">
+
+    <label for="textSizeRange">
+        Dimensione testo
+    </label>
+
+    <input
+        type="range"
+        id="textSizeRange"
+        min="10"
+        max="50"
+        value="26"
+        step="1"
+    >
+
+</div>
+
+<div class="tool-section">
+    <label for="textRotationRange">
+        Rotazione testo:
+        <span id="textRotationValue">0°</span>
+    </label>
+
+    <input
+        type="range"
+        id="textRotationRange"
+        min="-180"
+        max="180"
+        value="0"
+        step="1"
+    >
+
+    <div class="rotation-marks">
+        <span>-180°</span>
+        <span>-90°</span>
+        <span>-45°</span>
+        <span>0°</span>
+        <span>45°</span>
+        <span>90°</span>
+        <span>180°</span>
+    </div>
+</div>
+
+<div class="tool-section">
+
+    <label>Allineamento</label>
+
+    <div class="center-buttons">
+
+        <button
+            type="button"
+            id="centerImageButton"
+            class="secondary-button"
+        >
+            Centra immagine
+        </button>
+
+        <button
+            type="button"
+            id="centerTextButton"
+            class="secondary-button"
+        >
+            Centra testo
+        </button>
+
+    </div>
+
+</div>
+
+
+            <!-- ZOOM -->
+            <div class="tool-section">
+
+                <label for="zoomRange">
+                    Zoom immagine
+                </label>
+
+                <input
+                    type="range"
+                    id="zoomRange"
+                    min="0.5"
+                    max="3"
+                    value="1"
+                    step="0.05"
+                >
+
+            </div>
+
+
+            <!-- ROTAZIONE -->
+            <div class="tool-section">
+    <label for="rotationRange">
+        Rotazione immagine:
+        <span id="rotationValue">0°</span>
+    </label>
+
+    <input
+        type="range"
+        id="rotationRange"
+        min="-180"
+        max="180"
+        value="0"
+        step="1"
+    >
+
+    <div class="rotation-marks">
+        <span>-180°</span>
+        <span>-90°</span>
+        <span>-45°</span>
+        <span>0°</span>
+        <span>45°</span>
+        <span>90°</span>
+        <span>180°</span>
+    </div>
+</div>
+
+
+            <button
+                id="resetButton"
+                class="secondary-button"
+            >
+                Azzera personalizzazione
+            </button>
+
+        </aside>
+
+
+        <!-- ANTEPRIMA CENTRALE -->
+        <section class="preview-panel">
+
+            <div class="preview-header">
+
+                <div>
+                    <h1 id="productTitle">
+                        Cuscino 40x40 cm
+                    </h1>
+
+                    <p id="printAreaInfo">
+                        Area stampabile 30x30 cm
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="preview-area">
+
+                <div
+                    id="productPreview"
+                    class="product-preview cushion-preview"
+                >
+
+                    <div
+                        id="printArea"
+                        class="print-area"
+                    >
+
+                        <img
+    id="uploadedImage"
+    alt=""
+>
+
+<div id="customText"></div>
+
+<div
+    id="selectionControls"
+    class="selection-controls"
+>
+
+    <button
+        type="button"
+        id="directRotateButton"
+        class="direct-control-button"
+        title="Ruota"
+    >
+        ↻
+    </button>
+
+    <button
+        type="button"
+        id="directMoveButton"
+        class="direct-control-button"
+        title="Sposta"
+    >
+        ✥
+    </button>
+
+    <button
+    type="button"
+    id="directResizeButton"
+    class="direct-control-button"
+    title="Ridimensiona"
+>
+    ↘
+</button>
+
+<button
+    type="button"
+    id="directDeleteButton"
+    class="direct-control-button"
+    title="Elimina"
+>
+    🗑
+</button>
+
+</div>
+
+<div
+    id="guideVertical"
+    class="center-guide vertical-guide"
+></div>
+
+<div
+    id="guideHorizontal"
+    class="center-guide horizontal-guide"
+></div>
+
+<div
+    id="rotationGuide"
+    class="rotation-guide"
+></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PANNELLO DESTRO -->
+        <aside class="product-panel">
+
+            <h2>Il tuo prodotto</h2>
+
+            <div class="product-summary">
+
+                <p id="productName">
+                    Cuscino personalizzato
+                </p>
+
+                <p id="productDimensions">
+                    Dimensione: 40x40 cm
+                </p>
+
+                <p id="printDimensions">
+                    Area di stampa: 30x30 cm
+                </p>
+
+            </div>
+
+
+            <div class="price">
+                €19,90
+            </div>
+
+
+            <label for="quantity">
+                Quantità
+            </label>
+
+            <input
+                type="number"
+                id="quantity"
+                min="1"
+                value="1"
+            >
+
+
+            <button
+                id="addToCartButton"
+                class="primary-button"
+            >
+                Aggiungi al carrello
+            </button>
+
+
+            <p
+                id="statusMessage"
+                class="status-message"
+            ></p>
+
+        </aside>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
