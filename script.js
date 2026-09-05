@@ -25,6 +25,7 @@ const rotationValue =
 const textInput = document.getElementById("textInput");
 const fontSelect = document.getElementById("fontSelect");
 const customText = document.getElementById("customText");
+const textColor = document.getElementById("textColor");
 const guideVertical = document.getElementById("guideVertical");
 const guideHorizontal = document.getElementById("guideHorizontal");
 const rotationGuide =
@@ -52,8 +53,25 @@ const directRotateButton =
 
 const directMoveButton =
     document.getElementById("directMoveButton");
+    const directFlipButton =
+    document.getElementById("directFlipButton");
     const directDeleteButton =
     document.getElementById("directDeleteButton");
+
+    directFlipButton.addEventListener("click", function () {
+
+    if (!selectedElementType) {
+        return;
+    }
+
+    if (selectedElementType === "image") {
+        flipImage();
+    }
+
+    if (selectedElementType === "text") {
+        flipText();
+    }
+});
 
     function showSelectionControls(element, type) {
 
@@ -94,6 +112,25 @@ const directMoveButton =
     selectionControls.style.display =
         "block";
 }
+
+const textResizeObserver = new ResizeObserver(function () {
+
+    if (
+        selectedElementType === "text" &&
+        customText.textContent.trim()
+    ) {
+        requestAnimationFrame(function () {
+
+            showSelectionControls(
+                customText,
+                "text"
+            );
+
+        });
+    }
+});
+
+textResizeObserver.observe(customText);
 
 productPreview.addEventListener("mousedown", function (event) {
 
@@ -535,13 +572,16 @@ function createEmptyState() {
     y: 0,
     scale: 1,
     rotation: 0,
+    imageFlipped: false,
 
     text: "",
 textX: 0,
 textY: 0,
 textSize: 26,
 textRotation: 0,
-fontFamily: "Arial"
+fontFamily: "Arial",
+textColor: "#000000",
+textFlipped: false
 };
 }
 
@@ -584,10 +624,57 @@ function updateImageTransform() {
 
     const state = getCurrentState();
 
+    const scaleX =
+        state.imageFlipped
+            ? -state.scale
+            : state.scale;
+
     uploadedImage.style.transform =
         `translate(${state.x}px, ${state.y}px)
-         scale(${state.scale})
+         scale(${scaleX}, ${state.scale})
          rotate(${state.rotation}deg)`;
+}
+
+function flipImage() {
+
+    const state = getCurrentState();
+
+    state.imageFlipped =
+        !state.imageFlipped;
+
+    updateImageTransform();
+
+    if (selectedElementType === "image") {
+        showSelectionControls(
+            uploadedImage,
+            "image"
+        );
+    }
+}
+
+function flipText() {
+
+    const state = getCurrentState();
+
+    state.textFlipped = !state.textFlipped;
+
+    const textScaleX =
+        state.textFlipped ? -1 : 1;
+
+    customText.style.transform =
+        `translate(
+            calc(-50% + ${state.textX}px),
+            calc(-50% + ${state.textY}px)
+        )
+        rotate(${state.textRotation}deg)
+        scaleX(${textScaleX})`;
+
+    if (selectedElementType === "text") {
+        showSelectionControls(
+            customText,
+            "text"
+        );
+    }
 }
 
 function keepImageInsidePrintArea() {
@@ -680,15 +767,25 @@ customText.style.fontSize =
 fontSelect.value =
     state.fontFamily;
 
+    customText.style.color =
+    state.textColor;
+
+textColor.value =
+    state.textColor;
+
 textSizeRange.value = state.textSize;
 textRotationRange.value = state.textRotation;
+
+const textScaleX =
+    state.textFlipped ? -1 : 1;
 
 customText.style.transform =
     `translate(
         calc(-50% + ${state.textX}px),
         calc(-50% + ${state.textY}px)
     )
-    rotate(${state.textRotation}deg)`;
+    rotate(${state.textRotation}deg)
+    scaleX(${textScaleX})`;
 
 zoomRange.value = state.scale;
 rotationRange.value = state.rotation;
@@ -785,8 +882,6 @@ function updateTshirtMockup() {
                 "assets/tshirt-black-back.png";
         }
 
-        customText.style.color = "white";
-
     } else {
 
         if (tshirtSide === "front") {
@@ -799,8 +894,6 @@ function updateTshirtMockup() {
             imagePath =
                 "assets/tshirt-white-back.png";
         }
-
-        customText.style.color = "black";
     }
 
 
@@ -1071,12 +1164,16 @@ const maxY = Math.max(
     state.textX = newX;
     state.textY = newY;
 
-    customText.style.transform =
+    const textScaleX =
+    state.textFlipped ? -1 : 1;
+
+customText.style.transform =
     `translate(
         calc(-50% + ${state.textX}px),
         calc(-50% + ${state.textY}px)
     )
-    rotate(${state.textRotation}deg)`;
+    rotate(${state.textRotation}deg)
+    scaleX(${textScaleX})`;
 
 showSelectionControls(
     customText,
@@ -1170,6 +1267,15 @@ fontSelect.addEventListener("change", function () {
     customText.style.fontFamily = state.fontFamily;
 });
 
+textColor.addEventListener("input", function () {
+
+    const state = getCurrentState();
+
+    state.textColor = this.value;
+
+    customText.style.color = state.textColor;
+});
+
 function fitTextInsidePrintArea() {
 
     const state = getCurrentState();
@@ -1201,8 +1307,16 @@ textSizeRange.addEventListener("input", function () {
 
     customText.style.fontSize =
         `${state.textSize}px`;
-        fitTextInsidePrintArea();
-        keepTextInsidePrintArea();
+
+    fitTextInsidePrintArea();
+    keepTextInsidePrintArea();
+
+    if (selectedElementType === "text") {
+        showSelectionControls(
+            customText,
+            "text"
+        );
+    }
 });
 
 function keepTextInsidePrintArea() {
@@ -1231,12 +1345,7 @@ function keepTextInsidePrintArea() {
     state.textY =
         Math.max(-maxY, Math.min(maxY, state.textY));
 
-    customText.style.transform =
-        `translate(
-            calc(-50% + ${state.textX}px),
-            calc(-50% + ${state.textY}px)
-        )
-        rotate(${state.textRotation}deg)`;
+    updateTextTransform();
 }
 
 textRotationRange.addEventListener("input", function () {

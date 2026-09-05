@@ -434,41 +434,31 @@ input[type="file"] {
 
 .direct-control-button {
     position: absolute;
-
     width: 38px;
     height: 38px;
-
     border: none;
     border-radius: 50%;
-
     background: #1976e9;
     color: white;
-
     font-size: 19px;
-
     cursor: pointer;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.20);
-
     pointer-events: auto;
-
     transition:
         transform 0.15s ease,
         background 0.15s ease;
 }
 
 #directRotateButton:hover,
-#directMoveButton:hover {
+#directMoveButton:hover,
+#directFlipButton:hover {
     background: #0f63c9 !important;
     color: white !important;
     transform: translateX(-50%) scale(1.08);
-}
-
-.rotation-guide {
+}.rotation-guide {
     position: absolute;
 
     left: 50%;
@@ -507,16 +497,20 @@ input[type="file"] {
 }
 
 #directRotateButton {
-    left: calc(50% - 23px);
+    left: calc(50% - 46px);
     bottom: -50px;
-
     transform: translateX(-50%);
 }
 
 #directMoveButton {
-    left: calc(50% + 23px);
+    left: 50%;
     bottom: -50px;
+    transform: translateX(-50%);
+}
 
+#directFlipButton {
+    left: calc(50% + 46px);
+    bottom: -50px;
     transform: translateX(-50%);
 }
 .resize-handle {
