@@ -59,6 +59,10 @@ const directMoveButton =
     function showSelectionControls(element, type) {
 
     selectedElementType = type;
+    uploadedImage.classList.remove("selected-element");
+customText.classList.remove("selected-element");
+
+element.classList.add("selected-element");
 
     const areaRect =
         printArea.getBoundingClientRect();
@@ -102,6 +106,24 @@ if (topY < minimumTop) {
     selectionControls.style.display =
         "flex";
 }
+
+productPreview.addEventListener("mousedown", function (event) {
+
+    if (
+        event.target === uploadedImage ||
+        event.target === customText ||
+        selectionControls.contains(event.target)
+    ) {
+        return;
+    }
+
+    uploadedImage.classList.remove("selected-element");
+    customText.classList.remove("selected-element");
+
+    selectionControls.style.display = "none";
+
+    selectedElementType = null;
+});
 
 let isDirectRotating = false;
 let rotationCenterX = 0;
@@ -263,6 +285,8 @@ directDeleteButton.addEventListener("click", function () {
             "Testo eliminato.";
     }
 
+    uploadedImage.classList.remove("selected-element");
+customText.classList.remove("selected-element");
     selectedElementType = null;
 
     selectionControls.style.display = "none";
@@ -441,6 +465,9 @@ if (snappedAngle !== null) {
                 calc(-50% + ${state.textY}px)
             )
             rotate(${state.textRotation}deg)`;
+
+            fitTextInsidePrintArea();
+keepTextInsidePrintArea();
 
         showSelectionControls(
             customText,
