@@ -152,6 +152,24 @@
             </div>
 
             <div class="tool-section">
+    <label for="fontSelect">Font</label>
+
+    <select id="fontSelect">
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Trebuchet MS">Trebuchet MS</option>
+        <option value="Courier New">Courier New</option>
+    </select>
+</div>
+
+<div class="tool-section">
+    <label for="textColor">Colore testo</label>
+    <input type="color" id="textColor" value="#000000">
+</div>
+
+            <div class="tool-section">
 
     <label for="textSizeRange">
         Dimensione testo
@@ -315,10 +333,26 @@
 
 <div id="customText"></div>
 
+
+
 <div
-    id="selectionControls"
-    class="selection-controls"
->
+    id="guideVertical"
+    class="center-guide vertical-guide"
+></div>
+
+<div
+    id="guideHorizontal"
+    class="center-guide horizontal-guide"
+></div>
+
+<div
+    id="rotationGuide"
+    class="rotation-guide"
+></div>
+
+                    </div>
+
+                    <div id="selectionControls" class="selection-controls">
 
     <button
         type="button"
@@ -339,41 +373,20 @@
     </button>
 
     <button
-    type="button"
-    id="directResizeButton"
-    class="direct-control-button"
-    title="Ridimensiona"
->
-    ↘
-</button>
+        type="button"
+        id="directDeleteButton"
+        class="direct-control-button"
+        title="Elimina"
+    >
+        🗑
+    </button>
 
-<button
-    type="button"
-    id="directDeleteButton"
-    class="direct-control-button"
-    title="Elimina"
->
-    🗑
-</button>
+    <div class="resize-handle resize-top-left"></div>
+<div class="resize-handle resize-top-right"></div>
+<div class="resize-handle resize-bottom-left"></div>
+<div class="resize-handle resize-bottom-right"></div>
 
 </div>
-
-<div
-    id="guideVertical"
-    class="center-guide vertical-guide"
-></div>
-
-<div
-    id="guideHorizontal"
-    class="center-guide horizontal-guide"
-></div>
-
-<div
-    id="rotationGuide"
-    class="rotation-guide"
-></div>
-
-                    </div>
 
                 </div>
 

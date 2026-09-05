@@ -23,6 +23,7 @@ const rotationValue =
     document.getElementById("rotationValue");
 
 const textInput = document.getElementById("textInput");
+const fontSelect = document.getElementById("fontSelect");
 const customText = document.getElementById("customText");
 const guideVertical = document.getElementById("guideVertical");
 const guideHorizontal = document.getElementById("guideHorizontal");
@@ -51,60 +52,47 @@ const directRotateButton =
 
 const directMoveButton =
     document.getElementById("directMoveButton");
-    const directResizeButton =
-    document.getElementById("directResizeButton");
     const directDeleteButton =
     document.getElementById("directDeleteButton");
 
     function showSelectionControls(element, type) {
 
     selectedElementType = type;
+
     uploadedImage.classList.remove("selected-element");
-customText.classList.remove("selected-element");
+    customText.classList.remove("selected-element");
 
-element.classList.add("selected-element");
+    element.classList.add("selected-element");
 
-    const areaRect =
-        printArea.getBoundingClientRect();
+    const previewRect =
+        productPreview.getBoundingClientRect();
 
     const elementRect =
         element.getBoundingClientRect();
 
-    let centerX =
-    elementRect.left -
-    areaRect.left +
-    (elementRect.width / 2);
+    const left =
+        elementRect.left - previewRect.left;
 
-const minimumLeft = 42;
-const maximumRight = areaRect.width - 42;
-
-if (centerX < minimumLeft) {
-    centerX = minimumLeft;
-}
-
-if (centerX > maximumRight) {
-    centerX = maximumRight;
-}
-
-    let topY =
-    elementRect.top -
-    areaRect.top -
-    8;
-
-const minimumTop = 38;
-
-if (topY < minimumTop) {
-    topY = minimumTop;
-}
+    const top =
+        elementRect.top - previewRect.top;
 
     selectionControls.style.left =
-        `${centerX}px`;
+        `${left}px`;
 
     selectionControls.style.top =
-        `${topY}px`;
+        `${top}px`;
+
+    selectionControls.style.width =
+        `${elementRect.width}px`;
+
+    selectionControls.style.height =
+        `${elementRect.height}px`;
+
+    selectionControls.style.transform =
+        "none";
 
     selectionControls.style.display =
-        "flex";
+        "block";
 }
 
 productPreview.addEventListener("mousedown", function (event) {
@@ -195,48 +183,54 @@ directMoveButton.addEventListener("mousedown", function (event) {
     event.preventDefault();
     event.stopPropagation();
 });
-directResizeButton.addEventListener("mousedown", function (event) {
 
-    if (!selectedElementType) {
-        return;
-    }
+document
+    .querySelectorAll(".resize-handle")
+    .forEach(function (handle) {
 
-    const state = getCurrentState();
+        handle.addEventListener("mousedown", function (event) {
 
-    const selectedElement =
-        selectedElementType === "image"
-            ? uploadedImage
-            : customText;
+            if (!selectedElementType) {
+                return;
+            }
 
-    const rect =
-        selectedElement.getBoundingClientRect();
+            const state = getCurrentState();
 
-    resizeCenterX =
-        rect.left + (rect.width / 2);
+            const selectedElement =
+                selectedElementType === "image"
+                    ? uploadedImage
+                    : customText;
 
-    resizeCenterY =
-        rect.top + (rect.height / 2);
+            const rect =
+                selectedElement.getBoundingClientRect();
 
-    const deltaX =
-        event.clientX - resizeCenterX;
+            resizeCenterX =
+                rect.left + (rect.width / 2);
 
-    const deltaY =
-        event.clientY - resizeCenterY;
+            resizeCenterY =
+                rect.top + (rect.height / 2);
 
-    resizeStartDistance =
-        Math.sqrt(
-            (deltaX * deltaX) +
-            (deltaY * deltaY)
-        );
+            const deltaX =
+                event.clientX - resizeCenterX;
 
-    resizeStartScale = state.scale;
-    resizeStartTextSize = state.textSize;
+            const deltaY =
+                event.clientY - resizeCenterY;
 
-    isDirectResizing = true;
+            resizeStartDistance =
+                Math.sqrt(
+                    (deltaX * deltaX) +
+                    (deltaY * deltaY)
+                );
 
-    event.preventDefault();
-    event.stopPropagation();
-});
+            resizeStartScale = state.scale;
+            resizeStartTextSize = state.textSize;
+
+            isDirectResizing = true;
+
+            event.preventDefault();
+            event.stopPropagation();
+        });
+    });
 
 directDeleteButton.addEventListener("click", function () {
 
@@ -546,7 +540,8 @@ function createEmptyState() {
 textX: 0,
 textY: 0,
 textSize: 26,
-textRotation: 0
+textRotation: 0,
+fontFamily: "Arial"
 };
 }
 
@@ -678,6 +673,12 @@ customText.textContent = state.text;
 
 customText.style.fontSize =
     `${state.textSize}px`;
+
+    customText.style.fontFamily =
+    state.fontFamily;
+
+fontSelect.value =
+    state.fontFamily;
 
 textSizeRange.value = state.textSize;
 textRotationRange.value = state.textRotation;
@@ -977,6 +978,11 @@ state.x = newX;
 state.y = newY;
 
 updateImageTransform();
+
+showSelectionControls(
+    uploadedImage,
+    "image"
+);
 });
 
 
@@ -1071,6 +1077,11 @@ const maxY = Math.max(
         calc(-50% + ${state.textY}px)
     )
     rotate(${state.textRotation}deg)`;
+
+showSelectionControls(
+    customText,
+    "text"
+);
 });
 
 
@@ -1148,6 +1159,15 @@ textInput.addEventListener("input", function () {
     state.text = this.value;
 
     customText.textContent = state.text;
+});
+
+fontSelect.addEventListener("change", function () {
+
+    const state = getCurrentState();
+
+    state.fontFamily = this.value;
+
+    customText.style.fontFamily = state.fontFamily;
 });
 
 function fitTextInsidePrintArea() {
