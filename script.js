@@ -26,6 +26,11 @@ const textInput = document.getElementById("textInput");
 const fontSelect = document.getElementById("fontSelect");
 const customText = document.getElementById("customText");
 const textColor = document.getElementById("textColor");
+const boldButton =
+    document.getElementById("boldButton");
+
+const italicButton =
+    document.getElementById("italicButton");
 const guideVertical = document.getElementById("guideVertical");
 const guideHorizontal = document.getElementById("guideHorizontal");
 const rotationGuide =
@@ -57,6 +62,25 @@ const directMoveButton =
     document.getElementById("directFlipButton");
     const directDeleteButton =
     document.getElementById("directDeleteButton");
+    const bringForwardButton =
+    document.getElementById("bringForwardButton");
+    const previewZoomRange =
+    document.getElementById("previewZoomRange");
+
+const previewZoomValue =
+    document.getElementById("previewZoomValue");
+
+const zoomOutPreviewButton =
+    document.getElementById("zoomOutPreviewButton");
+
+const zoomInPreviewButton =
+    document.getElementById("zoomInPreviewButton");
+
+const resetPreviewZoomButton =
+    document.getElementById("resetPreviewZoomButton");
+
+const sendBackwardButton =
+    document.getElementById("sendBackwardButton");
 
     directFlipButton.addEventListener("click", function () {
 
@@ -71,6 +95,65 @@ const directMoveButton =
     if (selectedElementType === "text") {
         flipText();
     }
+});
+
+bringForwardButton.addEventListener("click", function () {
+
+    if (!selectedElementType) {
+        return;
+    }
+
+    const state = getCurrentState();
+
+    if (selectedElementType === "image") {
+
+        state.imageLayer = 2;
+        state.textLayer = 1;
+
+    } else {
+
+        state.textLayer = 2;
+        state.imageLayer = 1;
+    }
+
+    uploadedImage.style.zIndex =
+        state.imageLayer;
+
+    customText.style.zIndex =
+        state.textLayer;
+
+    statusMessage.textContent =
+        "Elemento portato davanti.";
+});
+
+
+sendBackwardButton.addEventListener("click", function () {
+
+    if (!selectedElementType) {
+        return;
+    }
+
+    const state = getCurrentState();
+
+    if (selectedElementType === "image") {
+
+        state.imageLayer = 1;
+        state.textLayer = 2;
+
+    } else {
+
+        state.textLayer = 1;
+        state.imageLayer = 2;
+    }
+
+    uploadedImage.style.zIndex =
+        state.imageLayer;
+
+    customText.style.zIndex =
+        state.textLayer;
+
+    statusMessage.textContent =
+        "Elemento portato dietro.";
 });
 
     function showSelectionControls(element, type) {
@@ -525,7 +608,7 @@ let isDragging = false;
 let startX = 0;
 let startY = 0;
 
-let currentProduct = "cushion";
+let currentProduct = productSelect.value;
 
 let tshirtColor = "white";
 let tshirtSide = "front";
@@ -573,15 +656,19 @@ function createEmptyState() {
     scale: 1,
     rotation: 0,
     imageFlipped: false,
+imageLayer: 1,
 
-    text: "",
+text: "",
 textX: 0,
 textY: 0,
 textSize: 26,
 textRotation: 0,
 fontFamily: "Arial",
 textColor: "#000000",
-textFlipped: false
+textBold: false,
+textItalic: false,
+textFlipped: false,
+textLayer: 2
 };
 }
 
@@ -675,6 +762,22 @@ function flipText() {
             "text"
         );
     }
+}
+
+function updateTextTransform() {
+
+    const state = getCurrentState();
+
+    const textScaleX =
+        state.textFlipped ? -1 : 1;
+
+    customText.style.transform =
+        `translate(
+            calc(-50% + ${state.textX}px),
+            calc(-50% + ${state.textY}px)
+        )
+        rotate(${state.textRotation}deg)
+        scaleX(${textScaleX})`;
 }
 
 function keepImageInsidePrintArea() {
@@ -773,6 +876,22 @@ fontSelect.value =
 textColor.value =
     state.textColor;
 
+    customText.style.fontWeight =
+    state.textBold ? "700" : "400";
+
+customText.style.fontStyle =
+    state.textItalic ? "italic" : "normal";
+
+boldButton.classList.toggle(
+    "active",
+    state.textBold
+);
+
+italicButton.classList.toggle(
+    "active",
+    state.textItalic
+);
+
 textSizeRange.value = state.textSize;
 textRotationRange.value = state.textRotation;
 
@@ -790,6 +909,11 @@ customText.style.transform =
 zoomRange.value = state.scale;
 rotationRange.value = state.rotation;
 
+uploadedImage.style.zIndex =
+    state.imageLayer;
+
+customText.style.zIndex =
+    state.textLayer;
     updateImageTransform();
 }
 
@@ -825,6 +949,12 @@ function updateProductPreview() {
     productPreview.style.backgroundImage = "";
 
     printArea.className = "print-area";
+    // Rimuove eventuali impostazioni rimaste dalla T-Shirt
+printArea.style.width = "";
+printArea.style.height = "";
+printArea.style.top = "";
+printArea.style.left = "";
+printArea.style.transform = "";
 
 
     if (currentProduct === "cushion") {
@@ -838,15 +968,20 @@ function updateProductPreview() {
 
     if (currentProduct === "tshirt") {
 
-        productPreview.classList.add("tshirt-preview");
+    productPreview.classList.add("tshirt-preview");
 
-        printArea.classList.add("tshirt-print-area");
+    printArea.classList.add("tshirt-print-area");
 
-        tshirtOptions.style.display = "block";
-
-        updateTshirtMockup();
-        printFormatOptions.style.display = "block";
+    if (tshirtSide === "back") {
+        printArea.classList.add("tshirt-back-print-area");
     }
+
+    tshirtOptions.style.display = "block";
+    printFormatOptions.style.display = "block";
+
+    updateTshirtPrintFormat();
+    updateTshirtMockup();
+}
 
 
     if (currentProduct === "keychain") {
@@ -906,12 +1041,21 @@ productSelect.addEventListener("change", function () {
 
     currentProduct = this.value;
 
+    previewZoom = 100;
+
+    uploadedImage.classList.remove("selected-element");
+    customText.classList.remove("selected-element");
+
+    selectionControls.style.display = "none";
+    selectedElementType = null;
+
     if (currentProduct !== "tshirt") {
         tshirtSide = "front";
     }
 
-    
+    statusMessage.textContent = "";
     updateProductPreview();
+    updatePreviewZoom();
 });
 
 centerImageButton.addEventListener("click", function () {
@@ -1267,6 +1411,37 @@ fontSelect.addEventListener("change", function () {
     customText.style.fontFamily = state.fontFamily;
 });
 
+boldButton.addEventListener("click", function () {
+
+    const state = getCurrentState();
+
+    state.textBold = !state.textBold;
+
+    customText.style.fontWeight =
+        state.textBold ? "700" : "400";
+
+    boldButton.classList.toggle(
+        "active",
+        state.textBold
+    );
+});
+
+
+italicButton.addEventListener("click", function () {
+
+    const state = getCurrentState();
+
+    state.textItalic = !state.textItalic;
+
+    customText.style.fontStyle =
+        state.textItalic ? "italic" : "normal";
+
+    italicButton.classList.toggle(
+        "active",
+        state.textItalic
+    );
+});
+
 textColor.addEventListener("input", function () {
 
     const state = getCurrentState();
@@ -1466,6 +1641,12 @@ document
             this.classList.add("active");
 
             tshirtSide = this.dataset.side;
+            uploadedImage.classList.remove("selected-element");
+customText.classList.remove("selected-element");
+
+selectionControls.style.display = "none";
+
+selectedElementType = null;
             if (tshirtSide === "back") {
     printArea.classList.add("tshirt-back-print-area");
 } else {
@@ -1485,6 +1666,8 @@ updateTshirtPrintFormat();
             updateTshirtMockup();
 
             renderCurrentState();
+
+            updatePreviewZoom();
 
 
             if (tshirtSide === "front") {
@@ -1560,4 +1743,70 @@ function updateTshirtPrintFormat() {
     keepTextInsidePrintArea();
 }
 
+let previewZoom = 100;
+
+function updatePreviewZoom() {
+
+    const scale = previewZoom / 100;
+
+    let horizontalOffset = 0;
+
+    if (currentProduct === "tshirt") {
+
+        if (tshirtSide === "front") {
+            horizontalOffset = -37;
+        } else {
+            horizontalOffset = 41;
+        }
+    }
+
+    const scaledOffset =
+        horizontalOffset * scale;
+
+    productPreview.style.transform =
+        `translateX(${scaledOffset}px) scale(${scale})`;
+
+    productPreview.style.transformOrigin =
+        "center center";
+
+    previewZoomRange.value = previewZoom;
+
+    previewZoomValue.textContent =
+        `${previewZoom}%`;
+}
+
+
+previewZoomRange.addEventListener("input", function () {
+
+    previewZoom = Number(this.value);
+
+    updatePreviewZoom();
+});
+
+
+zoomInPreviewButton.addEventListener("click", function () {
+
+    previewZoom =
+        Math.min(160, previewZoom + 5);
+
+    updatePreviewZoom();
+});
+
+
+zoomOutPreviewButton.addEventListener("click", function () {
+
+    previewZoom =
+        Math.max(80, previewZoom - 5);
+
+    updatePreviewZoom();
+});
+
+
+resetPreviewZoomButton.addEventListener("click", function () {
+
+    previewZoom = 100;
+
+    updatePreviewZoom();
+});
 updateProductPreview();
+updatePreviewZoom();

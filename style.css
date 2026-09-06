@@ -154,6 +154,8 @@ input[type="file"] {
     background: #eeeeee;
     border-radius: 14px;
     padding: 30px;
+    position: relative;
+z-index: 1;
 }
 
 .product-preview {
@@ -553,4 +555,93 @@ input[type="file"] {
 .resize-bottom-right {
     right: -7px;
     bottom: -7px;
+}
+.text-style-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.text-style-button {
+    width: 44px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #eeeeee;
+    color: #222;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.text-style-button:hover {
+    background: #dddddd;
+}
+
+.text-style-button.active {
+    background: #1976e9;
+    color: white;
+    border-color: #1976e9;
+}
+#bringForwardButton {
+    left: calc(50% - 69px);
+    top: -48px;
+    transform: translateX(-50%);
+}
+
+#sendBackwardButton {
+    left: calc(50% + 69px);
+    top: -48px;
+    transform: translateX(-50%);
+}
+
+#bringForwardButton:hover,
+#sendBackwardButton:hover {
+    background: #0f63c9 !important;
+    color: white !important;
+    transform: translateX(-50%) scale(1.08);
+}
+.preview-zoom-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    position: relative;
+z-index: 100;
+}
+
+.preview-zoom-controls input[type="range"] {
+    width: 180px;
+}
+
+.preview-zoom-button {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    background: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.preview-zoom-button:hover {
+    background: #eeeeee;
+}
+
+#previewZoomValue {
+    min-width: 48px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.preview-zoom-reset {
+    height: 38px;
+    padding: 0 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+}
+
+.preview-zoom-reset:hover {
+    background: #eeeeee;
 }

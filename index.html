@@ -165,6 +165,30 @@
 </div>
 
 <div class="tool-section">
+    <label>Stile testo</label>
+
+    <div class="text-style-buttons">
+        <button
+            type="button"
+            id="boldButton"
+            class="text-style-button"
+            title="Grassetto"
+        >
+            <strong>B</strong>
+        </button>
+
+        <button
+            type="button"
+            id="italicButton"
+            class="text-style-button"
+            title="Corsivo"
+        >
+            <em>I</em>
+        </button>
+    </div>
+</div>
+
+<div class="tool-section">
     <label for="textColor">Colore testo</label>
     <input type="color" id="textColor" value="#000000">
 </div>
@@ -333,8 +357,6 @@
 
 <div id="customText"></div>
 
-
-
 <div
     id="guideVertical"
     class="center-guide vertical-guide"
@@ -381,6 +403,24 @@
     ⇋
 </button>
 
+<button
+    type="button"
+    id="bringForwardButton"
+    class="direct-control-button"
+    title="Porta davanti"
+>
+    ↑
+</button>
+
+<button
+    type="button"
+    id="sendBackwardButton"
+    class="direct-control-button"
+    title="Porta dietro"
+>
+    ↓
+</button>
+
     <button
         type="button"
         id="directDeleteButton"
@@ -397,7 +437,48 @@
 
 </div>
 
-                </div>
+                                </div>
+
+            </div>
+
+            <div class="preview-zoom-controls">
+
+                <button
+                    type="button"
+                    id="zoomOutPreviewButton"
+                    class="preview-zoom-button"
+                    title="Riduci anteprima"
+                >
+                    −
+                </button>
+
+                <input
+                    type="range"
+                    id="previewZoomRange"
+                    min="80"
+                    max="160"
+                    step="5"
+                    value="100"
+                >
+
+                <span id="previewZoomValue">100%</span>
+
+                <button
+                    type="button"
+                    id="zoomInPreviewButton"
+                    class="preview-zoom-button"
+                    title="Ingrandisci anteprima"
+                >
+                    +
+                </button>
+
+                <button
+                    type="button"
+                    id="resetPreviewZoomButton"
+                    class="preview-zoom-reset"
+                >
+                    Ripristina
+                </button>
 
             </div>
 
