@@ -901,27 +901,75 @@ function keepImageInsidePrintArea() {
 
     const state = getCurrentState();
 
-    const areaRect = printArea.getBoundingClientRect();
-    const imageRect = uploadedImage.getBoundingClientRect();
+    updateImageTransform();
 
-    const halfImageWidth = imageRect.width / 2;
-    const halfImageHeight = imageRect.height / 2;
+    const areaRect =
+        printArea.getBoundingClientRect();
 
-    const maxX = Math.max(
-        0,
-        (areaRect.width / 2) - halfImageWidth
-    );
+    const imageRect =
+        uploadedImage.getBoundingClientRect();
 
-    const maxY = Math.max(
-        0,
-        (areaRect.height / 2) - halfImageHeight
-    );
+    const previewScale =
+        previewZoom / 100;
 
-    state.x =
-        Math.max(-maxX, Math.min(maxX, state.x));
+    let correctionX = 0;
+    let correctionY = 0;
 
-    state.y =
-        Math.max(-maxY, Math.min(maxY, state.y));
+
+    if (imageRect.width <= areaRect.width) {
+
+        if (imageRect.left < areaRect.left) {
+
+            correctionX +=
+                (areaRect.left - imageRect.left) /
+                previewScale;
+        }
+
+        if (imageRect.right > areaRect.right) {
+
+            correctionX -=
+                (imageRect.right - areaRect.right) /
+                previewScale;
+        }
+
+    } else {
+
+        correctionX +=
+            (
+                (areaRect.left + areaRect.right) / 2 -
+                (imageRect.left + imageRect.right) / 2
+            ) / previewScale;
+    }
+
+
+    if (imageRect.height <= areaRect.height) {
+
+        if (imageRect.top < areaRect.top) {
+
+            correctionY +=
+                (areaRect.top - imageRect.top) /
+                previewScale;
+        }
+
+        if (imageRect.bottom > areaRect.bottom) {
+
+            correctionY -=
+                (imageRect.bottom - areaRect.bottom) /
+                previewScale;
+        }
+
+    } else {
+
+        correctionY +=
+            (
+                (areaRect.top + areaRect.bottom) / 2 -
+                (imageRect.top + imageRect.bottom) / 2
+            ) / previewScale;
+    }
+
+
+    state.x += correctionX;
+    state.y += correctionY;
 
     updateImageTransform();
 }
@@ -1209,15 +1257,10 @@ centerTextButton.addEventListener("click", function () {
     state.textX = 0;
     state.textY = 0;
 
-    customText.style.transform =
-        `translate(
-            calc(-50% + ${state.textX}px),
-            calc(-50% + ${state.textY}px)
-        )
-        rotate(${state.textRotation}deg)`;
+    updateTextTransform();
 
-    statusMessage.textContent =
-        "Testo centrato.";
+fitTextInsidePrintArea();
+keepTextInsidePrintArea();
 });
 
 
@@ -1311,29 +1354,12 @@ document.addEventListener("mousemove", function (event) {
         guideHorizontal.style.display = "none";
     }
 
-    const areaRect = printArea.getBoundingClientRect();
-const imageRect = uploadedImage.getBoundingClientRect();
-
-const halfImageWidth = imageRect.width / 2;
-const halfImageHeight = imageRect.height / 2;
-
-const maxX = Math.max(
-    0,
-    (areaRect.width / 2) - halfImageWidth
-);
-
-const maxY = Math.max(
-    0,
-    (areaRect.height / 2) - halfImageHeight
-);
-
-newX = Math.max(-maxX, Math.min(maxX, newX));
-newY = Math.max(-maxY, Math.min(maxY, newY));
-
-state.x = newX;
+    state.x = newX;
 state.y = newY;
 
 updateImageTransform();
+
+keepImageInsidePrintArea();
 
 showSelectionControls(
     uploadedImage,
@@ -1405,38 +1431,12 @@ if (Math.abs(newY) <= snapDistance) {
     guideHorizontal.style.display = "none";
 }
 
-    const areaRect = printArea.getBoundingClientRect();
-    const textRect = customText.getBoundingClientRect();
-
-    const halfTextWidth = textRect.width / 2;
-    const halfTextHeight = textRect.height / 2;
-
-    const maxX = Math.max(
-    0,
-    (areaRect.width / 2) - halfTextWidth
-);
-
-const maxY = Math.max(
-    0,
-    (areaRect.height / 2) - halfTextHeight
-);
-
-    newX = Math.max(-maxX, Math.min(maxX, newX));
-    newY = Math.max(-maxY, Math.min(maxY, newY));
-
     state.textX = newX;
-    state.textY = newY;
+state.textY = newY;
 
-    const textScaleX =
-    state.textFlipped ? -1 : 1;
+updateTextTransform();
 
-customText.style.transform =
-    `translate(
-        calc(-50% + ${state.textX}px),
-        calc(-50% + ${state.textY}px)
-    )
-    rotate(${state.textRotation}deg)
-    scaleX(${textScaleX})`;
+keepTextInsidePrintArea();
 
 showSelectionControls(
     customText,
@@ -1509,6 +1509,7 @@ rotationRange.addEventListener("input", function () {
     }
 
     updateImageTransform();
+    keepImageInsidePrintArea();
 });
 
 
@@ -1519,6 +1520,9 @@ textInput.addEventListener("input", function () {
     state.text = this.value;
 
     customText.textContent = state.text;
+
+    fitTextInsidePrintArea();
+    keepTextInsidePrintArea();
 });
 
 fontSelect.addEventListener("change", function () {
@@ -1617,27 +1621,75 @@ function keepTextInsidePrintArea() {
 
     const state = getCurrentState();
 
-    const areaRect = printArea.getBoundingClientRect();
-    const textRect = customText.getBoundingClientRect();
+    updateTextTransform();
 
-    const halfTextWidth = textRect.width / 2;
-    const halfTextHeight = textRect.height / 2;
+    const areaRect =
+        printArea.getBoundingClientRect();
 
-    const maxX = Math.max(
-        0,
-        (areaRect.width / 2) - halfTextWidth
-    );
+    const textRect =
+        customText.getBoundingClientRect();
 
-    const maxY = Math.max(
-        0,
-        (areaRect.height / 2) - halfTextHeight
-    );
+    const previewScale =
+        previewZoom / 100;
 
-    state.textX =
-        Math.max(-maxX, Math.min(maxX, state.textX));
+    let correctionX = 0;
+    let correctionY = 0;
 
-    state.textY =
-        Math.max(-maxY, Math.min(maxY, state.textY));
+
+    if (textRect.width <= areaRect.width) {
+
+        if (textRect.left < areaRect.left) {
+
+            correctionX +=
+                (areaRect.left - textRect.left) /
+                previewScale;
+        }
+
+        if (textRect.right > areaRect.right) {
+
+            correctionX -=
+                (textRect.right - areaRect.right) /
+                previewScale;
+        }
+
+    } else {
+
+        correctionX +=
+            (
+                (areaRect.left + areaRect.right) / 2 -
+                (textRect.left + textRect.right) / 2
+            ) / previewScale;
+    }
+
+
+    if (textRect.height <= areaRect.height) {
+
+        if (textRect.top < areaRect.top) {
+
+            correctionY +=
+                (areaRect.top - textRect.top) /
+                previewScale;
+        }
+
+        if (textRect.bottom > areaRect.bottom) {
+
+            correctionY -=
+                (textRect.bottom - areaRect.bottom) /
+                previewScale;
+        }
+
+    } else {
+
+        correctionY +=
+            (
+                (areaRect.top + areaRect.bottom) / 2 -
+                (textRect.top + textRect.bottom) / 2
+            ) / previewScale;
+    }
+
+
+    state.textX += correctionX;
+    state.textY += correctionY;
 
     updateTextTransform();
 }
@@ -1928,6 +1980,218 @@ resetPreviewZoomButton.addEventListener("click", function () {
     updatePreviewZoom();
 });
 
+function createPreviewContent(
+    preview,
+    state
+) {
+
+    if (!state) {
+        return;
+    }
+
+
+    if (state.imageSrc) {
+
+        const image =
+            document.createElement("img");
+
+        image.src =
+            state.imageSrc;
+
+        image.className =
+            "cart-preview-image";
+
+        const flip =
+            state.imageFlipped
+                ? -1
+                : 1;
+
+        image.style.transform =
+            `translate(
+                calc(-50% + ${state.x / 5}px),
+                calc(-50% + ${state.y / 5}px)
+            )
+            scaleX(${flip})
+            rotate(${state.rotation}deg)`;
+
+        preview.appendChild(image);
+    }
+
+
+    if (state.text) {
+
+        const text =
+            document.createElement("div");
+
+        text.className =
+            "cart-preview-text";
+
+        text.textContent =
+            state.text;
+
+        text.style.fontFamily =
+            state.fontFamily;
+
+        text.style.color =
+            state.textColor;
+
+        text.style.fontWeight =
+            state.textBold
+                ? "700"
+                : "400";
+
+        text.style.fontStyle =
+            state.textItalic
+                ? "italic"
+                : "normal";
+
+        text.style.fontSize =
+            `${Math.max(
+                6,
+                state.textSize / 5
+            )}px`;
+
+
+        const flip =
+            state.textFlipped
+                ? -1
+                : 1;
+
+
+        text.style.transform =
+            `translate(
+                calc(-50% + ${state.textX / 5}px),
+                calc(-50% + ${state.textY / 5}px)
+            )
+            rotate(${state.textRotation}deg)
+            scaleX(${flip})`;
+
+
+        preview.appendChild(text);
+    }
+}
+
+function createTshirtSidePreview(
+    item,
+    side,
+    labelText
+) {
+
+    const block =
+        document.createElement("div");
+
+    block.className =
+        "cart-side-preview-block";
+
+
+    const label =
+        document.createElement("div");
+
+    label.className =
+        "cart-side-preview-label";
+
+    label.textContent =
+        labelText;
+
+
+    const preview =
+        document.createElement("div");
+
+    preview.className =
+        "cart-side-preview tshirt";
+
+
+    let imagePath = "";
+
+
+    if (item.tshirtColor === "black") {
+
+        imagePath =
+            side === "front"
+                ? "assets/tshirt-black-front.png"
+                : "assets/tshirt-black-back.png";
+
+    } else {
+
+        imagePath =
+            side === "front"
+                ? "assets/tshirt-white-front.png"
+                : "assets/tshirt-white-back.png";
+    }
+
+
+    preview.style.backgroundImage =
+        `url("${imagePath}")`;
+
+
+    const state =
+        item.customization[side];
+
+
+    if (state) {
+
+        createPreviewContent(
+            preview,
+            state
+        );
+    }
+
+
+    block.appendChild(label);
+    block.appendChild(preview);
+
+    return block;
+}
+
+function createCartPreview(item) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "cart-preview-wrapper";
+
+
+    if (item.product !== "tshirt") {
+
+        const preview =
+            document.createElement("div");
+
+        preview.className =
+            `cart-side-preview ${item.product}`;
+
+        createPreviewContent(
+            preview,
+            item.customization
+        );
+
+        wrapper.appendChild(preview);
+
+        return wrapper;
+    }
+
+
+    const frontBlock =
+        createTshirtSidePreview(
+            item,
+            "front",
+            "Fronte"
+        );
+
+    const backBlock =
+        createTshirtSidePreview(
+            item,
+            "back",
+            "Retro"
+        );
+
+
+    wrapper.appendChild(frontBlock);
+    wrapper.appendChild(backBlock);
+
+    return wrapper;
+}
+
 function renderCart() {
 
     cartItemsContainer.innerHTML = "";
@@ -1968,25 +2232,29 @@ function renderCart() {
 
         if (item.product === "tshirt") {
 
-            const color =
-                item.tshirtColor === "black"
-                    ? "Nera"
-                    : "Bianca";
+    const color =
+        item.tshirtColor === "black"
+            ? "Nera"
+            : "Bianca";
 
-            const side =
-                item.tshirtSide === "back"
-                    ? "Retro"
-                    : "Fronte";
 
-            const format =
-                item.printFormat === "horizontal"
-                    ? "Orizzontale 30x20"
-                    : "Verticale 20x30";
+    const frontFormat =
+        item.printFormat.front === "horizontal"
+            ? "30x20"
+            : "20x30";
 
-            details =
-                `${color} · ${side}` +
-                `<br>${format}`;
-        }
+
+    const backFormat =
+        item.printFormat.back === "horizontal"
+            ? "30x20"
+            : "20x30";
+
+
+    details =
+        `${color}` +
+        `<br>Fronte: ${frontFormat}` +
+        `<br>Retro: ${backFormat}`;
+}
 
 
         cartItemElement.innerHTML = `
@@ -2045,6 +2313,11 @@ function renderCart() {
             </div>
         `;
 
+
+        const preview =
+    createCartPreview(item);
+
+cartItemElement.prepend(preview);
 
         cartItemsContainer.appendChild(
             cartItemElement
@@ -2134,43 +2407,60 @@ addToCartButton.addEventListener("click", function () {
     const state = getCurrentState();
 
     const cartItem = {
-        id: Date.now(),
 
-        product: currentProduct,
+    id: Date.now(),
 
-        unitPrice:
+    product: currentProduct,
+
+    unitPrice:
         products[currentProduct].price,
 
-        quantity: quantity,
+    quantity: quantity,
 
-        tshirtColor:
-            currentProduct === "tshirt"
-                ? tshirtColor
-                : null,
 
-        tshirtSide:
-            currentProduct === "tshirt"
-                ? tshirtSide
-                : null,
+    tshirtColor:
+        currentProduct === "tshirt"
+            ? tshirtColor
+            : null,
 
-        printFormat:
-            currentProduct === "tshirt"
-                ? tshirtPrintFormat[tshirtSide]
-                : null,
 
-        customization: {
-            ...state
-        }
-    };
+    printFormat:
+        currentProduct === "tshirt"
+            ? {
+                front: tshirtPrintFormat.front,
+                back: tshirtPrintFormat.back
+            }
+            : null,
+
+
+    customization:
+        currentProduct === "tshirt"
+            ? {
+                front: {
+                    ...productStates.tshirt.front
+                },
+
+                back: {
+                    ...productStates.tshirt.back
+                }
+            }
+            : {
+                ...state
+            }
+};
 
     const existingItem = cartItems.find(
     function (item) {
 
         return (
             item.product === cartItem.product &&
-            item.tshirtColor === cartItem.tshirtColor &&
-            item.tshirtSide === cartItem.tshirtSide &&
-            item.printFormat === cartItem.printFormat &&
+
+            item.tshirtColor ===
+                cartItem.tshirtColor &&
+
+            JSON.stringify(item.printFormat) ===
+                JSON.stringify(cartItem.printFormat) &&
+
             JSON.stringify(item.customization) ===
                 JSON.stringify(cartItem.customization)
         );
