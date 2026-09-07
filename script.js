@@ -10,6 +10,8 @@ const productTitle = document.getElementById("productTitle");
 const printAreaInfo = document.getElementById("printAreaInfo");
 
 const productName = document.getElementById("productName");
+const productPrice =
+    document.getElementById("productPrice");
 const productDimensions = document.getElementById("productDimensions");
 const printDimensions = document.getElementById("printDimensions");
 
@@ -81,6 +83,105 @@ const resetPreviewZoomButton =
 
 const sendBackwardButton =
     document.getElementById("sendBackwardButton");
+
+    const cartCount =
+    document.getElementById("cartCount");
+
+const quantityInput =
+    document.getElementById("quantity");
+
+const addToCartButton =
+    document.getElementById("addToCartButton");
+    const cartButton =
+    document.getElementById("cartButton");
+
+const cartDrawer =
+    document.getElementById("cartDrawer");
+
+const cartOverlay =
+    document.getElementById("cartOverlay");
+
+const closeCartButton =
+    document.getElementById("closeCartButton");
+
+const cartItemsContainer =
+    document.getElementById("cartItems");
+
+const emptyCartMessage =
+    document.getElementById("emptyCartMessage");
+
+    const cartTotal =
+    document.getElementById("cartTotal");
+
+const cartFooter =
+    document.getElementById("cartFooter");
+
+    cartItemsContainer.addEventListener(
+    "click",
+    function (event) {
+
+        const button =
+            event.target.closest("button");
+
+        if (!button) {
+            return;
+        }
+
+
+        const id =
+            Number(button.dataset.id);
+
+        const item =
+            cartItems.find(function (cartItem) {
+                return cartItem.id === id;
+            });
+
+
+        if (
+            button.classList.contains("increase") &&
+            item
+        ) {
+
+            item.quantity++;
+        }
+
+
+        if (
+            button.classList.contains("decrease") &&
+            item
+        ) {
+
+            if (item.quantity > 1) {
+                item.quantity--;
+            }
+        }
+
+
+        if (
+            button.classList.contains(
+                "remove-cart-item"
+            )
+        ) {
+
+            cartItems =
+                cartItems.filter(
+                    function (cartItem) {
+                        return cartItem.id !== id;
+                    }
+                );
+        }
+
+
+        localStorage.setItem(
+            "mycustomCart",
+            JSON.stringify(cartItems)
+        );
+
+
+        updateCartCount();
+        renderCart();
+    }
+);
 
     directFlipButton.addEventListener("click", function () {
 
@@ -171,11 +272,20 @@ sendBackwardButton.addEventListener("click", function () {
     const elementRect =
         element.getBoundingClientRect();
 
+    const scale =
+        previewZoom / 100;
+
     const left =
-        elementRect.left - previewRect.left;
+        (elementRect.left - previewRect.left) / scale;
 
     const top =
-        elementRect.top - previewRect.top;
+        (elementRect.top - previewRect.top) / scale;
+
+    const width =
+        elementRect.width / scale;
+
+    const height =
+        elementRect.height / scale;
 
     selectionControls.style.left =
         `${left}px`;
@@ -184,10 +294,10 @@ sendBackwardButton.addEventListener("click", function () {
         `${top}px`;
 
     selectionControls.style.width =
-        `${elementRect.width}px`;
+        `${width}px`;
 
     selectionControls.style.height =
-        `${elementRect.height}px`;
+        `${height}px`;
 
     selectionControls.style.transform =
         "none";
@@ -625,7 +735,8 @@ const products = {
         name: "Cuscino personalizzato",
         dimensions: "Dimensione: 40x40 cm",
         print: "Area di stampa: 30x30 cm",
-        printInfo: "Area stampabile 30x30 cm"
+        printInfo: "Area stampabile 30x30 cm",
+        price: 19.90
     },
 
     tshirt: {
@@ -633,7 +744,8 @@ const products = {
         name: "T-Shirt personalizzata",
         dimensions: "Taglie disponibili: da definire",
         print: "Area massima di stampa: 30x40 cm",
-        printInfo: "Area stampabile massima 30x40 cm"
+        printInfo: "Area stampabile massima 30x40 cm",
+        price: 19.90
     },
 
     keychain: {
@@ -641,7 +753,8 @@ const products = {
         name: "Portachiavi personalizzato",
         dimensions: "Dimensione: 4,5x4,5 cm",
         print: "Superficie interamente stampabile",
-        printInfo: "Area stampabile 4,5x4,5 cm"
+        printInfo: "Area stampabile 4,5x4,5 cm",
+        price: 14.90
     }
 
 };
@@ -689,6 +802,10 @@ const productStates = {
     }
 
 };
+
+let cartItems = JSON.parse(
+    localStorage.getItem("mycustomCart")
+) || [];
 
 
 function getCurrentSide() {
@@ -937,6 +1054,8 @@ function updateProductPreview() {
 
     productTitle.textContent = product.title;
     productName.textContent = product.name;
+    productPrice.textContent =
+    `€${product.price.toFixed(2).replace(".", ",")}`;
 
     productDimensions.textContent = product.dimensions;
     printDimensions.textContent = product.print;
@@ -1808,5 +1927,277 @@ resetPreviewZoomButton.addEventListener("click", function () {
 
     updatePreviewZoom();
 });
+
+function renderCart() {
+
+    cartItemsContainer.innerHTML = "";
+
+    if (cartItems.length === 0) {
+
+    emptyCartMessage.style.display = "block";
+
+    updateCartTotal();
+
+    return;
+}
+
+    emptyCartMessage.style.display = "none";
+
+
+    cartItems.forEach(function (item) {
+
+        const product =
+            products[item.product];
+
+        const unitPrice =
+            item.unitPrice ?? product.price;
+
+        const itemTotal =
+            unitPrice * item.quantity;
+
+
+        const cartItemElement =
+            document.createElement("div");
+
+        cartItemElement.className =
+            "cart-item";
+
+
+        let details = "";
+
+
+        if (item.product === "tshirt") {
+
+            const color =
+                item.tshirtColor === "black"
+                    ? "Nera"
+                    : "Bianca";
+
+            const side =
+                item.tshirtSide === "back"
+                    ? "Retro"
+                    : "Fronte";
+
+            const format =
+                item.printFormat === "horizontal"
+                    ? "Orizzontale 30x20"
+                    : "Verticale 20x30";
+
+            details =
+                `${color} · ${side}` +
+                `<br>${format}`;
+        }
+
+
+        cartItemElement.innerHTML = `
+
+            <div class="cart-item-name">
+                ${product.name}
+            </div>
+
+            <div class="cart-item-details">
+                ${details}
+            </div>
+
+            <div class="cart-item-bottom">
+
+                <div class="cart-quantity">
+
+                    <button
+                        type="button"
+                        class="cart-quantity-button decrease"
+                        data-id="${item.id}"
+                    >
+                        −
+                    </button>
+
+                    <span>
+                        ${item.quantity}
+                    </span>
+
+                    <button
+                        type="button"
+                        class="cart-quantity-button increase"
+                        data-id="${item.id}"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+
+                <strong class="cart-item-price">
+                    €${itemTotal
+                        .toFixed(2)
+                        .replace(".", ",")}
+                </strong>
+
+
+                <button
+                    type="button"
+                    class="remove-cart-item"
+                    data-id="${item.id}"
+                    title="Elimina"
+                >
+                    🗑
+                </button>
+
+            </div>
+        `;
+
+
+        cartItemsContainer.appendChild(
+            cartItemElement
+        );
+    });
+
+
+    updateCartTotal();
+}
+
+function updateCartTotal() {
+
+    const total = cartItems.reduce(
+        function (sum, item) {
+
+            const unitPrice =
+                item.unitPrice ??
+                products[item.product].price;
+
+            return (
+                sum +
+                unitPrice * item.quantity
+            );
+        },
+        0
+    );
+
+    cartTotal.textContent =
+        `€${total
+            .toFixed(2)
+            .replace(".", ",")}`;
+
+    cartFooter.style.display =
+        cartItems.length > 0
+            ? "block"
+            : "none";
+}
+
+function openCart() {
+
+    renderCart();
+
+    cartDrawer.classList.add("open");
+    cartOverlay.classList.add("open");
+}
+
+
+function closeCart() {
+
+    cartDrawer.classList.remove("open");
+    cartOverlay.classList.remove("open");
+}
+
+
+cartButton.addEventListener("click", openCart);
+
+closeCartButton.addEventListener(
+    "click",
+    closeCart
+);
+
+cartOverlay.addEventListener(
+    "click",
+    closeCart
+);
+
+function updateCartCount() {
+
+    const totalQuantity = cartItems.reduce(
+        function (total, item) {
+            return total + item.quantity;
+        },
+        0
+    );
+
+    cartCount.textContent = totalQuantity;
+}
+
+
+addToCartButton.addEventListener("click", function () {
+
+    const quantity = Math.max(
+        1,
+        Number(quantityInput.value) || 1
+    );
+
+    const state = getCurrentState();
+
+    const cartItem = {
+        id: Date.now(),
+
+        product: currentProduct,
+
+        unitPrice:
+        products[currentProduct].price,
+
+        quantity: quantity,
+
+        tshirtColor:
+            currentProduct === "tshirt"
+                ? tshirtColor
+                : null,
+
+        tshirtSide:
+            currentProduct === "tshirt"
+                ? tshirtSide
+                : null,
+
+        printFormat:
+            currentProduct === "tshirt"
+                ? tshirtPrintFormat[tshirtSide]
+                : null,
+
+        customization: {
+            ...state
+        }
+    };
+
+    const existingItem = cartItems.find(
+    function (item) {
+
+        return (
+            item.product === cartItem.product &&
+            item.tshirtColor === cartItem.tshirtColor &&
+            item.tshirtSide === cartItem.tshirtSide &&
+            item.printFormat === cartItem.printFormat &&
+            JSON.stringify(item.customization) ===
+                JSON.stringify(cartItem.customization)
+        );
+    }
+);
+
+
+if (existingItem) {
+
+    existingItem.quantity += quantity;
+
+} else {
+
+    cartItems.push(cartItem);
+}
+
+
+localStorage.setItem(
+    "mycustomCart",
+    JSON.stringify(cartItems)
+);
+
+updateCartCount();
+
+statusMessage.textContent =
+    `${products[currentProduct].name} aggiunto al carrello.`;
+});
+updateCartCount();
 updateProductPreview();
 updatePreviewZoom();

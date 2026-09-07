@@ -21,10 +21,14 @@
             <a href="#">Portachiavi</a>
         </nav>
 
-        <button class="cart-button">
-            Carrello
-            <span id="cartCount">0</span>
-        </button>
+        <button
+    type="button"
+    id="cartButton"
+    class="cart-button"
+>
+    Carrello
+    <span id="cartCount">0</span>
+</button>
     </header>
 
 
@@ -507,9 +511,12 @@
             </div>
 
 
-            <div class="price">
-                €19,90
-            </div>
+            <div
+    id="productPrice"
+    class="price"
+>
+    €19,90
+</div>
 
 
             <label for="quantity">
@@ -541,6 +548,57 @@
 
     </main>
 
+    <!-- SFONDO CARRELLO -->
+<div id="cartOverlay" class="cart-overlay"></div>
+
+
+<!-- PANNELLO CARRELLO -->
+<aside id="cartDrawer" class="cart-drawer">
+
+    <div class="cart-drawer-header">
+
+        <h2>Il tuo carrello</h2>
+
+        <button
+            type="button"
+            id="closeCartButton"
+            class="close-cart-button"
+            aria-label="Chiudi carrello"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <div id="cartItems" class="cart-items"></div>
+
+    <div id="emptyCartMessage" class="empty-cart-message">
+        Il carrello è vuoto.
+    </div>
+
+    <div id="cartFooter" class="cart-footer">
+
+    <div class="cart-total-row">
+
+        <span>Totale</span>
+
+        <strong id="cartTotal">
+            €0,00
+        </strong>
+
+    </div>
+
+    <button
+        type="button"
+        id="checkoutButton"
+        class="primary-button"
+    >
+        Vai al checkout
+    </button>
+
+</div>
+
+</aside>
 
     <script src="script.js"></script>
 
