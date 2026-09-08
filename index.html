@@ -79,6 +79,52 @@
                     </button>
                 </div>
 
+                <label>Taglia</label>
+
+<div class="size-buttons">
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="S"
+    >
+        S
+    </button>
+
+    <button
+        type="button"
+        class="size-button active"
+        data-size="M"
+    >
+        M
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="L"
+    >
+        L
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="XL"
+    >
+        XL
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="XXL"
+    >
+        XXL
+    </button>
+
+</div>
+
 
                 <label>Lato da stampare</label>
 
@@ -271,17 +317,22 @@
             <div class="tool-section">
 
                 <label for="zoomRange">
-                    Zoom immagine
+                    Dimensione immagine
                 </label>
 
                 <input
-                    type="range"
-                    id="zoomRange"
-                    min="0.5"
-                    max="3"
-                    value="1"
-                    step="0.05"
-                >
+    type="range"
+    id="zoomRange"
+    min="0.1"
+    max="3"
+    value="1"
+    step="0.02"
+>
+
+<div id="imageSizeInfo" class="image-size-info">
+    Dimensione stampa:
+    <strong id="imageSizeValue">—</strong>
+</div>
 
             </div>
 
@@ -438,6 +489,20 @@
 <div class="resize-handle resize-top-right"></div>
 <div class="resize-handle resize-bottom-left"></div>
 <div class="resize-handle resize-bottom-right"></div>
+
+<div
+    id="selectionWidthCm"
+    class="selection-size-label selection-width-label"
+>
+    —
+</div>
+
+<div
+    id="selectionHeightCm"
+    class="selection-size-label selection-height-label"
+>
+    —
+</div>
 
 </div>
 
@@ -600,7 +665,11 @@
 
 </aside>
 
-    <script src="script.js"></script>
+    <script
+    src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+</script>
+
+<script src="script.js"></script>
 
 </body>
 </html>
