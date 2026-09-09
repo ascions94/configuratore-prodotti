@@ -40,6 +40,15 @@ const rotationGuide =
 
 const textSizeRange =
     document.getElementById("textSizeRange");
+    const textSizeInfo =
+    document.getElementById(
+        "textSizeInfo"
+    );
+
+const textSizeValue =
+    document.getElementById(
+        "textSizeValue"
+    );
 
     const textRotationRange =
     document.getElementById("textRotationRange");
@@ -49,6 +58,9 @@ const textSizeRange =
 const resetButton = document.getElementById("resetButton");
 const centerImageButton =
     document.getElementById("centerImageButton");
+
+    const heartLogoButton =
+    document.getElementById("heartLogoButton");
 
 const centerTextButton =
     document.getElementById("centerTextButton");
@@ -304,8 +316,16 @@ sendBackwardButton.addEventListener("click", function () {
         elementRect.height / scale;
 
         const compactControls =
-    type === "image" &&
-    Math.min(width, height) < 70;
+    (
+        type === "image" &&
+        Math.min(width, height) < 70
+    ) ||
+    (
+        type === "text" &&
+        height < 24
+    );
+    
+    const cornerHandleSize = compactControls ? 10 : 14;
 
 selectionControls.classList.toggle(
     "compact-controls",
@@ -331,25 +351,6 @@ selectionControls.classList.toggle(
         "block";
         updateSelectionSizeLabels();
 }
-
-const textResizeObserver = new ResizeObserver(function () {
-
-    if (
-        selectedElementType === "text" &&
-        customText.textContent.trim()
-    ) {
-        requestAnimationFrame(function () {
-
-            showSelectionControls(
-                customText,
-                "text"
-            );
-
-        });
-    }
-});
-
-textResizeObserver.observe(customText);
 
 productPreview.addEventListener("mousedown", function (event) {
 
@@ -604,29 +605,32 @@ newScale =
 
     } else {
 
-        let newTextSize =
-            resizeStartTextSize * ratio;
+    let newTextSize =
+        resizeStartTextSize * ratio;
 
-        newTextSize =
-            Math.max(10, newTextSize);
+    const sliderMax =
+        Number(textSizeRange.max);
 
-        state.textSize =
-            Math.round(newTextSize);
-
-        customText.style.fontSize =
-            `${state.textSize}px`;
-
-        textSizeRange.value =
-            state.textSize;
-
-        fitTextInsidePrintArea();
-        keepTextInsidePrintArea();
-
-        showSelectionControls(
-            customText,
-            "text"
+    newTextSize =
+        Math.max(
+            10,
+            Math.min(
+                sliderMax,
+                newTextSize
+            )
         );
-    }
+
+    state.textSize =
+        Math.round(newTextSize);
+
+    customText.style.fontSize =
+        `${state.textSize}px`;
+
+    textSizeRange.value =
+        state.textSize;
+
+    refreshTextLayout();
+}
 });
 document.addEventListener("mouseup", function () {
 
@@ -730,8 +734,7 @@ if (snappedAngle !== null) {
             )
             rotate(${state.textRotation}deg)`;
 
-            fitTextInsidePrintArea();
-keepTextInsidePrintArea();
+            refreshTextLayout();
 
         showSelectionControls(
             customText,
@@ -910,6 +913,183 @@ function getCurrentPrintAreaCm() {
     return null;
 }
 
+const HEART_LOGO_SIZE_CM = 8;
+const HEART_LOGO_X_CM = 5.5;
+const HEART_LOGO_Y_CM = -8;
+
+
+function getImageScaleForMaxSideCm(targetCm) {
+
+    const printSize =
+        getCurrentPrintAreaCm();
+
+    if (
+        !printSize ||
+        !uploadedImage.offsetWidth ||
+        !uploadedImage.offsetHeight
+    ) {
+        return null;
+    }
+
+
+    const pixelsPerCmX =
+        printArea.clientWidth /
+        printSize.width;
+
+    const pixelsPerCmY =
+        printArea.clientHeight /
+        printSize.height;
+
+
+    const baseWidthCm =
+        uploadedImage.offsetWidth /
+        pixelsPerCmX;
+
+    const baseHeightCm =
+        uploadedImage.offsetHeight /
+        pixelsPerCmY;
+
+
+    const largestBaseSide =
+        Math.max(
+            baseWidthCm,
+            baseHeightCm
+        );
+
+
+    if (!largestBaseSide) {
+        return null;
+    }
+
+
+    return (
+        targetCm /
+        largestBaseSide
+    );
+}
+
+
+function applyHeartLogoPreset() {
+
+    const state =
+        getCurrentState();
+
+    const printSize =
+        getCurrentPrintAreaCm();
+
+
+    if (
+        !state.imageSrc ||
+        !printSize
+    ) {
+        return;
+    }
+
+
+    /*
+        Il preset parte sempre
+        con il logo diritto.
+    */
+    state.rotation = 0;
+
+    rotationRange.value = 0;
+    rotationValue.textContent = "0°";
+
+
+    const targetScale =
+        getImageScaleForMaxSideCm(
+            HEART_LOGO_SIZE_CM
+        );
+
+
+    if (targetScale === null) {
+        return;
+    }
+
+
+    const minScale =
+        getMinimumImageScale();
+
+    const maxScale =
+        getMaximumImageScale();
+
+
+    state.scale =
+        Math.max(
+            minScale,
+            Math.min(
+                maxScale,
+                targetScale
+            )
+        );
+
+
+    /*
+        Conversione centimetri -> pixel
+        dell'area di stampa.
+    */
+    const pixelsPerCmX =
+        printArea.clientWidth /
+        printSize.width;
+
+    const pixelsPerCmY =
+        printArea.clientHeight /
+        printSize.height;
+
+
+    /*
+        Lato cuore:
+        destra per chi guarda il mockup,
+        sinistra per chi indossa la T-shirt.
+    */
+    let heartXcm;
+let heartYcm;
+
+
+if (
+    tshirtPrintFormat[tshirtSide] ===
+    "vertical"
+) {
+
+    heartXcm = 6.5;
+    heartYcm = -12;
+
+} else {
+
+    heartXcm = 8;
+    heartYcm = -5;
+}
+
+
+state.x =
+    heartXcm *
+    pixelsPerCmX;
+
+state.y =
+    heartYcm *
+    pixelsPerCmY;
+
+
+    zoomRange.value =
+        state.scale;
+
+
+    updateImageTransform();
+
+    keepImageInsidePrintArea();
+
+    showSelectionControls(
+        uploadedImage,
+        "image"
+    );
+
+    updateImageSizeInfo();
+
+
+    statusMessage.textContent =
+        "Logo posizionato lato cuore.";
+}
+
 
 function updateImageSizeInfo() {
 
@@ -979,22 +1159,7 @@ function updateImageSizeInfo() {
         `${heightCm.toFixed(1)} cm`;
 }
 
-function updateSelectionSizeLabels() {
-
-    if (
-        selectedElementType !== "image" ||
-        !getCurrentState().imageSrc
-    ) {
-
-        selectionWidthCm.style.display =
-            "none";
-
-        selectionHeightCm.style.display =
-            "none";
-
-        return;
-    }
-
+function getTextSizeCm() {
 
     const state =
         getCurrentState();
@@ -1004,46 +1169,148 @@ function updateSelectionSizeLabels() {
 
 
     if (
+        !state.text.trim() ||
         !printSize ||
-        !uploadedImage.offsetWidth ||
-        !uploadedImage.offsetHeight
+        !customText.offsetWidth ||
+        !customText.offsetHeight
     ) {
+        return null;
+    }
+
+
+    const pixelsPerCmX =
+        printArea.clientWidth /
+        printSize.width;
+
+    const pixelsPerCmY =
+        printArea.clientHeight /
+        printSize.height;
+
+
+    const widthCm =
+        customText.offsetWidth /
+        pixelsPerCmX;
+
+    const heightCm =
+        customText.offsetHeight /
+        pixelsPerCmY;
+
+
+    return {
+        width: widthCm,
+        height: heightCm
+    };
+}
+
+
+function updateTextSizeInfo() {
+
+    const size =
+        getTextSizeCm();
+
+
+    if (!size) {
+
+        textSizeValue.textContent = "—";
         return;
     }
 
 
-    const areaWidthPx =
-        printArea.clientWidth;
+    textSizeValue.textContent =
+        `${size.width.toFixed(1)} × ` +
+        `${size.height.toFixed(1)} cm`;
+}
 
-    const areaHeightPx =
-        printArea.clientHeight;
+function updateSelectionSizeLabels() {
 
-
-    const pixelsPerCmX =
-        areaWidthPx /
-        printSize.width;
-
-    const pixelsPerCmY =
-        areaHeightPx /
-        printSize.height;
+    let widthCm;
+    let heightCm;
 
 
-    const imageWidthPx =
-        uploadedImage.offsetWidth *
-        state.scale;
+    if (
+        selectedElementType === "image"
+    ) {
 
-    const imageHeightPx =
-        uploadedImage.offsetHeight *
-        state.scale;
+        const state =
+            getCurrentState();
+
+        const printSize =
+            getCurrentPrintAreaCm();
 
 
-    const widthCm =
-        imageWidthPx /
-        pixelsPerCmX;
+        if (
+            !state.imageSrc ||
+            !printSize ||
+            !uploadedImage.offsetWidth ||
+            !uploadedImage.offsetHeight
+        ) {
 
-    const heightCm =
-        imageHeightPx /
-        pixelsPerCmY;
+            selectionWidthCm.style.display =
+                "none";
+
+            selectionHeightCm.style.display =
+                "none";
+
+            return;
+        }
+
+
+        const pixelsPerCmX =
+            printArea.clientWidth /
+            printSize.width;
+
+        const pixelsPerCmY =
+            printArea.clientHeight /
+            printSize.height;
+
+
+        widthCm =
+            (
+                uploadedImage.offsetWidth *
+                state.scale
+            ) /
+            pixelsPerCmX;
+
+        heightCm =
+            (
+                uploadedImage.offsetHeight *
+                state.scale
+            ) /
+            pixelsPerCmY;
+
+    } else if (
+        selectedElementType === "text"
+    ) {
+
+        const size =
+            getTextSizeCm();
+
+
+        if (!size) {
+
+            selectionWidthCm.style.display =
+                "none";
+
+            selectionHeightCm.style.display =
+                "none";
+
+            return;
+        }
+
+
+        widthCm = size.width;
+        heightCm = size.height;
+
+    } else {
+
+        selectionWidthCm.style.display =
+            "none";
+
+        selectionHeightCm.style.display =
+            "none";
+
+        return;
+    }
 
 
     selectionWidthCm.textContent =
@@ -1309,6 +1576,9 @@ function updateTextTransform() {
         )
         rotate(${state.textRotation}deg)
         scaleX(${textScaleX})`;
+
+    updateTextSizeInfo();
+    updateSelectionSizeLabels();
 }
 
 function keepImageInsidePrintArea() {
@@ -1689,24 +1959,70 @@ centerImageButton.addEventListener("click", function () {
         "Immagine centrata.";
 });
 
-centerTextButton.addEventListener("click", function () {
+heartLogoButton.addEventListener(
+    "click",
+    function () {
 
-    const state = getCurrentState();
+        const state =
+            getCurrentState();
 
-    if (!state.text.trim()) {
-        statusMessage.textContent =
-            "Aggiungi prima un testo.";
-        return;
+
+        if (currentProduct !== "tshirt") {
+
+            statusMessage.textContent =
+                "Il preset lato cuore è disponibile solo per la T-Shirt.";
+
+            return;
+        }
+
+
+        if (tshirtSide !== "front") {
+
+            statusMessage.textContent =
+                "Il logo lato cuore può essere applicato solo sul fronte.";
+
+            return;
+        }
+
+
+        if (!state.imageSrc) {
+
+            statusMessage.textContent =
+                "Carica prima un'immagine.";
+
+            return;
+        }
+
+
+        applyHeartLogoPreset();
+
     }
+);
 
-    state.textX = 0;
-    state.textY = 0;
+centerTextButton.addEventListener(
+    "click",
+    function () {
 
-    updateTextTransform();
+        const state =
+            getCurrentState();
 
-fitTextInsidePrintArea();
-keepTextInsidePrintArea();
-});
+        if (!state.text.trim()) {
+
+            statusMessage.textContent =
+                "Aggiungi prima un testo.";
+
+            return;
+        }
+
+        state.textX = 0;
+        state.textY = 0;
+
+        refreshTextLayout();
+
+        statusMessage.textContent =
+            "Testo centrato.";
+    }
+);
 
 
 imageUpload.addEventListener("change", function () {
@@ -1994,17 +2310,48 @@ rotationRange.addEventListener("input", function () {
 });
 
 
-textInput.addEventListener("input", function () {
+textInput.addEventListener(
+    "input",
+    function () {
 
-    const state = getCurrentState();
+        const state =
+            getCurrentState();
 
-    state.text = this.value;
+        state.text =
+            this.value;
 
-    customText.textContent = state.text;
+        customText.textContent =
+            state.text;
 
-    fitTextInsidePrintArea();
-    keepTextInsidePrintArea();
-});
+
+        /*
+            Aspettiamo che il browser
+            abbia applicato gli eventuali
+            ritorni a capo.
+        */
+        requestAnimationFrame(
+            function () {
+
+                fitTextInsidePrintArea();
+                keepTextInsidePrintArea();
+
+                updateTextSizeInfo();
+
+                if (
+                    selectedElementType ===
+                    "text"
+                ) {
+
+                    showSelectionControls(
+                        customText,
+                        "text"
+                    );
+                }
+
+            }
+        );
+    }
+);
 
 fontSelect.addEventListener("change", function () {
 
@@ -2013,6 +2360,19 @@ fontSelect.addEventListener("change", function () {
     state.fontFamily = this.value;
 
     customText.style.fontFamily = state.fontFamily;
+    requestAnimationFrame(function () {
+
+    updateTextSizeInfo();
+
+    if (
+        selectedElementType === "text"
+    ) {
+        showSelectionControls(
+            customText,
+            "text"
+        );
+    }
+});
 });
 
 boldButton.addEventListener("click", function () {
@@ -2028,6 +2388,19 @@ boldButton.addEventListener("click", function () {
         "active",
         state.textBold
     );
+    requestAnimationFrame(function () {
+
+    updateTextSizeInfo();
+
+    if (
+        selectedElementType === "text"
+    ) {
+        showSelectionControls(
+            customText,
+            "text"
+        );
+    }
+});
 });
 
 
@@ -2044,6 +2417,19 @@ italicButton.addEventListener("click", function () {
         "active",
         state.textItalic
     );
+    requestAnimationFrame(function () {
+
+    updateTextSizeInfo();
+
+    if (
+        selectedElementType === "text"
+    ) {
+        showSelectionControls(
+            customText,
+            "text"
+        );
+    }
+});
 });
 
 textColor.addEventListener("input", function () {
@@ -2057,46 +2443,119 @@ textColor.addEventListener("input", function () {
 
 function fitTextInsidePrintArea() {
 
-    const state = getCurrentState();
+    const state =
+        getCurrentState();
 
-    let textRect = customText.getBoundingClientRect();
-    const areaRect = printArea.getBoundingClientRect();
 
-    while (
-        (textRect.width > areaRect.width ||
-         textRect.height > areaRect.height) &&
-        state.textSize > 10
-    ) {
-
-        state.textSize--;
-
-        customText.style.fontSize =
-            `${state.textSize}px`;
-
-        textRect = customText.getBoundingClientRect();
+    if (!state.text.trim()) {
+        return;
     }
 
-    textSizeRange.value = state.textSize;
+
+    const areaRect =
+        printArea.getBoundingClientRect();
+
+    const textRect =
+        customText.getBoundingClientRect();
+
+
+    if (
+        !areaRect.width ||
+        !areaRect.height ||
+        !textRect.width ||
+        !textRect.height
+    ) {
+        return;
+    }
+
+
+    const widthRatio =
+        areaRect.width /
+        textRect.width;
+
+    const heightRatio =
+        areaRect.height /
+        textRect.height;
+
+
+    const fitRatio =
+        Math.min(
+            1,
+            widthRatio,
+            heightRatio
+        );
+
+
+    if (fitRatio < 1) {
+
+        /*
+            Riduciamo il testo in un solo
+            passaggio invece di usare
+            un ciclo while.
+        */
+        const newTextSize =
+            Math.max(
+                10,
+                Math.floor(
+                    state.textSize *
+                    fitRatio *
+                    0.97
+                )
+            );
+
+
+        if (
+            newTextSize !==
+            state.textSize
+        ) {
+
+            state.textSize =
+                newTextSize;
+
+            customText.style.fontSize =
+                `${state.textSize}px`;
+
+            textSizeRange.value =
+                state.textSize;
+        }
+    }
 }
-textSizeRange.addEventListener("input", function () {
 
-    const state = getCurrentState();
-
-    state.textSize = Number(this.value);
-
-    customText.style.fontSize =
-        `${state.textSize}px`;
+function refreshTextLayout() {
 
     fitTextInsidePrintArea();
     keepTextInsidePrintArea();
 
-    if (selectedElementType === "text") {
+    updateTextSizeInfo();
+    updateSelectionSizeLabels();
+
+    if (
+        selectedElementType === "text" &&
+        customText.textContent.trim()
+    ) {
         showSelectionControls(
             customText,
             "text"
         );
     }
-});
+}
+
+textSizeRange.addEventListener(
+    "input",
+    function () {
+
+        const state =
+            getCurrentState();
+
+        state.textSize =
+            Number(this.value);
+
+        customText.style.fontSize =
+            `${state.textSize}px`;
+
+        refreshTextLayout();
+    }
+);
 
 function keepTextInsidePrintArea() {
 

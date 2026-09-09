@@ -144,6 +144,18 @@
                     </button>
                 </div>
 
+                <div class="heart-logo-preset">
+
+    <button
+        type="button"
+        id="heartLogoButton"
+        class="secondary-button"
+    >
+        ♡ Logo lato cuore
+    </button>
+
+</div>
+
             </div>
 
             <div id="printFormatOptions">
@@ -192,12 +204,12 @@
                     Aggiungi testo
                 </label>
 
-                <input
-                    type="text"
-                    id="textInput"
-                    placeholder="Scrivi qualcosa..."
-                    maxlength="50"
-                >
+                <textarea
+    id="textInput"
+    rows="3"
+    maxlength="120"
+    placeholder="Scrivi qualcosa...&#10;Premi Invio per andare a capo"
+></textarea>
 
             </div>
 
@@ -257,6 +269,14 @@
         value="26"
         step="1"
     >
+
+    <div
+    id="textSizeInfo"
+    class="image-size-info"
+>
+    Dimensione stampa testo:
+    <strong id="textSizeValue">—</strong>
+</div>
 
 </div>
 
