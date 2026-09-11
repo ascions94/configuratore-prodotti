@@ -1701,3 +1701,128 @@ height: auto;
 
     pointer-events: auto;
 }
+
+/* =========================================
+   PANNELLO LIVELLI
+   ========================================= */
+
+.layers-section {
+    display: none;
+}
+
+.layers-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    margin-bottom: 10px;
+}
+
+.layers-header strong {
+    font-size: 15px;
+}
+
+.layers-header span {
+    font-size: 11px;
+    color: #888;
+}
+
+
+.layers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+
+.layer-item {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 38px 1fr auto;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 7px 9px;
+
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+
+    background: #f7f7f7;
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+
+.layer-item:hover {
+    background: #eef6ff;
+    border-color: #bcd6ef;
+}
+
+
+.layer-item.active {
+    background: #eef8e7;
+    border-color: #79b83d;
+
+    box-shadow:
+        inset 0 0 0 1px #79b83d;
+}
+
+
+.layer-thumb {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    background: white;
+
+    font-weight: bold;
+    font-size: 20px;
+}
+
+
+.layer-thumb img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+.layer-name {
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.layer-number {
+    min-width: 22px;
+
+    padding: 3px 5px;
+
+    border-radius: 5px;
+
+    background: #e8e8e8;
+
+    color: #666;
+
+    font-size: 10px;
+    text-align: center;
+}

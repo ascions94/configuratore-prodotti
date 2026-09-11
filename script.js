@@ -3,6 +3,15 @@ const uploadedImage = document.getElementById("uploadedImage");
 const statusMessage = document.getElementById("statusMessage");
 const imagesLayer =
     document.getElementById("imagesLayer");
+    const layersList =
+    document.getElementById(
+        "layersList"
+    );
+
+const layersSection =
+    document.querySelector(
+        ".layers-section"
+    );
 
 const productSelect = document.getElementById("productSelect");
 const productPreview = document.getElementById("productPreview");
@@ -1425,6 +1434,7 @@ function renderMultiImages() {
             );
         }
     );
+    renderLayersPanel();
 }
 
 function loadSelectedImageIntoLegacyState() {
@@ -1620,6 +1630,268 @@ function refreshMultipleLayers() {
 
 
     renderMultiImages();
+}
+
+function renderLayersPanel() {
+
+    const state =
+        getCurrentState();
+
+
+    const elements =
+        state.images.map(
+            function (
+                imageState,
+                index
+            ) {
+
+                return {
+                    type: "image",
+
+                    id:
+                        imageState.id,
+
+                    imageState:
+                        imageState,
+
+                    index:
+                        index,
+
+                    layer:
+                        imageState.layer
+                };
+            }
+        );
+
+
+    if (
+        state.text &&
+        state.text.trim()
+    ) {
+
+        elements.push({
+            type: "text",
+            id: "text",
+            layer:
+                state.textLayer
+        });
+    }
+
+
+    /*
+        Quello più davanti viene
+        visualizzato più in alto.
+    */
+    elements.sort(
+        function (a, b) {
+
+            return (
+                b.layer -
+                a.layer
+            );
+        }
+    );
+
+
+    layersList.innerHTML = "";
+
+
+    layersSection.style.display =
+        elements.length > 0
+            ? "block"
+            : "none";
+
+
+    elements.forEach(
+        function (item) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+            button.className =
+                "layer-item";
+
+
+            const isActiveImage =
+                item.type === "image" &&
+                selectedElementType ===
+                    "image" &&
+                state.selectedImageId ===
+                    item.id;
+
+
+            const isActiveText =
+                item.type === "text" &&
+                selectedElementType ===
+                    "text";
+
+
+            if (
+                isActiveImage ||
+                isActiveText
+            ) {
+
+                button.classList.add(
+                    "active"
+                );
+            }
+
+
+            const thumbnail =
+                document.createElement(
+                    "span"
+                );
+
+            thumbnail.className =
+                "layer-thumb";
+
+
+            if (
+                item.type === "image"
+            ) {
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+                image.src =
+                    item.imageState.src;
+
+                image.alt = "";
+
+                thumbnail.appendChild(
+                    image
+                );
+
+            } else {
+
+                thumbnail.textContent =
+                    "T";
+            }
+
+
+            const name =
+                document.createElement(
+                    "span"
+                );
+
+            name.className =
+                "layer-name";
+
+
+            name.textContent =
+                item.type === "image"
+                    ? `Foto ${item.index + 1}`
+                    : "Testo";
+
+
+            const layerNumber =
+                document.createElement(
+                    "span"
+                );
+
+            layerNumber.className =
+                "layer-number";
+
+            layerNumber.textContent =
+                item.layer;
+
+
+            button.appendChild(
+                thumbnail
+            );
+
+            button.appendChild(
+                name
+            );
+
+            button.appendChild(
+                layerNumber
+            );
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        item.type ===
+                        "image"
+                    ) {
+
+                        /*
+                            Prima salviamo
+                            l'immagine che
+                            stavamo modificando.
+                        */
+                        syncSelectedImageFromLegacyState();
+
+
+                        setSelectedImage(
+                            item.id
+                        );
+
+
+                        loadSelectedImageIntoLegacyState();
+
+
+                        selectedElementType =
+                            "image";
+
+
+                        renderCurrentState();
+
+
+                        requestAnimationFrame(
+                            function () {
+
+                                showSelectionControls(
+                                    uploadedImage,
+                                    "image"
+                                );
+                            }
+                        );
+
+
+                        return;
+                    }
+
+
+                    /*
+                        SELEZIONE TESTO
+                    */
+                    selectedElementType =
+                        "text";
+
+
+                    renderLayersPanel();
+
+
+                    requestAnimationFrame(
+                        function () {
+
+                            showSelectionControls(
+                                customText,
+                                "text"
+                            );
+                        }
+                    );
+                }
+            );
+
+
+            layersList.appendChild(
+                button
+            );
+        }
+    );
 }
 
 
@@ -3038,6 +3310,8 @@ uploadedImage.addEventListener("mousedown", function (event) {
     "image"
 );
 
+renderLayersPanel();
+
     isDragging = true;
 
     startX = event.clientX - state.x;
@@ -3115,6 +3389,8 @@ customText.addEventListener("mousedown", function (event) {
     customText,
     "text"
 );
+
+renderLayersPanel();
 
     isDraggingText = true;
 
@@ -3283,6 +3559,8 @@ textInput.addEventListener(
 
         customText.textContent =
             state.text;
+
+            renderLayersPanel();
 
 
         /*
