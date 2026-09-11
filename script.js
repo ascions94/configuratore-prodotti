@@ -1085,7 +1085,9 @@ function createImageState(src) {
 
         flipped: false,
 
-        layer: 1
+layer: 1,
+
+visible: true
     };
 }
 
@@ -1116,9 +1118,10 @@ textOutlineWidth: 1,
     textItalic: false,
     textAlign: "center",
     textFlipped: false,
-    textLayer: 2,
+textLayer: 2,
+textVisible: true,
 
-    printBgEnabled: false,
+printBgEnabled: false,
     printBgColor: "#ffffff"
 };
 }
@@ -1160,7 +1163,10 @@ function createCartStateCopy(state) {
                             imageState.flipped,
 
                         layer:
-                            imageState.layer
+                            imageState.layer,
+
+                        visible:
+                            imageState.visible !== false
                     };
                 }
             );
@@ -1169,11 +1175,11 @@ function createCartStateCopy(state) {
 
         /*
             Compatibilità con eventuali
-            personalizzazioni del vecchio
-            sistema a immagine singola.
+            vecchie personalizzazioni.
         */
         images.push({
-            id: "legacy-image",
+            id:
+                "legacy-image",
 
             src:
                 state.imageSrc,
@@ -1194,14 +1200,18 @@ function createCartStateCopy(state) {
                 state.imageFlipped,
 
             layer:
-                state.imageLayer
+                state.imageLayer,
+
+            visible:
+                true
         });
     }
 
 
     return {
 
-        images: images,
+        images:
+            images,
 
         text:
             state.text,
@@ -1247,6 +1257,9 @@ function createCartStateCopy(state) {
 
         textLayer:
             state.textLayer,
+
+        textVisible:
+            state.textVisible !== false,
 
         printBgEnabled:
             state.printBgEnabled,
@@ -1367,6 +1380,10 @@ function applyImageStateToElement(
 
     imageElement.style.zIndex =
         imageState.layer;
+        imageElement.style.display =
+    imageState.visible === false
+        ? "none"
+        : "block";
 }
 
 function renderMultiImages() {
@@ -1632,6 +1649,62 @@ function refreshMultipleLayers() {
     renderMultiImages();
 }
 
+function selectImageLayer(imageId) {
+
+    /*
+        Salviamo prima eventuali
+        modifiche alla foto attuale.
+    */
+    syncSelectedImageFromLegacyState();
+
+
+    setSelectedImage(
+        imageId
+    );
+
+
+    loadSelectedImageIntoLegacyState();
+
+
+    selectedElementType =
+        "image";
+
+
+    renderCurrentState();
+
+
+    requestAnimationFrame(
+        function () {
+
+            showSelectionControls(
+                uploadedImage,
+                "image"
+            );
+        }
+    );
+}
+
+
+function selectTextLayer() {
+
+    selectedElementType =
+        "text";
+
+
+    renderLayersPanel();
+
+
+    requestAnimationFrame(
+        function () {
+
+            showSelectionControls(
+                customText,
+                "text"
+            );
+        }
+    );
+}
+
 function renderLayersPanel() {
 
     const state =
@@ -1703,195 +1776,277 @@ function renderLayersPanel() {
 
 
     elements.forEach(
-        function (item) {
+    function (item) {
 
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-            button.className =
-                "layer-item";
-
-
-            const isActiveImage =
-                item.type === "image" &&
-                selectedElementType ===
-                    "image" &&
-                state.selectedImageId ===
-                    item.id;
-
-
-            const isActiveText =
-                item.type === "text" &&
-                selectedElementType ===
-                    "text";
-
-
-            if (
-                isActiveImage ||
-                isActiveText
-            ) {
-
-                button.classList.add(
-                    "active"
-                );
-            }
-
-
-            const thumbnail =
-                document.createElement(
-                    "span"
-                );
-
-            thumbnail.className =
-                "layer-thumb";
-
-
-            if (
-                item.type === "image"
-            ) {
-
-                const image =
-                    document.createElement(
-                        "img"
-                    );
-
-                image.src =
-                    item.imageState.src;
-
-                image.alt = "";
-
-                thumbnail.appendChild(
-                    image
-                );
-
-            } else {
-
-                thumbnail.textContent =
-                    "T";
-            }
-
-
-            const name =
-                document.createElement(
-                    "span"
-                );
-
-            name.className =
-                "layer-name";
-
-
-            name.textContent =
-                item.type === "image"
-                    ? `Foto ${item.index + 1}`
-                    : "Testo";
-
-
-            const layerNumber =
-                document.createElement(
-                    "span"
-                );
-
-            layerNumber.className =
-                "layer-number";
-
-            layerNumber.textContent =
-                item.layer;
-
-
-            button.appendChild(
-                thumbnail
-            );
-
-            button.appendChild(
-                name
-            );
-
-            button.appendChild(
-                layerNumber
+        const row =
+            document.createElement(
+                "div"
             );
 
 
-            button.addEventListener(
-                "click",
-                function () {
-
-                    if (
-                        item.type ===
-                        "image"
-                    ) {
-
-                        /*
-                            Prima salviamo
-                            l'immagine che
-                            stavamo modificando.
-                        */
-                        syncSelectedImageFromLegacyState();
+        row.className =
+            "layer-item";
 
 
-                        setSelectedImage(
-                            item.id
-                        );
+        const isActiveImage =
+            item.type === "image" &&
+            selectedElementType ===
+                "image" &&
+            state.selectedImageId ===
+                item.id;
 
 
-                        loadSelectedImageIntoLegacyState();
+        const isActiveText =
+            item.type === "text" &&
+            selectedElementType ===
+                "text";
 
 
-                        selectedElementType =
-                            "image";
+        if (
+            isActiveImage ||
+            isActiveText
+        ) {
 
-
-                        renderCurrentState();
-
-
-                        requestAnimationFrame(
-                            function () {
-
-                                showSelectionControls(
-                                    uploadedImage,
-                                    "image"
-                                );
-                            }
-                        );
-
-
-                        return;
-                    }
-
-
-                    /*
-                        SELEZIONE TESTO
-                    */
-                    selectedElementType =
-                        "text";
-
-
-                    renderLayersPanel();
-
-
-                    requestAnimationFrame(
-                        function () {
-
-                            showSelectionControls(
-                                customText,
-                                "text"
-                            );
-                        }
-                    );
-                }
-            );
-
-
-            layersList.appendChild(
-                button
+            row.classList.add(
+                "active"
             );
         }
-    );
+
+
+        /*
+            MINIATURA
+        */
+        const thumbnail =
+            document.createElement(
+                "span"
+            );
+
+        thumbnail.className =
+            "layer-thumb";
+
+
+        if (
+            item.type === "image"
+        ) {
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+            image.src =
+                item.imageState.src;
+
+            image.alt = "";
+
+            thumbnail.appendChild(
+                image
+            );
+
+        } else {
+
+            thumbnail.textContent =
+                "T";
+        }
+
+
+        /*
+            NOME
+        */
+        const name =
+            document.createElement(
+                "span"
+            );
+
+        name.className =
+            "layer-name";
+
+
+        name.textContent =
+            item.type === "image"
+                ? `Foto ${item.index + 1}`
+                : "Testo";
+
+
+        /*
+            NUMERO LIVELLO
+        */
+        const layerNumber =
+            document.createElement(
+                "span"
+            );
+
+        layerNumber.className =
+            "layer-number";
+
+        layerNumber.textContent =
+            item.layer;
+
+
+        /*
+            PULSANTI ↑ ↓
+        */
+        const actions =
+            document.createElement(
+                "span"
+            );
+
+        actions.className =
+            "layer-actions";
+
+
+        const forwardButton =
+            document.createElement(
+                "button"
+            );
+
+        forwardButton.type =
+            "button";
+
+        forwardButton.className =
+            "layer-action-button";
+
+        forwardButton.textContent =
+            "↑";
+
+        forwardButton.title =
+            "Porta davanti";
+
+
+        const backwardButton =
+            document.createElement(
+                "button"
+            );
+
+        backwardButton.type =
+            "button";
+
+        backwardButton.className =
+            "layer-action-button";
+
+        backwardButton.textContent =
+            "↓";
+
+        backwardButton.title =
+            "Porta dietro";
+
+
+        actions.appendChild(
+            forwardButton
+        );
+
+        actions.appendChild(
+            backwardButton
+        );
+
+
+        row.appendChild(
+            thumbnail
+        );
+
+        row.appendChild(
+            name
+        );
+
+        row.appendChild(
+            layerNumber
+        );
+
+        row.appendChild(
+            actions
+        );
+
+
+        /*
+            CLIC SULLA RIGA:
+            seleziona l'elemento.
+        */
+        row.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    item.type ===
+                    "image"
+                ) {
+
+                    selectImageLayer(
+                        item.id
+                    );
+
+                } else {
+
+                    selectTextLayer();
+                }
+            }
+        );
+
+
+        /*
+            PORTA DAVANTI
+        */
+        forwardButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+
+                if (
+                    item.type ===
+                    "image"
+                ) {
+
+                    selectImageLayer(
+                        item.id
+                    );
+
+                } else {
+
+                    selectTextLayer();
+                }
+
+
+                bringForwardButton.click();
+            }
+        );
+
+
+        /*
+            PORTA DIETRO
+        */
+        backwardButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+
+                if (
+                    item.type ===
+                    "image"
+                ) {
+
+                    selectImageLayer(
+                        item.id
+                    );
+
+                } else {
+
+                    selectTextLayer();
+                }
+
+
+                sendBackwardButton.click();
+            }
+        );
+
+
+        layersList.appendChild(
+            row
+        );
+    }
+);
 }
 
 
@@ -2778,20 +2933,42 @@ printBgColor.value =
     state.printBgColor || "#ffffff";
 
 
-    if (state.imageSrc) {
+    const selectedImageState =
+    getSelectedImageState();
 
-        uploadedImage.src = state.imageSrc;
-        uploadedImage.style.display = "block";
 
-    } else {
+const selectedImageVisible =
+    !selectedImageState ||
+    selectedImageState.visible !== false;
 
-        uploadedImage.src = "";
-        uploadedImage.style.display = "none";
-    }
+
+if (
+    state.imageSrc &&
+    selectedImageVisible
+) {
+
+    uploadedImage.src =
+        state.imageSrc;
+
+    uploadedImage.style.display =
+        "block";
+
+} else {
+
+    uploadedImage.src =
+        state.imageSrc || "";
+
+    uploadedImage.style.display =
+        "none";
+}
 
 
     textInput.value = state.text;
 customText.textContent = state.text;
+customText.style.display =
+    state.textVisible === false
+        ? "none"
+        : "";
 
 customText.style.fontSize =
     `${state.textSize}px`;

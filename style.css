@@ -1740,7 +1740,7 @@ height: auto;
     width: 100%;
 
     display: grid;
-    grid-template-columns: 38px 1fr auto;
+    grid-template-columns: 38px 1fr auto auto;
     align-items: center;
 
     gap: 9px;
@@ -1825,4 +1825,39 @@ height: auto;
 
     font-size: 10px;
     text-align: center;
+}
+.layer-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+
+.layer-action-button {
+    width: 27px;
+    height: 27px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #d2d2d2;
+    border-radius: 6px;
+
+    background: white;
+    color: #444;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+.layer-action-button:hover {
+    background: #1976e9;
+    border-color: #1976e9;
+    color: white;
 }
