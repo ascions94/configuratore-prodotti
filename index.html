@@ -255,6 +255,109 @@
     <input type="color" id="textColor" value="#000000">
 </div>
 
+<div class="tool-section">
+
+    <label>Contorno testo</label>
+
+    <label class="text-outline-toggle">
+        <input
+            type="checkbox"
+            id="textOutlineEnabled"
+        >
+        Attiva contorno
+    </label>
+
+    <div id="textOutlineOptions">
+
+        <label for="textOutlineColor">
+            Colore contorno
+        </label>
+
+        <input
+            type="color"
+            id="textOutlineColor"
+            value="#ffffff"
+        >
+
+        <label for="textOutlineWidth">
+            Spessore:
+            <span id="textOutlineWidthValue">
+                1 px
+            </span>
+        </label>
+
+        <input
+            type="range"
+            id="textOutlineWidth"
+            min="0.5"
+            max="6"
+            value="1"
+            step="0.5"
+        >
+
+    </div>
+
+</div>
+
+<div class="tool-section">
+
+    <label for="printBgColor">
+        Colore sfondo
+    </label>
+
+    <input
+        type="color"
+        id="printBgColor"
+        value="#ffffff"
+    >
+
+    <button
+        type="button"
+        id="clearPrintBgButton"
+        class="secondary-button"
+    >
+        Nessuno sfondo
+    </button>
+
+</div>
+
+<div class="tool-section">
+
+    <label>Allineamento testo</label>
+
+    <div class="text-align-buttons">
+
+        <button
+            type="button"
+            id="textAlignLeft"
+            class="text-align-button"
+            title="Allinea a sinistra"
+        >
+            ≡
+        </button>
+
+        <button
+            type="button"
+            id="textAlignCenter"
+            class="text-align-button active"
+            title="Allinea al centro"
+        >
+            ≡
+        </button>
+
+        <button
+            type="button"
+            id="textAlignRight"
+            class="text-align-button"
+            title="Allinea a destra"
+        >
+            ≡
+        </button>
+
+    </div>
+
+</div>
+
             <div class="tool-section">
 
     <label for="textSizeRange">
@@ -265,7 +368,7 @@
         type="range"
         id="textSizeRange"
         min="10"
-        max="50"
+        max="300"
         value="26"
         step="1"
     >
@@ -325,7 +428,7 @@
             id="centerTextButton"
             class="secondary-button"
         >
-            Centra testo
+            Centra nell'area
         </button>
 
     </div>

@@ -28,11 +28,39 @@ const textInput = document.getElementById("textInput");
 const fontSelect = document.getElementById("fontSelect");
 const customText = document.getElementById("customText");
 const textColor = document.getElementById("textColor");
+const textOutlineEnabled =
+    document.getElementById("textOutlineEnabled");
+
+const textOutlineColor =
+    document.getElementById("textOutlineColor");
+
+const textOutlineWidth =
+    document.getElementById("textOutlineWidth");
+
+const textOutlineWidthValue =
+    document.getElementById("textOutlineWidthValue");
+
+const textOutlineOptions =
+    document.getElementById("textOutlineOptions");
 const boldButton =
     document.getElementById("boldButton");
 
 const italicButton =
     document.getElementById("italicButton");
+    const textAlignLeft =
+    document.getElementById(
+        "textAlignLeft"
+    );
+
+const textAlignCenter =
+    document.getElementById(
+        "textAlignCenter"
+    );
+
+const textAlignRight =
+    document.getElementById(
+        "textAlignRight"
+    );
 const guideVertical = document.getElementById("guideVertical");
 const guideHorizontal = document.getElementById("guideHorizontal");
 const rotationGuide =
@@ -143,6 +171,12 @@ const cartFooter =
 
 const imageSizeValue =
     document.getElementById("imageSizeValue");
+
+    const printBgColor =
+    document.getElementById("printBgColor");
+
+const clearPrintBgButton =
+    document.getElementById("clearPrintBgButton");
 
     cartItemsContainer.addEventListener(
     "click",
@@ -813,19 +847,26 @@ function createEmptyState() {
     scale: 1,
     rotation: 0,
     imageFlipped: false,
-imageLayer: 1,
+    imageLayer: 1,
 
-text: "",
-textX: 0,
-textY: 0,
-textSize: 26,
-textRotation: 0,
-fontFamily: "Arial",
-textColor: "#000000",
-textBold: false,
-textItalic: false,
-textFlipped: false,
-textLayer: 2
+    text: "",
+    textX: 0,
+    textY: 0,
+    textSize: 26,
+    textRotation: 0,
+    fontFamily: "Arial",
+    textColor: "#000000",
+    textOutlineEnabled: false,
+textOutlineColor: "#ffffff",
+textOutlineWidth: 1,
+    textBold: false,
+    textItalic: false,
+    textAlign: "center",
+    textFlipped: false,
+    textLayer: 2,
+
+    printBgEnabled: false,
+    printBgColor: "#ffffff"
 };
 }
 
@@ -1725,6 +1766,14 @@ function renderCurrentState() {
 
     const state = getCurrentState();
 
+    printArea.style.backgroundColor =
+    state.printBgEnabled
+        ? state.printBgColor
+        : "transparent";
+
+printBgColor.value =
+    state.printBgColor || "#ffffff";
+
 
     if (state.imageSrc) {
 
@@ -1755,12 +1804,32 @@ fontSelect.value =
 
 textColor.value =
     state.textColor;
+    
+    customText.style.webkitTextStroke =
+    state.textOutlineEnabled
+        ? `${state.textOutlineWidth}px ${state.textOutlineColor}`
+        : "0px transparent";
+
+textOutlineEnabled.checked =
+    state.textOutlineEnabled;
+
+textOutlineColor.value =
+    state.textOutlineColor;
+
+textOutlineWidth.value =
+    state.textOutlineWidth;
+
+textOutlineWidthValue.textContent =
+    `${state.textOutlineWidth} px`;
 
     customText.style.fontWeight =
     state.textBold ? "700" : "400";
 
 customText.style.fontStyle =
     state.textItalic ? "italic" : "normal";
+
+    customText.style.textAlign =
+    state.textAlign || "center";
 
 boldButton.classList.toggle(
     "active",
@@ -1770,6 +1839,22 @@ boldButton.classList.toggle(
 italicButton.classList.toggle(
     "active",
     state.textItalic
+);
+
+textAlignLeft.classList.toggle(
+    "active",
+    state.textAlign === "left"
+);
+
+textAlignCenter.classList.toggle(
+    "active",
+    !state.textAlign ||
+    state.textAlign === "center"
+);
+
+textAlignRight.classList.toggle(
+    "active",
+    state.textAlign === "right"
 );
 
 textSizeRange.value = state.textSize;
@@ -1796,6 +1881,71 @@ customText.style.zIndex =
     state.textLayer;
     updateImageTransform();
 }
+
+function setTextAlignment(alignment) {
+
+    const state =
+        getCurrentState();
+
+    state.textAlign =
+        alignment;
+
+    customText.style.textAlign =
+        alignment;
+
+
+    textAlignLeft.classList.toggle(
+        "active",
+        alignment === "left"
+    );
+
+    textAlignCenter.classList.toggle(
+        "active",
+        alignment === "center"
+    );
+
+    textAlignRight.classList.toggle(
+        "active",
+        alignment === "right"
+    );
+
+
+    requestAnimationFrame(
+        function () {
+
+            refreshTextLayout();
+
+        }
+    );
+}
+textAlignLeft.addEventListener(
+    "click",
+    function () {
+
+        setTextAlignment("left");
+
+    }
+);
+
+
+textAlignCenter.addEventListener(
+    "click",
+    function () {
+
+        setTextAlignment("center");
+
+    }
+);
+
+
+textAlignRight.addEventListener(
+    "click",
+    function () {
+
+        setTextAlignment("right");
+
+    }
+);
 
 
 function resetCurrentState() {
@@ -2441,82 +2591,192 @@ textColor.addEventListener("input", function () {
     customText.style.color = state.textColor;
 });
 
+printBgColor.addEventListener(
+    "input",
+    function () {
+
+        const state =
+            getCurrentState();
+
+        state.printBgEnabled = true;
+
+        state.printBgColor =
+            this.value;
+
+        printArea.style.backgroundColor =
+            state.printBgColor;
+    }
+);
+
+
+clearPrintBgButton.addEventListener(
+    "click",
+    function () {
+
+        const state =
+            getCurrentState();
+
+        state.printBgEnabled = false;
+
+        printArea.style.backgroundColor =
+            "transparent";
+    }
+);
+
+textOutlineEnabled.addEventListener(
+    "change",
+    function () {
+
+        const state =
+            getCurrentState();
+
+        state.textOutlineEnabled =
+            this.checked;
+
+        customText.style.webkitTextStroke =
+            state.textOutlineEnabled
+                ? `${state.textOutlineWidth}px ${state.textOutlineColor}`
+                : "0px transparent";
+    }
+);
+
+
+textOutlineColor.addEventListener(
+    "input",
+    function () {
+
+        const state =
+            getCurrentState();
+
+        state.textOutlineColor =
+            this.value;
+
+        if (state.textOutlineEnabled) {
+
+            customText.style.webkitTextStroke =
+                `${state.textOutlineWidth}px ${state.textOutlineColor}`;
+        }
+    }
+);
+
+
+textOutlineWidth.addEventListener(
+    "input",
+    function () {
+
+        const state =
+            getCurrentState();
+
+        state.textOutlineWidth =
+            Number(this.value);
+
+        textOutlineWidthValue.textContent =
+            `${state.textOutlineWidth} px`;
+
+        if (state.textOutlineEnabled) {
+
+            customText.style.webkitTextStroke =
+                `${state.textOutlineWidth}px ${state.textOutlineColor}`;
+        }
+    }
+);
+
 function fitTextInsidePrintArea() {
 
     const state =
         getCurrentState();
-
 
     if (!state.text.trim()) {
         return;
     }
 
 
-    const areaRect =
-        printArea.getBoundingClientRect();
+    /*
+        Facciamo al massimo 6 correzioni.
+        Non usiamo un while infinito:
+        così non rischiamo più di
+        bloccare il browser.
+    */
+    for (let i = 0; i < 6; i++) {
 
-    const textRect =
-        customText.getBoundingClientRect();
+        const areaRect =
+            printArea.getBoundingClientRect();
 
-
-    if (
-        !areaRect.width ||
-        !areaRect.height ||
-        !textRect.width ||
-        !textRect.height
-    ) {
-        return;
-    }
+        const textRect =
+            customText.getBoundingClientRect();
 
 
-    const widthRatio =
-        areaRect.width /
-        textRect.width;
-
-    const heightRatio =
-        areaRect.height /
-        textRect.height;
-
-
-    const fitRatio =
-        Math.min(
-            1,
-            widthRatio,
-            heightRatio
-        );
+        if (
+            !areaRect.width ||
+            !areaRect.height ||
+            !textRect.width ||
+            !textRect.height
+        ) {
+            return;
+        }
 
 
-    if (fitRatio < 1) {
+        const widthRatio =
+            areaRect.width /
+            textRect.width;
+
+        const heightRatio =
+            areaRect.height /
+            textRect.height;
+
+
+        const fitRatio =
+            Math.min(
+                1,
+                widthRatio,
+                heightRatio
+            );
+
 
         /*
-            Riduciamo il testo in un solo
-            passaggio invece di usare
-            un ciclo while.
+            È già completamente dentro.
         */
+        if (fitRatio >= 0.995) {
+            break;
+        }
+
+
         const newTextSize =
             Math.max(
                 10,
                 Math.floor(
                     state.textSize *
                     fitRatio *
-                    0.97
+                    0.96
                 )
             );
 
 
         if (
-            newTextSize !==
+            newTextSize >=
             state.textSize
         ) {
+            break;
+        }
 
-            state.textSize =
-                newTextSize;
 
-            customText.style.fontSize =
-                `${state.textSize}px`;
+        state.textSize =
+            newTextSize;
 
-            textSizeRange.value =
-                state.textSize;
+        customText.style.fontSize =
+            `${state.textSize}px`;
+
+        textSizeRange.value =
+            state.textSize;
+
+
+        /*
+            Se siamo arrivati alla
+            dimensione minima,
+            non continuiamo.
+        */
+        if (state.textSize === 10) {
+            break;
         }
     }
 }
