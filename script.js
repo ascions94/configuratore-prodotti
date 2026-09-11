@@ -1,6 +1,8 @@
 const imageUpload = document.getElementById("imageUpload");
 const uploadedImage = document.getElementById("uploadedImage");
 const statusMessage = document.getElementById("statusMessage");
+const imagesLayer =
+    document.getElementById("imagesLayer");
 
 const productSelect = document.getElementById("productSelect");
 const productPreview = document.getElementById("productPreview");
@@ -260,64 +262,147 @@ const clearPrintBgButton =
     }
 });
 
-bringForwardButton.addEventListener("click", function () {
+bringForwardButton.addEventListener(
+    "click",
+    function () {
 
-    if (!selectedElementType) {
-        return;
+        if (!selectedElementType) {
+            return;
+        }
+
+
+        const state =
+            getCurrentState();
+
+
+        /*
+            Prima salviamo eventuali
+            modifiche fatte alla foto
+            selezionata.
+        */
+        syncSelectedImageFromLegacyState();
+
+
+        const allLayers = [
+            state.textLayer,
+            ...state.images.map(
+                function (imageState) {
+                    return imageState.layer;
+                }
+            )
+        ];
+
+
+        const highestLayer =
+            Math.max(
+                ...allLayers
+            );
+
+
+        if (
+            selectedElementType ===
+            "image"
+        ) {
+
+            const selectedImage =
+                getSelectedImageState();
+
+            if (!selectedImage) {
+                return;
+            }
+
+
+            selectedImage.layer =
+                highestLayer + 1;
+
+            state.imageLayer =
+                selectedImage.layer;
+
+        } else {
+
+            state.textLayer =
+                highestLayer + 1;
+        }
+
+
+        normalizeElementLayers();
+
+        refreshMultipleLayers();
+
+
+        statusMessage.textContent =
+            "Elemento portato davanti.";
     }
+);
 
-    const state = getCurrentState();
 
-    if (selectedElementType === "image") {
+sendBackwardButton.addEventListener(
+    "click",
+    function () {
 
-        state.imageLayer = 2;
-        state.textLayer = 1;
+        if (!selectedElementType) {
+            return;
+        }
 
-    } else {
 
-        state.textLayer = 2;
-        state.imageLayer = 1;
+        const state =
+            getCurrentState();
+
+
+        syncSelectedImageFromLegacyState();
+
+
+        const allLayers = [
+            state.textLayer,
+            ...state.images.map(
+                function (imageState) {
+                    return imageState.layer;
+                }
+            )
+        ];
+
+
+        const lowestLayer =
+            Math.min(
+                ...allLayers
+            );
+
+
+        if (
+            selectedElementType ===
+            "image"
+        ) {
+
+            const selectedImage =
+                getSelectedImageState();
+
+            if (!selectedImage) {
+                return;
+            }
+
+
+            selectedImage.layer =
+                lowestLayer - 1;
+
+            state.imageLayer =
+                selectedImage.layer;
+
+        } else {
+
+            state.textLayer =
+                lowestLayer - 1;
+        }
+
+
+        normalizeElementLayers();
+
+        refreshMultipleLayers();
+
+
+        statusMessage.textContent =
+            "Elemento portato dietro.";
     }
-
-    uploadedImage.style.zIndex =
-        state.imageLayer;
-
-    customText.style.zIndex =
-        state.textLayer;
-
-    statusMessage.textContent =
-        "Elemento portato davanti.";
-});
-
-
-sendBackwardButton.addEventListener("click", function () {
-
-    if (!selectedElementType) {
-        return;
-    }
-
-    const state = getCurrentState();
-
-    if (selectedElementType === "image") {
-
-        state.imageLayer = 1;
-        state.textLayer = 2;
-
-    } else {
-
-        state.textLayer = 1;
-        state.imageLayer = 2;
-    }
-
-    uploadedImage.style.zIndex =
-        state.imageLayer;
-
-    customText.style.zIndex =
-        state.textLayer;
-
-    statusMessage.textContent =
-        "Elemento portato dietro.";
-});
+);
 
     function showSelectionControls(element, type) {
 
@@ -523,59 +608,191 @@ document
         });
     });
 
-directDeleteButton.addEventListener("click", function () {
+directDeleteButton.addEventListener(
+    "click",
+    function () {
 
-    if (!selectedElementType) {
-        return;
+        if (!selectedElementType) {
+            return;
+        }
+
+
+        const state =
+            getCurrentState();
+
+
+        if (
+            selectedElementType ===
+            "image"
+        ) {
+
+            const selectedImage =
+                getSelectedImageState();
+
+
+            if (!selectedImage) {
+                return;
+            }
+
+
+            /*
+                Eliminiamo solamente
+                la foto selezionata.
+            */
+            state.images =
+                state.images.filter(
+                    function (imageState) {
+
+                        return (
+                            imageState.id !==
+                            selectedImage.id
+                        );
+                    }
+                );
+
+
+            /*
+                Se rimangono altre foto,
+                selezioniamo automaticamente
+                l'ultima disponibile.
+            */
+            if (
+                state.images.length > 0
+            ) {
+
+                const nextImage =
+                    state.images[
+                        state.images.length - 1
+                    ];
+
+
+                state.selectedImageId =
+                    nextImage.id;
+
+
+                loadSelectedImageIntoLegacyState();
+
+                renderCurrentState();
+
+
+                selectedElementType =
+                    "image";
+
+
+                requestAnimationFrame(
+                    function () {
+
+                        showSelectionControls(
+                            uploadedImage,
+                            "image"
+                        );
+                    }
+                );
+
+
+                statusMessage.textContent =
+                    "Immagine eliminata.";
+
+            } else {
+
+                /*
+                    Non rimane più
+                    nessuna immagine.
+                */
+                state.selectedImageId =
+                    null;
+
+                state.imageSrc = "";
+
+                state.x = 0;
+                state.y = 0;
+
+                state.scale = 1;
+                state.rotation = 0;
+
+                state.imageFlipped =
+                    false;
+
+                state.imageLayer = 1;
+
+
+                uploadedImage.src = "";
+
+                uploadedImage.style.display =
+                    "none";
+
+
+                renderMultiImages();
+
+
+                selectedElementType =
+                    null;
+
+                selectionControls.style.display =
+                    "none";
+
+
+                imageSizeValue.textContent =
+                    "—";
+
+
+                statusMessage.textContent =
+                    "Immagine eliminata.";
+            }
+
+
+            imageUpload.value = "";
+
+            return;
+        }
+
+
+        /*
+            ELIMINAZIONE TESTO
+        */
+        if (
+            selectedElementType ===
+            "text"
+        ) {
+
+            state.text = "";
+
+            state.textX = 0;
+            state.textY = 0;
+
+            state.textSize = 26;
+            state.textRotation = 0;
+
+
+            customText.textContent = "";
+
+            textInput.value = "";
+
+            textSizeRange.value = 26;
+
+            textRotationRange.value = 0;
+
+            textRotationValue.textContent =
+                "0°";
+
+
+            customText.classList.remove(
+                "selected-element"
+            );
+
+
+            selectedElementType =
+                null;
+
+            selectionControls.style.display =
+                "none";
+
+
+            statusMessage.textContent =
+                "Testo eliminato.";
+        }
     }
-
-    const state = getCurrentState();
-
-    if (selectedElementType === "image") {
-
-        state.imageSrc = "";
-        state.x = 0;
-        state.y = 0;
-        state.scale = 1;
-        state.rotation = 0;
-
-        uploadedImage.src = "";
-        uploadedImage.style.display = "none";
-
-        imageUpload.value = "";
-
-        zoomRange.value = 1;
-        rotationRange.value = 0;
-        rotationValue.textContent = "0°";
-
-        statusMessage.textContent =
-            "Immagine eliminata.";
-
-    } else {
-
-        state.text = "";
-        state.textX = 0;
-        state.textY = 0;
-        state.textSize = 26;
-        state.textRotation = 0;
-
-        customText.textContent = "";
-
-        textInput.value = "";
-        textSizeRange.value = 26;
-        textRotationRange.value = 0;
-        textRotationValue.textContent = "0°";
-
-        statusMessage.textContent =
-            "Testo eliminato.";
-    }
-
-    uploadedImage.classList.remove("selected-element");
-customText.classList.remove("selected-element");
-    selectedElementType = null;
-
-    selectionControls.style.display = "none";
-});
+);
 
 document.addEventListener("mousemove", function (event) {
 
@@ -838,6 +1055,31 @@ const products = {
 };
 
 
+function createImageState(src) {
+
+    return {
+        id:
+            "img-" +
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .slice(2, 9),
+
+        src: src,
+
+        x: 0,
+        y: 0,
+
+        scale: 1,
+        rotation: 0,
+
+        flipped: false,
+
+        layer: 1
+    };
+}
+
 function createEmptyState() {
 
     return {
@@ -848,6 +1090,8 @@ function createEmptyState() {
     rotation: 0,
     imageFlipped: false,
     imageLayer: 1,
+    images: [],
+selectedImageId: null,
 
     text: "",
     textX: 0,
@@ -868,6 +1112,139 @@ textOutlineWidth: 1,
     printBgEnabled: false,
     printBgColor: "#ffffff"
 };
+}
+
+function createCartStateCopy(state) {
+
+    let images = [];
+
+
+    if (
+        Array.isArray(state.images) &&
+        state.images.length > 0
+    ) {
+
+        images =
+            state.images.map(
+                function (imageState) {
+
+                    return {
+                        id:
+                            imageState.id,
+
+                        src:
+                            imageState.src,
+
+                        x:
+                            imageState.x,
+
+                        y:
+                            imageState.y,
+
+                        scale:
+                            imageState.scale,
+
+                        rotation:
+                            imageState.rotation,
+
+                        flipped:
+                            imageState.flipped,
+
+                        layer:
+                            imageState.layer
+                    };
+                }
+            );
+
+    } else if (state.imageSrc) {
+
+        /*
+            Compatibilità con eventuali
+            personalizzazioni del vecchio
+            sistema a immagine singola.
+        */
+        images.push({
+            id: "legacy-image",
+
+            src:
+                state.imageSrc,
+
+            x:
+                state.x,
+
+            y:
+                state.y,
+
+            scale:
+                state.scale,
+
+            rotation:
+                state.rotation,
+
+            flipped:
+                state.imageFlipped,
+
+            layer:
+                state.imageLayer
+        });
+    }
+
+
+    return {
+
+        images: images,
+
+        text:
+            state.text,
+
+        textX:
+            state.textX,
+
+        textY:
+            state.textY,
+
+        textSize:
+            state.textSize,
+
+        textRotation:
+            state.textRotation,
+
+        fontFamily:
+            state.fontFamily,
+
+        textColor:
+            state.textColor,
+
+        textOutlineEnabled:
+            state.textOutlineEnabled,
+
+        textOutlineColor:
+            state.textOutlineColor,
+
+        textOutlineWidth:
+            state.textOutlineWidth,
+
+        textBold:
+            state.textBold,
+
+        textItalic:
+            state.textItalic,
+
+        textAlign:
+            state.textAlign,
+
+        textFlipped:
+            state.textFlipped,
+
+        textLayer:
+            state.textLayer,
+
+        printBgEnabled:
+            state.printBgEnabled,
+
+        printBgColor:
+            state.printBgColor
+    };
 }
 
 
@@ -900,6 +1277,349 @@ function getCurrentSide() {
     }
 
     return "front";
+}
+
+function getSelectedImageState() {
+
+    const state =
+        getCurrentState();
+
+    if (!state.selectedImageId) {
+        return null;
+    }
+
+    return (
+        state.images.find(
+            function (image) {
+                return (
+                    image.id ===
+                    state.selectedImageId
+                );
+            }
+        ) || null
+    );
+}
+
+
+function setSelectedImage(imageId) {
+
+    const state =
+        getCurrentState();
+
+    state.selectedImageId =
+        imageId;
+}
+
+function createImageElement(imageState) {
+
+    const imageElement =
+        document.createElement("img");
+
+    imageElement.className =
+        "multi-uploaded-image";
+
+    imageElement.dataset.imageId =
+        imageState.id;
+
+    imageElement.src =
+        imageState.src;
+
+    imageElement.alt = "";
+
+    imageElement.draggable = false;
+
+    imagesLayer.appendChild(
+        imageElement
+    );
+
+    return imageElement;
+}
+
+function applyImageStateToElement(
+    imageElement,
+    imageState
+) {
+
+    const scaleX =
+        imageState.flipped
+            ? -imageState.scale
+            : imageState.scale;
+
+    imageElement.style.transform =
+        `translate(
+            calc(-50% + ${imageState.x}px),
+            calc(-50% + ${imageState.y}px)
+        )
+        scale(
+            ${scaleX},
+            ${imageState.scale}
+        )
+        rotate(${imageState.rotation}deg)`;
+
+    imageElement.style.zIndex =
+        imageState.layer;
+}
+
+function renderMultiImages() {
+
+    const state =
+        getCurrentState();
+
+    imagesLayer.innerHTML = "";
+
+    state.images.forEach(
+        function (imageState) {
+
+            /*
+                La foto selezionata viene mostrata
+                dalla vecchia uploadedImage.
+
+                In questo modo possiamo continuare
+                a usare tutti i controlli già
+                funzionanti senza mostrare
+                la stessa foto due volte.
+            */
+            if (
+                imageState.id ===
+                state.selectedImageId
+            ) {
+                return;
+            }
+
+            const imageElement =
+                createImageElement(
+                    imageState
+                );
+
+            applyImageStateToElement(
+                imageElement,
+                imageState
+            );
+
+
+            imageElement.addEventListener(
+                "mousedown",
+                function (event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    setSelectedImage(
+                        imageState.id
+                    );
+
+                    loadSelectedImageIntoLegacyState();
+
+                    renderCurrentState();
+
+                    requestAnimationFrame(
+                        function () {
+
+                            showSelectionControls(
+                                uploadedImage,
+                                "image"
+                            );
+                        }
+                    );
+                }
+            );
+        }
+    );
+}
+
+function loadSelectedImageIntoLegacyState() {
+
+    const state =
+        getCurrentState();
+
+    if (
+        !Array.isArray(state.images) ||
+        state.images.length === 0
+    ) {
+        return null;
+    }
+
+
+    let imageState =
+        getSelectedImageState();
+
+
+    /*
+        Se ci sono immagini ma nessuna
+        è selezionata, selezioniamo
+        automaticamente l'ultima.
+    */
+    if (!imageState) {
+
+        imageState =
+            state.images[
+                state.images.length - 1
+            ];
+
+        state.selectedImageId =
+            imageState.id;
+    }
+
+
+    state.imageSrc =
+        imageState.src;
+
+    state.x =
+        imageState.x;
+
+    state.y =
+        imageState.y;
+
+    state.scale =
+        imageState.scale;
+
+    state.rotation =
+        imageState.rotation;
+
+    state.imageFlipped =
+        imageState.flipped;
+
+    state.imageLayer =
+        imageState.layer;
+
+
+    return imageState;
+}
+
+
+function syncSelectedImageFromLegacyState() {
+
+    const state =
+        getCurrentState();
+
+    const imageState =
+        getSelectedImageState();
+
+
+    if (!imageState) {
+        return;
+    }
+
+
+    imageState.src =
+        state.imageSrc;
+
+    imageState.x =
+        state.x;
+
+    imageState.y =
+        state.y;
+
+    imageState.scale =
+        state.scale;
+
+    imageState.rotation =
+        state.rotation;
+
+    imageState.flipped =
+        state.imageFlipped;
+
+    imageState.layer =
+        state.imageLayer;
+}
+
+function normalizeElementLayers() {
+
+    const state =
+        getCurrentState();
+
+
+    const elements =
+        state.images.map(
+            function (imageState) {
+
+                return {
+                    type: "image",
+                    imageState: imageState,
+                    layer: imageState.layer
+                };
+            }
+        );
+
+
+    /*
+        Consideriamo anche il testo
+        come un elemento del sistema
+        dei livelli.
+    */
+    elements.push({
+        type: "text",
+        layer: state.textLayer
+    });
+
+
+    elements.sort(
+        function (a, b) {
+            return a.layer - b.layer;
+        }
+    );
+
+
+    elements.forEach(
+        function (element, index) {
+
+            const newLayer =
+                index + 1;
+
+
+            if (
+                element.type ===
+                "image"
+            ) {
+
+                element.imageState.layer =
+                    newLayer;
+
+            } else {
+
+                state.textLayer =
+                    newLayer;
+            }
+        }
+    );
+
+
+    const selectedImage =
+        getSelectedImageState();
+
+
+    if (selectedImage) {
+
+        state.imageLayer =
+            selectedImage.layer;
+    }
+}
+
+
+function refreshMultipleLayers() {
+
+    const state =
+        getCurrentState();
+
+    const selectedImage =
+        getSelectedImageState();
+
+
+    if (selectedImage) {
+
+        state.imageLayer =
+            selectedImage.layer;
+    }
+
+
+    uploadedImage.style.zIndex =
+        state.imageLayer;
+
+    customText.style.zIndex =
+        state.textLayer;
+
+
+    renderMultiImages();
 }
 
 
@@ -1369,6 +2089,7 @@ function updateSelectionSizeLabels() {
 }
 
 const MIN_IMAGE_SIZE_CM = 6.4;
+const MIN_KEYCHAIN_IMAGE_SIZE_CM = 1;
 
 
 function getMinimumImageScale() {
@@ -1415,10 +2136,16 @@ function getMinimumImageScale() {
         );
 
 
-    return (
-        MIN_IMAGE_SIZE_CM /
-        largestBaseSide
-    );
+    const minimumSizeCm =
+    currentProduct === "keychain"
+        ? MIN_KEYCHAIN_IMAGE_SIZE_CM
+        : MIN_IMAGE_SIZE_CM;
+
+
+return (
+    minimumSizeCm /
+    largestBaseSide
+);
 }
 
 function getMaximumImageScale() {
@@ -1547,6 +2274,8 @@ uploadedImage.addEventListener(
 function updateImageTransform() {
 
     const state = getCurrentState();
+
+    syncSelectedImageFromLegacyState();
 
     const scaleX =
         state.imageFlipped
@@ -1766,6 +2495,8 @@ function renderCurrentState() {
 
     const state = getCurrentState();
 
+    loadSelectedImageIntoLegacyState();
+
     printArea.style.backgroundColor =
     state.printBgEnabled
         ? state.printBgColor
@@ -1879,7 +2610,10 @@ uploadedImage.style.zIndex =
 
 customText.style.zIndex =
     state.textLayer;
-    updateImageTransform();
+
+renderMultiImages();
+
+updateImageTransform();
 }
 
 function setTextAlignment(alignment) {
@@ -1950,12 +2684,55 @@ textAlignRight.addEventListener(
 
 function resetCurrentState() {
 
-    const side = getCurrentSide();
+    const side =
+        getCurrentSide();
 
     productStates[currentProduct][side] =
         createEmptyState();
 
+
     imageUpload.value = "";
+
+    imagesLayer.innerHTML = "";
+
+
+    uploadedImage.src = "";
+
+    uploadedImage.style.display =
+        "none";
+
+    uploadedImage.classList.remove(
+        "selected-element"
+    );
+
+
+    customText.classList.remove(
+        "selected-element"
+    );
+
+
+    selectedElementType = null;
+
+    selectionControls.style.display =
+        "none";
+
+
+    guideVertical.style.display =
+        "none";
+
+    guideHorizontal.style.display =
+        "none";
+
+    rotationGuide.style.display =
+        "none";
+
+
+    imageSizeValue.textContent =
+        "—";
+
+    textSizeValue.textContent =
+        "—";
+
 
     renderCurrentState();
 }
@@ -2175,48 +2952,82 @@ centerTextButton.addEventListener(
 );
 
 
-imageUpload.addEventListener("change", function () {
+imageUpload.addEventListener(
+    "change",
+    function () {
 
-    const file = this.files[0];
+        const file =
+            this.files[0];
 
-    if (!file) {
-        return;
+
+        if (!file) {
+            return;
+        }
+
+
+        if (
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            statusMessage.textContent =
+                "Seleziona un file immagine valido.";
+
+            return;
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function (event) {
+
+                const state =
+                    getCurrentState();
+
+
+                const newImage =
+                    createImageState(
+                        event.target.result
+                    );
+
+
+                state.images.push(
+                    newImage
+                );
+
+
+                setSelectedImage(
+                    newImage.id
+                );
+
+
+                loadSelectedImageIntoLegacyState();
+
+
+                renderCurrentState();
+
+
+                /*
+                    Permette anche di scegliere
+                    nuovamente lo stesso file.
+                */
+                imageUpload.value = "";
+
+
+                statusMessage.textContent =
+                    `Foto aggiunta. Totale: ${state.images.length}`;
+            };
+
+
+        reader.readAsDataURL(
+            file
+        );
     }
-
-
-    if (!file.type.startsWith("image/")) {
-
-        statusMessage.textContent =
-            "Seleziona un file immagine valido.";
-
-        return;
-    }
-
-
-    const reader = new FileReader();
-
-
-    reader.onload = function (event) {
-
-        const state = getCurrentState();
-
-        state.imageSrc = event.target.result;
-
-        state.x = 0;
-        state.y = 0;
-
-        state.scale = 1;
-        state.rotation = 0;
-
-        renderCurrentState();
-
-        statusMessage.textContent =
-            "Foto caricata correttamente!";
-    };
-
-
-    reader.readAsDataURL(file);
-});
+);
 
 
 uploadedImage.addEventListener("mousedown", function (event) {
@@ -3636,6 +4447,316 @@ async function captureTshirtPreviews() {
     };
 }
 
+async function captureCurrentProductPreview() {
+
+    const originalZoom =
+        previewZoom;
+
+    const originalSelectedElement =
+        selectedElementType;
+
+
+    try {
+
+        /*
+            Assicuriamoci che anche
+            l'ultima modifica alla foto
+            selezionata sia salvata.
+        */
+        syncSelectedImageFromLegacyState();
+
+
+        /*
+            Lo screenshot viene sempre
+            catturato al 100%.
+        */
+        previewZoom = 100;
+
+        updatePreviewZoom();
+
+
+        /*
+            Nascondiamo tutti i controlli
+            dell'editor.
+        */
+        selectionControls.style.display =
+            "none";
+
+        uploadedImage.classList.remove(
+            "selected-element"
+        );
+
+        customText.classList.remove(
+            "selected-element"
+        );
+
+        guideVertical.style.display =
+            "none";
+
+        guideHorizontal.style.display =
+            "none";
+
+        rotationGuide.style.display =
+            "none";
+
+
+        /*
+            Aspettiamo che il browser
+            abbia completato il disegno.
+        */
+        await new Promise(
+            function (resolve) {
+
+                requestAnimationFrame(
+                    function () {
+
+                        requestAnimationFrame(
+                            resolve
+                        );
+                    }
+                );
+            }
+        );
+
+
+        /*
+            Aspettiamo tutte le immagini
+            presenti nell'anteprima.
+        */
+        const previewImages =
+            Array.from(
+                productPreview.querySelectorAll(
+                    "img"
+                )
+            );
+
+
+        await Promise.all(
+            previewImages.map(
+                function (image) {
+
+                    if (image.complete) {
+                        return Promise.resolve();
+                    }
+
+
+                    return new Promise(
+                        function (resolve) {
+
+                            image.addEventListener(
+                                "load",
+                                resolve,
+                                { once: true }
+                            );
+
+                            image.addEventListener(
+                                "error",
+                                resolve,
+                                { once: true }
+                            );
+                        }
+                    );
+                }
+            )
+        );
+
+
+        const canvas =
+            await html2canvas(
+                productPreview,
+                {
+                    backgroundColor:
+                        null,
+
+                    scale: 1,
+
+                    onclone:
+                        function (
+                            clonedDocument
+                        ) {
+
+                            const clonedPrintArea =
+                                clonedDocument
+                                    .getElementById(
+                                        "printArea"
+                                    );
+
+                            const clonedSelection =
+                                clonedDocument
+                                    .getElementById(
+                                        "selectionControls"
+                                    );
+
+
+                            if (
+                                clonedSelection
+                            ) {
+
+                                clonedSelection
+                                    .style
+                                    .display =
+                                    "none";
+                            }
+
+
+                            if (
+                                clonedPrintArea
+                            ) {
+
+                                clonedPrintArea
+                                    .style
+                                    .border =
+                                    "none";
+                            }
+
+
+                            clonedDocument
+                                .querySelectorAll(
+                                    ".selected-element"
+                                )
+                                .forEach(
+                                    function (
+                                        element
+                                    ) {
+
+                                        element
+                                            .classList
+                                            .remove(
+                                                "selected-element"
+                                            );
+                                    }
+                                );
+
+
+                            clonedDocument
+                                .querySelectorAll(
+                                    ".guide-line, .center-guide, .rotation-guide"
+                                )
+                                .forEach(
+                                    function (
+                                        element
+                                    ) {
+
+                                        element
+                                            .style
+                                            .display =
+                                            "none";
+                                    }
+                                );
+                        }
+                }
+            );
+
+
+        /*
+            Riduciamo lo screenshot
+            prima di salvarlo nel carrello.
+        */
+        const maxSize = 320;
+
+
+        const ratio =
+            Math.min(
+                maxSize /
+                    canvas.width,
+
+                maxSize /
+                    canvas.height,
+
+                1
+            );
+
+
+        const smallCanvas =
+            document.createElement(
+                "canvas"
+            );
+
+
+        smallCanvas.width =
+            Math.round(
+                canvas.width *
+                ratio
+            );
+
+        smallCanvas.height =
+            Math.round(
+                canvas.height *
+                ratio
+            );
+
+
+        const context =
+            smallCanvas.getContext(
+                "2d"
+            );
+
+
+        context.drawImage(
+            canvas,
+            0,
+            0,
+            smallCanvas.width,
+            smallCanvas.height
+        );
+
+
+        return smallCanvas.toDataURL(
+            "image/jpeg",
+            0.85
+        );
+
+    } finally {
+
+        /*
+            Riportiamo l'editor
+            esattamente com'era.
+        */
+        previewZoom =
+            originalZoom;
+
+        updatePreviewZoom();
+
+
+        selectedElementType =
+            originalSelectedElement;
+
+
+        if (
+            originalSelectedElement ===
+                "image" &&
+            getSelectedImageState()
+        ) {
+
+            requestAnimationFrame(
+                function () {
+
+                    showSelectionControls(
+                        uploadedImage,
+                        "image"
+                    );
+                }
+            );
+
+        } else if (
+            originalSelectedElement ===
+                "text" &&
+            customText.textContent.trim()
+        ) {
+
+            requestAnimationFrame(
+                function () {
+
+                    showSelectionControls(
+                        customText,
+                        "text"
+                    );
+                }
+            );
+        }
+    }
+}
+
 function createCartPreview(item) {
 
     const wrapper =
@@ -3717,6 +4838,50 @@ function createCartPreview(item) {
     }
 
 
+    // =========================
+// CUSCINO / PORTACHIAVI
+// CON SCREENSHOT REALE
+// =========================
+
+if (
+    item.product !== "tshirt" &&
+    typeof item.previews === "string" &&
+    item.previews
+) {
+
+    const preview =
+        document.createElement(
+            "div"
+        );
+
+    preview.className =
+        `cart-side-preview ${item.product}`;
+
+
+    const image =
+        document.createElement(
+            "img"
+        );
+
+    image.className =
+        "cart-snapshot-image";
+
+    image.src =
+        item.previews;
+
+
+    preview.appendChild(
+        image
+    );
+
+    wrapper.appendChild(
+        preview
+    );
+
+
+    return wrapper;
+}
+    
     // =========================
     // VECCHIO SISTEMA DI RISERVA
     // =========================
@@ -3974,8 +5139,30 @@ addToCartButton.addEventListener("click", async function () {
         Number(quantityInput.value) || 1
     );
 
-    const state = getCurrentState();
-    let cartPreviews = null;
+    const state =
+    getCurrentState();
+
+
+/*
+    Salviamo prima l'ultima
+    trasformazione della foto attiva.
+*/
+syncSelectedImageFromLegacyState();
+
+
+let cartPreviews = null;
+
+
+if (currentProduct === "tshirt") {
+
+    cartPreviews =
+        await captureTshirtPreviews();
+
+} else {
+
+    cartPreviews =
+        await captureCurrentProductPreview();
+}
 
     const cartItem = {
 
@@ -4012,19 +5199,26 @@ addToCartButton.addEventListener("click", async function () {
 
 
     customization:
-        currentProduct === "tshirt"
-            ? {
-                front: {
-                    ...productStates.tshirt.front
-                },
+    currentProduct === "tshirt"
+        ? {
+            front:
+                createCartStateCopy(
+                    productStates
+                        .tshirt
+                        .front
+                ),
 
-                back: {
-                    ...productStates.tshirt.back
-                }
-            }
-            : {
-                ...state
-            }
+            back:
+                createCartStateCopy(
+                    productStates
+                        .tshirt
+                        .back
+                )
+        }
+        :
+            createCartStateCopy(
+                state
+            )
 };
 
     const existingItem = cartItems.find(
