@@ -6265,86 +6265,6 @@ preview.style.pointerEvents =
     return preview;
 }
 
-function testTshirtCartPreview(side) {
-
-    const preview =
-        createTshirtCartPreviewElement(
-            side
-        );
-
-
-    preview.style.left =
-        "20px";
-
-    preview.style.top =
-        "20px";
-
-    preview.style.zIndex =
-        "999999";
-
-    preview.style.border =
-        "3px solid red";
-
-    preview.style.backgroundColor =
-        "#eeeeee";
-
-
-    setTimeout(
-        function () {
-
-            preview.remove();
-
-        },
-        10000
-    );
-}
-
-const testPreviewButton =
-    document.createElement("button");
-
-testPreviewButton.type =
-    "button";
-
-testPreviewButton.textContent =
-    "TEST ANTEPRIMA RETRO";
-
-testPreviewButton.style.position =
-    "fixed";
-
-testPreviewButton.style.right =
-    "20px";
-
-testPreviewButton.style.bottom =
-    "20px";
-
-testPreviewButton.style.zIndex =
-    "999999";
-
-testPreviewButton.style.padding =
-    "12px 18px";
-
-testPreviewButton.style.fontWeight =
-    "700";
-
-testPreviewButton.style.cursor =
-    "pointer";
-
-
-testPreviewButton.addEventListener(
-    "click",
-    function () {
-
-        testTshirtCartPreview(
-            "back"
-        );
-    }
-);
-
-
-document.body.appendChild(
-    testPreviewButton
-);
-
 function loadCanvasImage(src) {
 
     return new Promise(
@@ -7040,8 +6960,8 @@ async function captureTshirtSide(side) {
 
 
     /*
-        Riduciamo a max 320 px,
-        come facevamo prima.
+        Riduciamo l'immagine
+        per il carrello.
     */
     const maxSize =
         320;
@@ -7095,6 +7015,7 @@ async function captureTshirtSide(side) {
         0.85
     );
 }
+
 async function captureTshirtPreviews() {
 
     const frontPreview =
@@ -7826,78 +7747,6 @@ if (currentProduct === "tshirt") {
     cartPreviews =
         await captureTshirtPreviews();
 
-        const debugPreviewBox =
-    document.createElement("div");
-
-debugPreviewBox.style.position =
-    "fixed";
-
-debugPreviewBox.style.left =
-    "20px";
-
-debugPreviewBox.style.top =
-    "20px";
-
-debugPreviewBox.style.zIndex =
-    "999999";
-
-debugPreviewBox.style.background =
-    "white";
-
-debugPreviewBox.style.padding =
-    "10px";
-
-debugPreviewBox.style.border =
-    "3px solid blue";
-
-debugPreviewBox.style.display =
-    "flex";
-
-debugPreviewBox.style.gap =
-    "10px";
-
-
-const debugFront =
-    document.createElement("img");
-
-debugFront.src =
-    cartPreviews.front;
-
-debugFront.style.width =
-    "220px";
-
-
-const debugBack =
-    document.createElement("img");
-
-debugBack.src =
-    cartPreviews.back;
-
-debugBack.style.width =
-    "220px";
-
-
-debugPreviewBox.appendChild(
-    debugFront
-);
-
-debugPreviewBox.appendChild(
-    debugBack
-);
-
-document.body.appendChild(
-    debugPreviewBox
-);
-
-
-setTimeout(
-    function () {
-
-        debugPreviewBox.remove();
-
-    },
-    15000
-);
 
 } else {
 
