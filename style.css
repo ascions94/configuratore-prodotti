@@ -1828,7 +1828,7 @@ height: auto;
 }
 .layer-actions {
     display: grid;
-    grid-template-columns: repeat(2, 26px);
+    grid-template-columns: repeat(3, 26px);
     gap: 4px;
 }
 
@@ -1873,5 +1873,11 @@ height: auto;
 .layer-delete-button:hover {
     background: #e94b4b;
     border-color: #e94b4b;
+    color: white;
+}
+
+.layer-duplicate-button:hover {
+    background: #6f42c1;
+    border-color: #6f42c1;
     color: white;
 }

@@ -1995,6 +1995,32 @@ function renderLayersPanel() {
             deleteLayerButton.title =
                 "Elimina elemento";
 
+                const duplicateButton =
+    document.createElement(
+        "button"
+    );
+
+duplicateButton.type =
+    "button";
+
+duplicateButton.className =
+    "layer-action-button layer-duplicate-button";
+
+duplicateButton.textContent =
+    "⧉";
+
+duplicateButton.title =
+    "Duplica foto";
+
+
+if (
+    item.type !== "image"
+) {
+
+    duplicateButton.style.display =
+        "none";
+}
+
 
             actions.appendChild(
                 forwardButton
@@ -2011,6 +2037,10 @@ function renderLayersPanel() {
             actions.appendChild(
                 deleteLayerButton
             );
+
+            actions.appendChild(
+    duplicateButton
+);
 
 
             row.appendChild(
@@ -2254,6 +2284,138 @@ function renderLayersPanel() {
                     renderCurrentState();
                 }
             );
+
+            duplicateButton.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+
+        if (
+            item.type !==
+            "image"
+        ) {
+            return;
+        }
+
+
+        /*
+            Prima salviamo eventuali
+            modifiche della foto
+            attualmente selezionata.
+        */
+        syncSelectedImageFromLegacyState();
+
+
+        const originalImage =
+            state.images.find(
+                function (imageState) {
+
+                    return (
+                        imageState.id ===
+                        item.id
+                    );
+                }
+            );
+
+
+        if (!originalImage) {
+            return;
+        }
+
+
+        /*
+            Troviamo il livello
+            più alto attuale.
+        */
+        const highestLayer =
+            Math.max(
+                state.textLayer,
+                ...state.images.map(
+                    function (imageState) {
+
+                        return (
+                            imageState.layer
+                        );
+                    }
+                )
+            );
+
+
+        /*
+            Creiamo la copia.
+        */
+        const duplicatedImage = {
+
+            ...originalImage,
+
+            id:
+                "img-" +
+                Date.now() +
+                "-" +
+                Math.random()
+                    .toString(36)
+                    .slice(2, 9),
+
+            /*
+                La spostiamo leggermente
+                per far capire subito
+                che è una copia.
+            */
+            x:
+                originalImage.x + 12,
+
+            y:
+                originalImage.y + 12,
+
+            /*
+                La copia viene messa
+                davanti agli altri elementi.
+            */
+            layer:
+                highestLayer + 1,
+
+            visible:
+                true
+        };
+
+
+        state.images.push(
+            duplicatedImage
+        );
+
+
+        state.selectedImageId =
+            duplicatedImage.id;
+
+
+        normalizeElementLayers();
+
+        loadSelectedImageIntoLegacyState();
+
+        selectedElementType =
+            "image";
+
+
+        renderCurrentState();
+
+
+        requestAnimationFrame(
+            function () {
+
+                showSelectionControls(
+                    uploadedImage,
+                    "image"
+                );
+            }
+        );
+
+
+        statusMessage.textContent =
+            "Foto duplicata.";
+    }
+);
 
 
             layersList.appendChild(
