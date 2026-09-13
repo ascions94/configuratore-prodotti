@@ -302,13 +302,19 @@ bringForwardButton.addEventListener(
 
 
         const allLayers = [
-            state.textLayer,
-            ...state.images.map(
-                function (imageState) {
-                    return imageState.layer;
-                }
-            )
-        ];
+
+    ...state.images.map(
+        function (imageState) {
+            return imageState.layer;
+        }
+    ),
+
+    ...state.texts.map(
+        function (textState) {
+            return textState.layer;
+        }
+    )
+];
 
 
         const highestLayer =
@@ -338,9 +344,22 @@ bringForwardButton.addEventListener(
 
         } else {
 
-            state.textLayer =
-                highestLayer + 1;
-        }
+    const selectedText =
+        getSelectedTextState();
+
+
+    if (!selectedText) {
+        return;
+    }
+
+
+    selectedText.layer =
+        highestLayer + 1;
+
+
+    state.textLayer =
+        selectedText.layer;
+}
 
 
         normalizeElementLayers();
@@ -371,13 +390,19 @@ sendBackwardButton.addEventListener(
 
 
         const allLayers = [
-            state.textLayer,
-            ...state.images.map(
-                function (imageState) {
-                    return imageState.layer;
-                }
-            )
-        ];
+
+    ...state.images.map(
+        function (imageState) {
+            return imageState.layer;
+        }
+    ),
+
+    ...state.texts.map(
+        function (textState) {
+            return textState.layer;
+        }
+    )
+];
 
 
         const lowestLayer =
@@ -387,29 +412,44 @@ sendBackwardButton.addEventListener(
 
 
         if (
-            selectedElementType ===
-            "image"
-        ) {
+    selectedElementType ===
+    "image"
+) {
 
-            const selectedImage =
-                getSelectedImageState();
-
-            if (!selectedImage) {
-                return;
-            }
+    const selectedImage =
+        getSelectedImageState();
 
 
-            selectedImage.layer =
-                lowestLayer - 1;
+    if (!selectedImage) {
+        return;
+    }
 
-            state.imageLayer =
-                selectedImage.layer;
 
-        } else {
+    selectedImage.layer =
+        lowestLayer - 1;
 
-            state.textLayer =
-                lowestLayer - 1;
-        }
+
+    state.imageLayer =
+        selectedImage.layer;
+
+} else {
+
+    const selectedText =
+        getSelectedTextState();
+
+
+    if (!selectedText) {
+        return;
+    }
+
+
+    selectedText.layer =
+        lowestLayer - 1;
+
+
+    state.textLayer =
+        selectedText.layer;
+}
 
 
         normalizeElementLayers();
@@ -766,49 +806,153 @@ directDeleteButton.addEventListener(
 
 
         /*
-            ELIMINAZIONE TESTO
-        */
-        if (
-            selectedElementType ===
-            "text"
-        ) {
+    ELIMINAZIONE TESTO
+*/
+if (
+    selectedElementType ===
+    "text"
+) {
 
-            state.text = "";
-
-            state.textX = 0;
-            state.textY = 0;
-
-            state.textSize = 26;
-            state.textRotation = 0;
+    syncSelectedTextFromLegacyState();
 
 
-            customText.textContent = "";
-
-            textInput.value = "";
-
-            textSizeRange.value = 26;
-
-            textRotationRange.value = 0;
-
-            textRotationValue.textContent =
-                "0°";
+    const selectedText =
+        getSelectedTextState();
 
 
-            customText.classList.remove(
-                "selected-element"
-            );
+    if (!selectedText) {
+        return;
+    }
 
 
-            selectedElementType =
-                null;
+    state.texts =
+        state.texts.filter(
+            function (textState) {
 
-            selectionControls.style.display =
-                "none";
+                return (
+                    textState.id !==
+                    selectedText.id
+                );
+            }
+        );
 
 
-            statusMessage.textContent =
-                "Testo eliminato.";
-        }
+    /*
+        Se rimangono altre scritte,
+        selezioniamo l'ultima.
+    */
+    if (
+        state.texts.length > 0
+    ) {
+
+        const nextText =
+            state.texts[
+                state.texts.length - 1
+            ];
+
+
+        state.selectedTextId =
+            nextText.id;
+
+
+        loadSelectedTextIntoLegacyState();
+
+
+        selectedElementType =
+            "text";
+
+
+        renderCurrentState();
+
+
+        requestAnimationFrame(
+            function () {
+
+                showSelectionControls(
+                    customText,
+                    "text"
+                );
+            }
+        );
+
+
+    } else {
+
+        state.selectedTextId =
+            null;
+
+
+        state.text = "";
+
+        state.textX = 0;
+        state.textY = 0;
+
+        state.textSize = 26;
+        state.textRotation = 0;
+
+        state.fontFamily =
+            "Arial";
+
+        state.textColor =
+            "#000000";
+
+        state.textOutlineEnabled =
+            false;
+
+        state.textOutlineColor =
+            "#ffffff";
+
+        state.textOutlineWidth =
+            1;
+
+        state.textBold =
+            false;
+
+        state.textItalic =
+            false;
+
+        state.textAlign =
+            "center";
+
+        state.textFlipped =
+            false;
+
+        state.textLayer =
+            2;
+
+        state.textVisible =
+            true;
+
+
+        customText.textContent =
+            "";
+
+        customText.style.display =
+            "none";
+
+
+        textInput.value =
+            "";
+
+
+        selectedElementType =
+            null;
+
+
+        selectionControls.style.display =
+            "none";
+
+
+        renderCurrentState();
+    }
+
+
+    statusMessage.textContent =
+        "Testo eliminato.";
+
+
+    return;
+}
     }
 );
 
@@ -2052,33 +2196,40 @@ function normalizeElementLayers() {
         getCurrentState();
 
 
-    const elements =
-        state.images.map(
-            function (imageState) {
-
-                return {
-                    type: "image",
-                    imageState: imageState,
-                    layer: imageState.layer
-                };
-            }
-        );
+    const elements = [];
 
 
-    /*
-        Consideriamo anche il testo
-        come un elemento del sistema
-        dei livelli.
-    */
-    elements.push({
-        type: "text",
-        layer: state.textLayer
-    });
+    state.images.forEach(
+        function (imageState) {
+
+            elements.push({
+                type: "image",
+                state: imageState,
+                layer: imageState.layer
+            });
+        }
+    );
+
+
+    state.texts.forEach(
+        function (textState) {
+
+            elements.push({
+                type: "text",
+                state: textState,
+                layer: textState.layer
+            });
+        }
+    );
 
 
     elements.sort(
         function (a, b) {
-            return a.layer - b.layer;
+
+            return (
+                a.layer -
+                b.layer
+            );
         }
     );
 
@@ -2086,23 +2237,8 @@ function normalizeElementLayers() {
     elements.forEach(
         function (element, index) {
 
-            const newLayer =
+            element.state.layer =
                 index + 1;
-
-
-            if (
-                element.type ===
-                "image"
-            ) {
-
-                element.imageState.layer =
-                    newLayer;
-
-            } else {
-
-                state.textLayer =
-                    newLayer;
-            }
         }
     );
 
@@ -2115,6 +2251,17 @@ function normalizeElementLayers() {
 
         state.imageLayer =
             selectedImage.layer;
+    }
+
+
+    const selectedText =
+        getSelectedTextState();
+
+
+    if (selectedText) {
+
+        state.textLayer =
+            selectedText.layer;
     }
 }
 
@@ -2181,22 +2328,53 @@ function selectImageLayer(imageId) {
 }
 
 
-function selectTextLayer() {
+function selectTextLayer(textId) {
+
+    /*
+        Salviamo prima eventuali modifiche
+        della scritta attualmente selezionata.
+    */
+    syncSelectedTextFromLegacyState();
+
+
+    setSelectedText(
+        textId
+    );
+
+
+    const textState =
+        loadSelectedTextIntoLegacyState();
+
+
+    if (!textState) {
+        return;
+    }
+
 
     selectedElementType =
         "text";
 
 
-    renderLayersPanel();
+    renderCurrentState();
 
 
     requestAnimationFrame(
         function () {
 
-            showSelectionControls(
-                customText,
-                "text"
-            );
+            if (
+                textState.visible !== false
+            ) {
+
+                showSelectionControls(
+                    customText,
+                    "text"
+                );
+
+            } else {
+
+                selectionControls.style.display =
+                    "none";
+            }
         }
     );
 }
@@ -2207,38 +2385,75 @@ function renderLayersPanel() {
         getCurrentState();
 
 
-    const elements =
-        state.images.map(
-            function (
-                imageState,
-                index
-            ) {
-
-                return {
-                    type: "image",
-
-                    id:
-                        imageState.id,
-
-                    imageState:
-                        imageState,
-
-                    index:
-                        index,
-
-                    layer:
-                        imageState.layer
-                };
-            }
-        );
-
-
-    
+    const elements = [];
 
 
     /*
-        L'elemento più davanti
-        viene mostrato più in alto.
+        FOTO
+    */
+    state.images.forEach(
+        function (
+            imageState,
+            index
+        ) {
+
+            elements.push({
+                type:
+                    "image",
+
+                id:
+                    imageState.id,
+
+                itemState:
+                    imageState,
+
+                index:
+                    index,
+
+                layer:
+                    imageState.layer
+            });
+        }
+    );
+
+
+    /*
+        TESTI
+    */
+    state.texts.forEach(
+        function (
+            textState,
+            index
+        ) {
+
+            if (!textState.text.trim()) {
+                return;
+            }
+
+
+            elements.push({
+                type:
+                    "text",
+
+                id:
+                    textState.id,
+
+                itemState:
+                    textState,
+
+                index:
+                    index,
+
+                layer:
+                    textState.layer
+            });
+        }
+    );
+
+
+    /*
+        Elemento più davanti
+        mostrato più in alto.
     */
     elements.sort(
         function (a, b) {
@@ -2251,7 +2466,8 @@ function renderLayersPanel() {
     );
 
 
-    layersList.innerHTML = "";
+    layersList.innerHTML =
+        "";
 
 
     layersSection.style.display =
@@ -2268,34 +2484,44 @@ function renderLayersPanel() {
                     "div"
                 );
 
+
             row.className =
                 "layer-item";
 
 
-            const isActiveImage =
-                item.type === "image" &&
-                selectedElementType ===
-                    "image" &&
-                state.selectedImageId ===
-                    item.id;
+            const isImage =
+                item.type ===
+                "image";
 
 
-            const isActiveText =
-                item.type === "text" &&
-                selectedElementType ===
-                    "text";
+            const isText =
+                item.type ===
+                "text";
+
+
+            const isActive =
+                (
+                    isImage &&
+                    selectedElementType ===
+                        "image" &&
+                    state.selectedImageId ===
+                        item.id
+                ) ||
+                (
+                    isText &&
+                    selectedElementType ===
+                        "text" &&
+                    state.selectedTextId ===
+                        item.id
+                );
 
 
             const isHidden =
-                item.type === "image"
-                    ? item.imageState.visible === false
-                    : state.textVisible === false;
+                item.itemState.visible ===
+                false;
 
 
-            if (
-                isActiveImage ||
-                isActiveText
-            ) {
+            if (isActive) {
 
                 row.classList.add(
                     "active"
@@ -2319,23 +2545,24 @@ function renderLayersPanel() {
                     "span"
                 );
 
+
             thumbnail.className =
                 "layer-thumb";
 
 
-            if (
-                item.type === "image"
-            ) {
+            if (isImage) {
 
                 const image =
                     document.createElement(
                         "img"
                     );
 
+
                 image.src =
-                    item.imageState.src;
+                    item.itemState.src;
 
                 image.alt = "";
+
 
                 thumbnail.appendChild(
                     image
@@ -2356,14 +2583,15 @@ function renderLayersPanel() {
                     "span"
                 );
 
+
             name.className =
                 "layer-name";
 
 
             name.textContent =
-                item.type === "image"
+                isImage
                     ? `Foto ${item.index + 1}`
-                    : "Testo";
+                    : `Testo ${item.index + 1}`;
 
 
             /*
@@ -2374,32 +2602,33 @@ function renderLayersPanel() {
                     "span"
                 );
 
+
             layerNumber.className =
                 "layer-number";
+
 
             layerNumber.textContent =
                 item.layer;
 
 
             /*
-                CONTENITORE PULSANTI
+                PULSANTI
             */
             const actions =
                 document.createElement(
                     "span"
                 );
 
+
             actions.className =
                 "layer-actions";
 
 
-            /*
-                PORTA DAVANTI
-            */
             const forwardButton =
                 document.createElement(
                     "button"
                 );
+
 
             forwardButton.type =
                 "button";
@@ -2414,13 +2643,11 @@ function renderLayersPanel() {
                 "Porta davanti";
 
 
-            /*
-                PORTA DIETRO
-            */
             const backwardButton =
                 document.createElement(
                     "button"
                 );
+
 
             backwardButton.type =
                 "button";
@@ -2435,13 +2662,11 @@ function renderLayersPanel() {
                 "Porta dietro";
 
 
-            /*
-                MOSTRA / NASCONDI
-            */
             const visibilityButton =
                 document.createElement(
                     "button"
                 );
+
 
             visibilityButton.type =
                 "button";
@@ -2460,13 +2685,11 @@ function renderLayersPanel() {
                     : "Nascondi elemento";
 
 
-            /*
-                ELIMINA
-            */
             const deleteLayerButton =
                 document.createElement(
                     "button"
                 );
+
 
             deleteLayerButton.type =
                 "button";
@@ -2480,31 +2703,26 @@ function renderLayersPanel() {
             deleteLayerButton.title =
                 "Elimina elemento";
 
-                const duplicateButton =
-    document.createElement(
-        "button"
-    );
 
-duplicateButton.type =
-    "button";
-
-duplicateButton.className =
-    "layer-action-button layer-duplicate-button";
-
-duplicateButton.textContent =
-    "⧉";
-
-duplicateButton.title =
-    "Duplica foto";
+            const duplicateButton =
+                document.createElement(
+                    "button"
+                );
 
 
-if (
-    item.type !== "image"
-) {
+            duplicateButton.type =
+                "button";
 
-    duplicateButton.style.display =
-        "none";
-}
+            duplicateButton.className =
+                "layer-action-button layer-duplicate-button";
+
+            duplicateButton.textContent =
+                "⧉";
+
+            duplicateButton.title =
+                isImage
+                    ? "Duplica foto"
+                    : "Duplica testo";
 
 
             actions.appendChild(
@@ -2524,8 +2742,8 @@ if (
             );
 
             actions.appendChild(
-    duplicateButton
-);
+                duplicateButton
+            );
 
 
             row.appendChild(
@@ -2546,7 +2764,7 @@ if (
 
 
             /*
-                CLIC SULLA RIGA
+                SELEZIONE
             */
             row.addEventListener(
                 "click",
@@ -2557,10 +2775,7 @@ if (
                     }
 
 
-                    if (
-                        item.type ===
-                        "image"
-                    ) {
+                    if (isImage) {
 
                         selectImageLayer(
                             item.id
@@ -2568,14 +2783,16 @@ if (
 
                     } else {
 
-                        selectTextLayer();
+                        selectTextLayer(
+                            item.id
+                        );
                     }
                 }
             );
 
 
             /*
-                PORTA DAVANTI
+                DAVANTI
             */
             forwardButton.addEventListener(
                 "click",
@@ -2589,10 +2806,7 @@ if (
                     }
 
 
-                    if (
-                        item.type ===
-                        "image"
-                    ) {
+                    if (isImage) {
 
                         selectImageLayer(
                             item.id
@@ -2600,7 +2814,9 @@ if (
 
                     } else {
 
-                        selectTextLayer();
+                        selectTextLayer(
+                            item.id
+                        );
                     }
 
 
@@ -2610,7 +2826,7 @@ if (
 
 
             /*
-                PORTA DIETRO
+                DIETRO
             */
             backwardButton.addEventListener(
                 "click",
@@ -2624,10 +2840,7 @@ if (
                     }
 
 
-                    if (
-                        item.type ===
-                        "image"
-                    ) {
+                    if (isImage) {
 
                         selectImageLayer(
                             item.id
@@ -2635,7 +2848,9 @@ if (
 
                     } else {
 
-                        selectTextLayer();
+                        selectTextLayer(
+                            item.id
+                        );
                     }
 
 
@@ -2654,70 +2869,50 @@ if (
                     event.stopPropagation();
 
 
+                    item.itemState.visible =
+                        item.itemState.visible ===
+                        false;
+
+
                     if (
-                        item.type ===
-                        "image"
+                        item.itemState.visible ===
+                            false &&
+                        isActive
                     ) {
 
-                        const imageState =
-                            state.images.find(
-                                function (image) {
-
-                                    return (
-                                        image.id ===
-                                        item.id
-                                    );
-                                }
-                            );
+                        selectedElementType =
+                            null;
 
 
-                        if (!imageState) {
-                            return;
-                        }
+                        selectionControls.style.display =
+                            "none";
 
 
-                        imageState.visible =
-                            imageState.visible === false;
+                        uploadedImage.classList.remove(
+                            "selected-element"
+                        );
 
 
+                        customText.classList.remove(
+                            "selected-element"
+                        );
+                    }
+
+
+                    if (isText) {
+
+                        /*
+                            Se è il testo selezionato
+                            sincronizziamo anche
+                            il vecchio stato.
+                        */
                         if (
-                            imageState.visible === false &&
-                            state.selectedImageId ===
+                            state.selectedTextId ===
                                 item.id
                         ) {
 
-                            selectedElementType =
-                                null;
-
-                            selectionControls.style.display =
-                                "none";
-
-                            uploadedImage.classList.remove(
-                                "selected-element"
-                            );
-                        }
-
-                    } else {
-
-                        state.textVisible =
-                            state.textVisible === false;
-
-
-                        if (
-                            state.textVisible === false &&
-                            selectedElementType ===
-                                "text"
-                        ) {
-
-                            selectedElementType =
-                                null;
-
-                            selectionControls.style.display =
-                                "none";
-
-                            customText.classList.remove(
-                                "selected-element"
-                            );
+                            state.textVisible =
+                                item.itemState.visible;
                         }
                     }
 
@@ -2737,10 +2932,7 @@ if (
                     event.stopPropagation();
 
 
-                    if (
-                        item.type ===
-                        "image"
-                    ) {
+                    if (isImage) {
 
                         syncSelectedImageFromLegacyState();
 
@@ -2755,152 +2947,220 @@ if (
 
                     } else {
 
+                        syncSelectedTextFromLegacyState();
+
+                        setSelectedText(
+                            item.id
+                        );
+
+                        loadSelectedTextIntoLegacyState();
+
                         selectedElementType =
                             "text";
                     }
 
 
-                    /*
-                        Riutilizziamo il cestino
-                        già presente nell'editor.
-                    */
                     directDeleteButton.click();
+                }
+            );
+
+
+            /*
+                DUPLICA
+            */
+            duplicateButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+
+                    /*
+                        FOTO
+                    */
+                    if (isImage) {
+
+                        syncSelectedImageFromLegacyState();
+
+
+                        const originalImage =
+                            state.images.find(
+                                function (
+                                    imageState
+                                ) {
+
+                                    return (
+                                        imageState.id ===
+                                        item.id
+                                    );
+                                }
+                            );
+
+
+                        if (!originalImage) {
+                            return;
+                        }
+
+
+                        const duplicatedImage = {
+
+                            ...originalImage,
+
+                            id:
+                                "img-" +
+                                Date.now() +
+                                "-" +
+                                Math.random()
+                                    .toString(36)
+                                    .slice(2, 9),
+
+                            x:
+                                originalImage.x +
+                                12,
+
+                            y:
+                                originalImage.y +
+                                12,
+
+                            layer:
+                                getHighestContentLayer() +
+                                1,
+
+                            visible:
+                                true
+                        };
+
+
+                        state.images.push(
+                            duplicatedImage
+                        );
+
+
+                        state.selectedImageId =
+                            duplicatedImage.id;
+
+
+                        normalizeElementLayers();
+
+                        loadSelectedImageIntoLegacyState();
+
+
+                        selectedElementType =
+                            "image";
+
+
+                        renderCurrentState();
+
+
+                        requestAnimationFrame(
+                            function () {
+
+                                showSelectionControls(
+                                    uploadedImage,
+                                    "image"
+                                );
+                            }
+                        );
+
+
+                        statusMessage.textContent =
+                            "Foto duplicata.";
+
+
+                        return;
+                    }
+
+
+                    /*
+                        TESTO
+                    */
+                    syncSelectedTextFromLegacyState();
+
+
+                    const originalText =
+                        state.texts.find(
+                            function (
+                                textState
+                            ) {
+
+                                return (
+                                    textState.id ===
+                                    item.id
+                                );
+                            }
+                        );
+
+
+                    if (!originalText) {
+                        return;
+                    }
+
+
+                    const duplicatedText = {
+
+                        ...originalText,
+
+                        id:
+                            "text-" +
+                            Date.now() +
+                            "-" +
+                            Math.random()
+                                .toString(36)
+                                .slice(2, 9),
+
+                        x:
+                            originalText.x +
+                            12,
+
+                        y:
+                            originalText.y +
+                            12,
+
+                        layer:
+                            getHighestContentLayer() +
+                            1,
+
+                        visible:
+                            true
+                    };
+
+
+                    state.texts.push(
+                        duplicatedText
+                    );
+
+
+                    state.selectedTextId =
+                        duplicatedText.id;
+
+
+                    normalizeElementLayers();
+
+                    loadSelectedTextIntoLegacyState();
+
+
+                    selectedElementType =
+                        "text";
+
 
                     renderCurrentState();
-                }
-            );
-
-            duplicateButton.addEventListener(
-    "click",
-    function (event) {
-
-        event.stopPropagation();
 
 
-        if (
-            item.type !==
-            "image"
-        ) {
-            return;
-        }
+                    requestAnimationFrame(
+                        function () {
 
-
-        /*
-            Prima salviamo eventuali
-            modifiche della foto
-            attualmente selezionata.
-        */
-        syncSelectedImageFromLegacyState();
-
-
-        const originalImage =
-            state.images.find(
-                function (imageState) {
-
-                    return (
-                        imageState.id ===
-                        item.id
+                            showSelectionControls(
+                                customText,
+                                "text"
+                            );
+                        }
                     );
+
+
+                    statusMessage.textContent =
+                        "Testo duplicato.";
                 }
             );
-
-
-        if (!originalImage) {
-            return;
-        }
-
-
-        /*
-            Troviamo il livello
-            più alto attuale.
-        */
-        const highestLayer =
-            Math.max(
-                state.textLayer,
-                ...state.images.map(
-                    function (imageState) {
-
-                        return (
-                            imageState.layer
-                        );
-                    }
-                )
-            );
-
-
-        /*
-            Creiamo la copia.
-        */
-        const duplicatedImage = {
-
-            ...originalImage,
-
-            id:
-                "img-" +
-                Date.now() +
-                "-" +
-                Math.random()
-                    .toString(36)
-                    .slice(2, 9),
-
-            /*
-                La spostiamo leggermente
-                per far capire subito
-                che è una copia.
-            */
-            x:
-                originalImage.x + 12,
-
-            y:
-                originalImage.y + 12,
-
-            /*
-                La copia viene messa
-                davanti agli altri elementi.
-            */
-            layer:
-                highestLayer + 1,
-
-            visible:
-                true
-        };
-
-
-        state.images.push(
-            duplicatedImage
-        );
-
-
-        state.selectedImageId =
-            duplicatedImage.id;
-
-
-        normalizeElementLayers();
-
-        loadSelectedImageIntoLegacyState();
-
-        selectedElementType =
-            "image";
-
-
-        renderCurrentState();
-
-
-        requestAnimationFrame(
-            function () {
-
-                showSelectionControls(
-                    uploadedImage,
-                    "image"
-                );
-            }
-        );
-
-
-        statusMessage.textContent =
-            "Foto duplicata.";
-    }
-);
 
 
             layersList.appendChild(
