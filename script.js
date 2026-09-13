@@ -38,6 +38,15 @@ const rotationValue =
 const textInput = document.getElementById("textInput");
 const fontSelect = document.getElementById("fontSelect");
 const customText = document.getElementById("customText");
+const textsLayer =
+    document.getElementById(
+        "textsLayer"
+    );
+
+const addTextButton =
+    document.getElementById(
+        "addTextButton"
+    );
 const textColor = document.getElementById("textColor");
 const textOutlineEnabled =
     document.getElementById("textOutlineEnabled");
@@ -1091,6 +1100,62 @@ visible: true
     };
 }
 
+function createTextState(text = "") {
+
+    return {
+
+        id:
+            "text-" +
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .slice(2, 9),
+
+        text:
+            text,
+
+        x: 0,
+        y: 0,
+
+        size: 26,
+        rotation: 0,
+
+        fontFamily:
+            "Arial",
+
+        color:
+            "#000000",
+
+        outlineEnabled:
+            false,
+
+        outlineColor:
+            "#ffffff",
+
+        outlineWidth:
+            1,
+
+        bold:
+            false,
+
+        italic:
+            false,
+
+        align:
+            "center",
+
+        flipped:
+            false,
+
+        layer:
+            2,
+
+        visible:
+            true
+    };
+}
+
 function createEmptyState() {
 
     return {
@@ -1120,6 +1185,9 @@ textOutlineWidth: 1,
     textFlipped: false,
 textLayer: 2,
 textVisible: true,
+
+texts: [],
+selectedTextId: null,
 
 printBgEnabled: false,
     printBgColor: "#ffffff"
@@ -1330,6 +1398,434 @@ function setSelectedImage(imageId) {
 
     state.selectedImageId =
         imageId;
+}
+
+function getSelectedTextState() {
+
+    const state =
+        getCurrentState();
+
+
+    if (!state.selectedTextId) {
+        return null;
+    }
+
+
+    return (
+        state.texts.find(
+            function (textState) {
+
+                return (
+                    textState.id ===
+                    state.selectedTextId
+                );
+            }
+        ) || null
+    );
+}
+
+
+function setSelectedText(textId) {
+
+    const state =
+        getCurrentState();
+
+    state.selectedTextId =
+        textId;
+}
+
+
+function getHighestContentLayer() {
+
+    const state =
+        getCurrentState();
+
+
+    const layers = [
+        ...state.images.map(
+            function (imageState) {
+                return imageState.layer;
+            }
+        ),
+
+        ...state.texts.map(
+            function (textState) {
+                return textState.layer;
+            }
+        )
+    ];
+
+
+    if (layers.length === 0) {
+        return 0;
+    }
+
+
+    return Math.max(
+        ...layers
+    );
+}
+
+
+function loadSelectedTextIntoLegacyState() {
+
+    const state =
+        getCurrentState();
+
+
+    if (
+        !Array.isArray(state.texts) ||
+        state.texts.length === 0
+    ) {
+        return null;
+    }
+
+
+    let textState =
+        getSelectedTextState();
+
+
+    if (!textState) {
+
+        textState =
+            state.texts[
+                state.texts.length - 1
+            ];
+
+        state.selectedTextId =
+            textState.id;
+    }
+
+
+    state.text =
+        textState.text;
+
+    state.textX =
+        textState.x;
+
+    state.textY =
+        textState.y;
+
+    state.textSize =
+        textState.size;
+
+    state.textRotation =
+        textState.rotation;
+
+    state.fontFamily =
+        textState.fontFamily;
+
+    state.textColor =
+        textState.color;
+
+    state.textOutlineEnabled =
+        textState.outlineEnabled;
+
+    state.textOutlineColor =
+        textState.outlineColor;
+
+    state.textOutlineWidth =
+        textState.outlineWidth;
+
+    state.textBold =
+        textState.bold;
+
+    state.textItalic =
+        textState.italic;
+
+    state.textAlign =
+        textState.align;
+
+    state.textFlipped =
+        textState.flipped;
+
+    state.textLayer =
+        textState.layer;
+
+    state.textVisible =
+        textState.visible;
+
+
+    return textState;
+}
+
+
+function syncSelectedTextFromLegacyState() {
+
+    const state =
+        getCurrentState();
+
+    const textState =
+        getSelectedTextState();
+
+
+    if (!textState) {
+        return;
+    }
+
+
+    textState.text =
+        state.text;
+
+    textState.x =
+        state.textX;
+
+    textState.y =
+        state.textY;
+
+    textState.size =
+        state.textSize;
+
+    textState.rotation =
+        state.textRotation;
+
+    textState.fontFamily =
+        state.fontFamily;
+
+    textState.color =
+        state.textColor;
+
+    textState.outlineEnabled =
+        state.textOutlineEnabled;
+
+    textState.outlineColor =
+        state.textOutlineColor;
+
+    textState.outlineWidth =
+        state.textOutlineWidth;
+
+    textState.bold =
+        state.textBold;
+
+    textState.italic =
+        state.textItalic;
+
+    textState.align =
+        state.textAlign;
+
+    textState.flipped =
+        state.textFlipped;
+
+    textState.layer =
+        state.textLayer;
+
+    textState.visible =
+        state.textVisible;
+}
+
+
+function createNewText() {
+
+    const state =
+        getCurrentState();
+
+
+    /*
+        Salviamo prima la scritta
+        che stavamo modificando.
+    */
+    syncSelectedTextFromLegacyState();
+
+
+    const textState =
+        createTextState("");
+
+
+    textState.layer =
+        getHighestContentLayer() + 1;
+
+
+    state.texts.push(
+        textState
+    );
+
+
+    state.selectedTextId =
+        textState.id;
+
+
+    loadSelectedTextIntoLegacyState();
+
+
+    return textState;
+}
+
+function createMultiTextElement(
+    textState
+) {
+
+    const element =
+        document.createElement(
+            "div"
+        );
+
+
+    element.className =
+        "multi-custom-text";
+
+    element.dataset.textId =
+        textState.id;
+
+    element.textContent =
+        textState.text;
+
+
+    textsLayer.appendChild(
+        element
+    );
+
+
+    return element;
+}
+
+
+function applyTextStateToElement(
+    element,
+    textState
+) {
+
+    const scaleX =
+        textState.flipped
+            ? -1
+            : 1;
+
+
+    element.style.fontSize =
+        `${textState.size}px`;
+
+    element.style.fontFamily =
+        textState.fontFamily;
+
+    element.style.color =
+        textState.color;
+
+    element.style.fontWeight =
+        textState.bold
+            ? "700"
+            : "400";
+
+    element.style.fontStyle =
+        textState.italic
+            ? "italic"
+            : "normal";
+
+    element.style.textAlign =
+        textState.align ||
+        "center";
+
+
+    element.style.webkitTextStroke =
+        textState.outlineEnabled
+            ? `${textState.outlineWidth}px ${textState.outlineColor}`
+            : "0px transparent";
+
+
+    element.style.transform =
+        `translate(
+            calc(-50% + ${textState.x}px),
+            calc(-50% + ${textState.y}px)
+        )
+        rotate(${textState.rotation}deg)
+        scaleX(${scaleX})`;
+
+
+    element.style.zIndex =
+        textState.layer;
+
+
+    element.style.display =
+        textState.visible === false
+            ? "none"
+            : "block";
+}
+
+
+function renderMultiTexts() {
+
+    const state =
+        getCurrentState();
+
+
+    textsLayer.innerHTML =
+        "";
+
+
+    state.texts.forEach(
+        function (textState) {
+
+            /*
+                La scritta selezionata
+                viene mostrata dal vecchio
+                customText.
+            */
+            if (
+                textState.id ===
+                state.selectedTextId
+            ) {
+                return;
+            }
+
+
+            if (!textState.text) {
+                return;
+            }
+
+
+            const element =
+                createMultiTextElement(
+                    textState
+                );
+
+
+            applyTextStateToElement(
+                element,
+                textState
+            );
+
+
+            element.addEventListener(
+                "mousedown",
+                function (event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+
+                    /*
+                        Salviamo prima
+                        la scritta attuale.
+                    */
+                    syncSelectedTextFromLegacyState();
+
+
+                    setSelectedText(
+                        textState.id
+                    );
+
+
+                    loadSelectedTextIntoLegacyState();
+
+
+                    selectedElementType =
+                        "text";
+
+
+                    renderCurrentState();
+
+
+                    requestAnimationFrame(
+                        function () {
+
+                            showSelectionControls(
+                                customText,
+                                "text"
+                            );
+                        }
+                    );
+                }
+            );
+        }
+    );
 }
 
 function createImageElement(imageState) {
@@ -1737,18 +2233,7 @@ function renderLayersPanel() {
         );
 
 
-    if (
-        state.text &&
-        state.text.trim()
-    ) {
-
-        elements.push({
-            type: "text",
-            id: "text",
-            layer:
-                state.textLayer
-        });
-    }
+    
 
 
     /*
@@ -3152,6 +3637,9 @@ function updateTextTransform() {
 
     updateTextSizeInfo();
     updateSelectionSizeLabels();
+
+    syncSelectedTextFromLegacyState();
+renderMultiTexts();
 }
 
 function keepImageInsidePrintArea() {
@@ -3299,6 +3787,7 @@ function renderCurrentState() {
     const state = getCurrentState();
 
     loadSelectedImageIntoLegacyState();
+    loadSelectedTextIntoLegacyState();
 
     printArea.style.backgroundColor =
     state.printBgEnabled
@@ -3437,6 +3926,7 @@ customText.style.zIndex =
     state.textLayer;
 
 renderMultiImages();
+renderMultiTexts();
 
 updateImageTransform();
 }
@@ -3673,6 +4163,8 @@ function updateTshirtMockup() {
 
 productSelect.addEventListener("change", function () {
 
+    syncSelectedTextFromLegacyState();
+    
     currentProduct = this.value;
 
     previewZoom = 100;
@@ -4105,13 +4597,26 @@ textInput.addEventListener(
     function () {
 
         const state =
-            getCurrentState();
+    getCurrentState();
 
-        state.text =
-            this.value;
+
+if (!getSelectedTextState()) {
+
+    createNewText();
+
+    selectedElementType =
+        "text";
+}
+
+
+state.text =
+    this.value;
 
         customText.textContent =
             state.text;
+
+            syncSelectedTextFromLegacyState();
+renderMultiTexts();
 
             renderLayersPanel();
 
@@ -4142,6 +4647,32 @@ textInput.addEventListener(
 
             }
         );
+    }
+);
+
+addTextButton.addEventListener(
+    "click",
+    function () {
+
+        createNewText();
+
+
+        selectedElementType =
+            "text";
+
+
+        renderCurrentState();
+
+
+        selectionControls.style.display =
+            "none";
+
+
+        textInput.focus();
+
+
+        statusMessage.textContent =
+            "Nuova scritta aggiunta.";
     }
 );
 
@@ -4678,6 +5209,7 @@ document
 
             this.classList.add("active");
 
+            syncSelectedTextFromLegacyState();
             tshirtSide = this.dataset.side;
             uploadedImage.classList.remove("selected-element");
 customText.classList.remove("selected-element");
