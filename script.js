@@ -1752,8 +1752,8 @@ function renderLayersPanel() {
 
 
     /*
-        Quello più davanti viene
-        visualizzato più in alto.
+        L'elemento più davanti
+        viene mostrato più in alto.
     */
     elements.sort(
         function (a, b) {
@@ -1776,277 +1776,491 @@ function renderLayersPanel() {
 
 
     elements.forEach(
-    function (item) {
+        function (item) {
 
-        const row =
-            document.createElement(
-                "div"
-            );
-
-
-        row.className =
-            "layer-item";
-
-
-        const isActiveImage =
-            item.type === "image" &&
-            selectedElementType ===
-                "image" &&
-            state.selectedImageId ===
-                item.id;
-
-
-        const isActiveText =
-            item.type === "text" &&
-            selectedElementType ===
-                "text";
-
-
-        if (
-            isActiveImage ||
-            isActiveText
-        ) {
-
-            row.classList.add(
-                "active"
-            );
-        }
-
-
-        /*
-            MINIATURA
-        */
-        const thumbnail =
-            document.createElement(
-                "span"
-            );
-
-        thumbnail.className =
-            "layer-thumb";
-
-
-        if (
-            item.type === "image"
-        ) {
-
-            const image =
+            const row =
                 document.createElement(
-                    "img"
+                    "div"
                 );
 
-            image.src =
-                item.imageState.src;
+            row.className =
+                "layer-item";
 
-            image.alt = "";
 
-            thumbnail.appendChild(
-                image
+            const isActiveImage =
+                item.type === "image" &&
+                selectedElementType ===
+                    "image" &&
+                state.selectedImageId ===
+                    item.id;
+
+
+            const isActiveText =
+                item.type === "text" &&
+                selectedElementType ===
+                    "text";
+
+
+            const isHidden =
+                item.type === "image"
+                    ? item.imageState.visible === false
+                    : state.textVisible === false;
+
+
+            if (
+                isActiveImage ||
+                isActiveText
+            ) {
+
+                row.classList.add(
+                    "active"
+                );
+            }
+
+
+            if (isHidden) {
+
+                row.classList.add(
+                    "hidden-layer"
+                );
+            }
+
+
+            /*
+                MINIATURA
+            */
+            const thumbnail =
+                document.createElement(
+                    "span"
+                );
+
+            thumbnail.className =
+                "layer-thumb";
+
+
+            if (
+                item.type === "image"
+            ) {
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+                image.src =
+                    item.imageState.src;
+
+                image.alt = "";
+
+                thumbnail.appendChild(
+                    image
+                );
+
+            } else {
+
+                thumbnail.textContent =
+                    "T";
+            }
+
+
+            /*
+                NOME
+            */
+            const name =
+                document.createElement(
+                    "span"
+                );
+
+            name.className =
+                "layer-name";
+
+
+            name.textContent =
+                item.type === "image"
+                    ? `Foto ${item.index + 1}`
+                    : "Testo";
+
+
+            /*
+                NUMERO LIVELLO
+            */
+            const layerNumber =
+                document.createElement(
+                    "span"
+                );
+
+            layerNumber.className =
+                "layer-number";
+
+            layerNumber.textContent =
+                item.layer;
+
+
+            /*
+                CONTENITORE PULSANTI
+            */
+            const actions =
+                document.createElement(
+                    "span"
+                );
+
+            actions.className =
+                "layer-actions";
+
+
+            /*
+                PORTA DAVANTI
+            */
+            const forwardButton =
+                document.createElement(
+                    "button"
+                );
+
+            forwardButton.type =
+                "button";
+
+            forwardButton.className =
+                "layer-action-button";
+
+            forwardButton.textContent =
+                "↑";
+
+            forwardButton.title =
+                "Porta davanti";
+
+
+            /*
+                PORTA DIETRO
+            */
+            const backwardButton =
+                document.createElement(
+                    "button"
+                );
+
+            backwardButton.type =
+                "button";
+
+            backwardButton.className =
+                "layer-action-button";
+
+            backwardButton.textContent =
+                "↓";
+
+            backwardButton.title =
+                "Porta dietro";
+
+
+            /*
+                MOSTRA / NASCONDI
+            */
+            const visibilityButton =
+                document.createElement(
+                    "button"
+                );
+
+            visibilityButton.type =
+                "button";
+
+            visibilityButton.className =
+                "layer-action-button";
+
+            visibilityButton.textContent =
+                isHidden
+                    ? "🙈"
+                    : "👁";
+
+            visibilityButton.title =
+                isHidden
+                    ? "Mostra elemento"
+                    : "Nascondi elemento";
+
+
+            /*
+                ELIMINA
+            */
+            const deleteLayerButton =
+                document.createElement(
+                    "button"
+                );
+
+            deleteLayerButton.type =
+                "button";
+
+            deleteLayerButton.className =
+                "layer-action-button layer-delete-button";
+
+            deleteLayerButton.textContent =
+                "🗑";
+
+            deleteLayerButton.title =
+                "Elimina elemento";
+
+
+            actions.appendChild(
+                forwardButton
             );
 
-        } else {
+            actions.appendChild(
+                backwardButton
+            );
 
-            thumbnail.textContent =
-                "T";
+            actions.appendChild(
+                visibilityButton
+            );
+
+            actions.appendChild(
+                deleteLayerButton
+            );
+
+
+            row.appendChild(
+                thumbnail
+            );
+
+            row.appendChild(
+                name
+            );
+
+            row.appendChild(
+                layerNumber
+            );
+
+            row.appendChild(
+                actions
+            );
+
+
+            /*
+                CLIC SULLA RIGA
+            */
+            row.addEventListener(
+                "click",
+                function () {
+
+                    if (isHidden) {
+                        return;
+                    }
+
+
+                    if (
+                        item.type ===
+                        "image"
+                    ) {
+
+                        selectImageLayer(
+                            item.id
+                        );
+
+                    } else {
+
+                        selectTextLayer();
+                    }
+                }
+            );
+
+
+            /*
+                PORTA DAVANTI
+            */
+            forwardButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+
+                    if (isHidden) {
+                        return;
+                    }
+
+
+                    if (
+                        item.type ===
+                        "image"
+                    ) {
+
+                        selectImageLayer(
+                            item.id
+                        );
+
+                    } else {
+
+                        selectTextLayer();
+                    }
+
+
+                    bringForwardButton.click();
+                }
+            );
+
+
+            /*
+                PORTA DIETRO
+            */
+            backwardButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+
+                    if (isHidden) {
+                        return;
+                    }
+
+
+                    if (
+                        item.type ===
+                        "image"
+                    ) {
+
+                        selectImageLayer(
+                            item.id
+                        );
+
+                    } else {
+
+                        selectTextLayer();
+                    }
+
+
+                    sendBackwardButton.click();
+                }
+            );
+
+
+            /*
+                MOSTRA / NASCONDI
+            */
+            visibilityButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+
+                    if (
+                        item.type ===
+                        "image"
+                    ) {
+
+                        const imageState =
+                            state.images.find(
+                                function (image) {
+
+                                    return (
+                                        image.id ===
+                                        item.id
+                                    );
+                                }
+                            );
+
+
+                        if (!imageState) {
+                            return;
+                        }
+
+
+                        imageState.visible =
+                            imageState.visible === false;
+
+
+                        if (
+                            imageState.visible === false &&
+                            state.selectedImageId ===
+                                item.id
+                        ) {
+
+                            selectedElementType =
+                                null;
+
+                            selectionControls.style.display =
+                                "none";
+
+                            uploadedImage.classList.remove(
+                                "selected-element"
+                            );
+                        }
+
+                    } else {
+
+                        state.textVisible =
+                            state.textVisible === false;
+
+
+                        if (
+                            state.textVisible === false &&
+                            selectedElementType ===
+                                "text"
+                        ) {
+
+                            selectedElementType =
+                                null;
+
+                            selectionControls.style.display =
+                                "none";
+
+                            customText.classList.remove(
+                                "selected-element"
+                            );
+                        }
+                    }
+
+
+                    renderCurrentState();
+                }
+            );
+
+
+            /*
+                ELIMINA
+            */
+            deleteLayerButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+
+                    if (
+                        item.type ===
+                        "image"
+                    ) {
+
+                        syncSelectedImageFromLegacyState();
+
+                        setSelectedImage(
+                            item.id
+                        );
+
+                        loadSelectedImageIntoLegacyState();
+
+                        selectedElementType =
+                            "image";
+
+                    } else {
+
+                        selectedElementType =
+                            "text";
+                    }
+
+
+                    /*
+                        Riutilizziamo il cestino
+                        già presente nell'editor.
+                    */
+                    directDeleteButton.click();
+
+                    renderCurrentState();
+                }
+            );
+
+
+            layersList.appendChild(
+                row
+            );
         }
-
-
-        /*
-            NOME
-        */
-        const name =
-            document.createElement(
-                "span"
-            );
-
-        name.className =
-            "layer-name";
-
-
-        name.textContent =
-            item.type === "image"
-                ? `Foto ${item.index + 1}`
-                : "Testo";
-
-
-        /*
-            NUMERO LIVELLO
-        */
-        const layerNumber =
-            document.createElement(
-                "span"
-            );
-
-        layerNumber.className =
-            "layer-number";
-
-        layerNumber.textContent =
-            item.layer;
-
-
-        /*
-            PULSANTI ↑ ↓
-        */
-        const actions =
-            document.createElement(
-                "span"
-            );
-
-        actions.className =
-            "layer-actions";
-
-
-        const forwardButton =
-            document.createElement(
-                "button"
-            );
-
-        forwardButton.type =
-            "button";
-
-        forwardButton.className =
-            "layer-action-button";
-
-        forwardButton.textContent =
-            "↑";
-
-        forwardButton.title =
-            "Porta davanti";
-
-
-        const backwardButton =
-            document.createElement(
-                "button"
-            );
-
-        backwardButton.type =
-            "button";
-
-        backwardButton.className =
-            "layer-action-button";
-
-        backwardButton.textContent =
-            "↓";
-
-        backwardButton.title =
-            "Porta dietro";
-
-
-        actions.appendChild(
-            forwardButton
-        );
-
-        actions.appendChild(
-            backwardButton
-        );
-
-
-        row.appendChild(
-            thumbnail
-        );
-
-        row.appendChild(
-            name
-        );
-
-        row.appendChild(
-            layerNumber
-        );
-
-        row.appendChild(
-            actions
-        );
-
-
-        /*
-            CLIC SULLA RIGA:
-            seleziona l'elemento.
-        */
-        row.addEventListener(
-            "click",
-            function () {
-
-                if (
-                    item.type ===
-                    "image"
-                ) {
-
-                    selectImageLayer(
-                        item.id
-                    );
-
-                } else {
-
-                    selectTextLayer();
-                }
-            }
-        );
-
-
-        /*
-            PORTA DAVANTI
-        */
-        forwardButton.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-
-                if (
-                    item.type ===
-                    "image"
-                ) {
-
-                    selectImageLayer(
-                        item.id
-                    );
-
-                } else {
-
-                    selectTextLayer();
-                }
-
-
-                bringForwardButton.click();
-            }
-        );
-
-
-        /*
-            PORTA DIETRO
-        */
-        backwardButton.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-
-                if (
-                    item.type ===
-                    "image"
-                ) {
-
-                    selectImageLayer(
-                        item.id
-                    );
-
-                } else {
-
-                    selectTextLayer();
-                }
-
-
-                sendBackwardButton.click();
-            }
-        );
-
-
-        layersList.appendChild(
-            row
-        );
-    }
-);
+    );
 }
 
 

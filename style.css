@@ -1827,15 +1827,15 @@ height: auto;
     text-align: center;
 }
 .layer-actions {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(2, 26px);
     gap: 4px;
 }
 
 
 .layer-action-button {
-    width: 27px;
-    height: 27px;
+    width: 26px;
+    height: 26px;
 
     padding: 0;
 
@@ -1859,5 +1859,19 @@ height: auto;
 .layer-action-button:hover {
     background: #1976e9;
     border-color: #1976e9;
+    color: white;
+}
+
+.layer-item.hidden-layer {
+    opacity: 0.5;
+}
+
+.layer-item.hidden-layer .layer-thumb {
+    filter: grayscale(1);
+}
+
+.layer-delete-button:hover {
+    background: #e94b4b;
+    border-color: #e94b4b;
     color: white;
 }
