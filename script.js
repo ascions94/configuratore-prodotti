@@ -1385,10 +1385,6 @@ function createCartStateCopy(state) {
 
     } else if (state.imageSrc) {
 
-        /*
-            Compatibilità con eventuali
-            vecchie personalizzazioni.
-        */
         images.push({
             id:
                 "legacy-image",
@@ -1420,58 +1416,147 @@ function createCartStateCopy(state) {
     }
 
 
+    /*
+        TESTI MULTIPLI
+    */
+    let texts = [];
+
+
+    if (
+        Array.isArray(state.texts) &&
+        state.texts.length > 0
+    ) {
+
+        texts =
+            state.texts.map(
+                function (textState) {
+
+                    return {
+                        id:
+                            textState.id,
+
+                        text:
+                            textState.text,
+
+                        x:
+                            textState.x,
+
+                        y:
+                            textState.y,
+
+                        size:
+                            textState.size,
+
+                        rotation:
+                            textState.rotation,
+
+                        fontFamily:
+                            textState.fontFamily,
+
+                        color:
+                            textState.color,
+
+                        outlineEnabled:
+                            textState.outlineEnabled,
+
+                        outlineColor:
+                            textState.outlineColor,
+
+                        outlineWidth:
+                            textState.outlineWidth,
+
+                        bold:
+                            textState.bold,
+
+                        italic:
+                            textState.italic,
+
+                        align:
+                            textState.align,
+
+                        flipped:
+                            textState.flipped,
+
+                        layer:
+                            textState.layer,
+
+                        visible:
+                            textState.visible !== false
+                    };
+                }
+            );
+
+    } else if (
+        state.text &&
+        state.text.trim()
+    ) {
+
+        /*
+            Compatibilità con vecchie
+            personalizzazioni a testo singolo.
+        */
+        texts.push({
+            id:
+                "legacy-text",
+
+            text:
+                state.text,
+
+            x:
+                state.textX,
+
+            y:
+                state.textY,
+
+            size:
+                state.textSize,
+
+            rotation:
+                state.textRotation,
+
+            fontFamily:
+                state.fontFamily,
+
+            color:
+                state.textColor,
+
+            outlineEnabled:
+                state.textOutlineEnabled,
+
+            outlineColor:
+                state.textOutlineColor,
+
+            outlineWidth:
+                state.textOutlineWidth,
+
+            bold:
+                state.textBold,
+
+            italic:
+                state.textItalic,
+
+            align:
+                state.textAlign,
+
+            flipped:
+                state.textFlipped,
+
+            layer:
+                state.textLayer,
+
+            visible:
+                state.textVisible !== false
+        });
+    }
+
+
     return {
 
         images:
             images,
 
-        text:
-            state.text,
-
-        textX:
-            state.textX,
-
-        textY:
-            state.textY,
-
-        textSize:
-            state.textSize,
-
-        textRotation:
-            state.textRotation,
-
-        fontFamily:
-            state.fontFamily,
-
-        textColor:
-            state.textColor,
-
-        textOutlineEnabled:
-            state.textOutlineEnabled,
-
-        textOutlineColor:
-            state.textOutlineColor,
-
-        textOutlineWidth:
-            state.textOutlineWidth,
-
-        textBold:
-            state.textBold,
-
-        textItalic:
-            state.textItalic,
-
-        textAlign:
-            state.textAlign,
-
-        textFlipped:
-            state.textFlipped,
-
-        textLayer:
-            state.textLayer,
-
-        textVisible:
-            state.textVisible !== false,
+        texts:
+            texts,
 
         printBgEnabled:
             state.printBgEnabled,
@@ -1480,7 +1565,6 @@ function createCartStateCopy(state) {
             state.printBgColor
     };
 }
-
 
 const productStates = {
 
@@ -5820,237 +5904,1197 @@ function createTshirtSidePreview(
 }
 
 
-async function captureTshirtSide(side) {
+function createTshirtCartPreviewElement(side) {
 
-    const originalSide = tshirtSide;
-    const originalZoom = previewZoom;
-    const originalSelectedElement = selectedElementType;
+    const state =
+        productStates.tshirt[side];
 
-    try {
 
-        // Passa temporaneamente al lato da fotografare
-        tshirtSide = side;
+    /*
+        CONTENITORE PRINCIPALE
+    */
+    const preview =
+        document.createElement(
+            "div"
+        );
 
-        if (side === "back") {
-            printArea.classList.add(
-                "tshirt-back-print-area"
-            );
-        } else {
-            printArea.classList.remove(
-                "tshirt-back-print-area"
+
+    preview.style.position =
+    "absolute";
+
+preview.style.left =
+    "20px";
+
+preview.style.top =
+    `${window.scrollY + window.innerHeight + 100}px`;
+
+preview.style.zIndex =
+    "999999";
+
+preview.style.pointerEvents =
+    "none";
+
+    preview.style.width =
+        "420px";
+
+    preview.style.height =
+        "420px";
+
+    preview.style.backgroundRepeat =
+        "no-repeat";
+
+    preview.style.backgroundPosition =
+        "center";
+
+    preview.style.backgroundSize =
+        "contain";
+
+    preview.style.overflow =
+        "hidden";
+
+
+    /*
+        MOCKUP T-SHIRT
+    */
+    let mockupPath = "";
+
+
+    if (tshirtColor === "black") {
+
+        mockupPath =
+            side === "front"
+                ? "assets/tshirt-black-front.png"
+                : "assets/tshirt-black-back.png";
+
+    } else {
+
+        mockupPath =
+            side === "front"
+                ? "assets/tshirt-white-front.png"
+                : "assets/tshirt-white-back.png";
+    }
+
+
+    preview.style.backgroundImage =
+        `url("${mockupPath}")`;
+
+
+    /*
+        AREA DI STAMPA
+    */
+    const printAreaCopy =
+        document.createElement(
+            "div"
+        );
+
+
+    printAreaCopy.style.position =
+        "absolute";
+
+    printAreaCopy.style.overflow =
+        "hidden";
+
+
+    /*
+        Dimensioni area stampa.
+    */
+    const format =
+        tshirtPrintFormat[side];
+
+
+    if (format === "vertical") {
+
+        printAreaCopy.style.width =
+            "95px";
+
+        printAreaCopy.style.height =
+            "142px";
+
+        printAreaCopy.style.top =
+            side === "back"
+                ? "47%"
+                : "50%";
+
+    } else {
+
+        printAreaCopy.style.width =
+            "142px";
+
+        printAreaCopy.style.height =
+            "95px";
+
+        printAreaCopy.style.top =
+            side === "back"
+                ? "44%"
+                : "47%";
+    }
+
+
+    /*
+        Posizione orizzontale reale
+        dell'area di stampa.
+    */
+    printAreaCopy.style.left =
+        side === "back"
+            ? "41%"
+            : "58%";
+
+
+    printAreaCopy.style.transform =
+        "translate(-50%, -50%)";
+
+
+    /*
+        Sfondo personalizzato area stampa.
+    */
+    if (
+        state.printBgEnabled
+    ) {
+
+        printAreaCopy.style.backgroundColor =
+            state.printBgColor;
+
+    } else {
+
+        printAreaCopy.style.backgroundColor =
+            "transparent";
+    }
+
+
+    preview.appendChild(
+        printAreaCopy
+    );
+
+
+    /*
+        FOTO
+    */
+    state.images.forEach(
+        function (imageState) {
+
+            if (
+                imageState.visible === false
+            ) {
+                return;
+            }
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                imageState.src;
+
+            image.alt =
+                "";
+
+
+            image.style.position =
+                "absolute";
+
+            image.style.left =
+                "50%";
+
+            image.style.top =
+                "50%";
+
+            image.style.width =
+                "100%";
+
+            image.style.height =
+                "auto";
+
+            image.style.maxWidth =
+                "none";
+
+            image.style.maxHeight =
+                "none";
+
+            image.style.transformOrigin =
+                "center center";
+
+
+            const scaleX =
+                imageState.flipped
+                    ? -imageState.scale
+                    : imageState.scale;
+
+
+            image.style.transform =
+                `translate(
+                    calc(-50% + ${imageState.x}px),
+                    calc(-50% + ${imageState.y}px)
+                )
+                scale(
+                    ${scaleX},
+                    ${imageState.scale}
+                )
+                rotate(${imageState.rotation}deg)`;
+
+
+            image.style.zIndex =
+                imageState.layer;
+
+
+            printAreaCopy.appendChild(
+                image
             );
         }
+    );
 
-        updateTshirtPrintFormat();
-        updateTshirtMockup();
-        renderCurrentState();
 
-        // La fotografia viene sempre fatta al 100%
-        previewZoom = 100;
-        updatePreviewZoom();
+    /*
+        TESTI
+    */
+    state.texts.forEach(
+        function (textState) {
 
-        // Nasconde i controlli di modifica
-        selectionControls.style.display = "none";
+            if (
+                textState.visible === false ||
+                !textState.text
+            ) {
+                return;
+            }
 
-        uploadedImage.classList.remove(
-            "selected-element"
+
+            const text =
+                document.createElement(
+                    "div"
+                );
+
+
+            text.textContent =
+                textState.text;
+
+
+            text.style.position =
+                "absolute";
+
+            text.style.left =
+                "50%";
+
+            text.style.top =
+                "50%";
+
+            text.style.width =
+                "max-content";
+
+            text.style.maxWidth =
+                "100%";
+
+            text.style.height =
+                "auto";
+
+            text.style.whiteSpace =
+                "pre-wrap";
+
+            text.style.overflowWrap =
+                "anywhere";
+
+            text.style.wordBreak =
+                "break-word";
+
+            text.style.lineHeight =
+                "1.15";
+
+
+            text.style.fontSize =
+                `${textState.size}px`;
+
+            text.style.fontFamily =
+                textState.fontFamily;
+
+            text.style.color =
+                textState.color;
+
+            text.style.fontWeight =
+                textState.bold
+                    ? "700"
+                    : "400";
+
+            text.style.fontStyle =
+                textState.italic
+                    ? "italic"
+                    : "normal";
+
+            text.style.textAlign =
+                textState.align ||
+                "center";
+
+
+            text.style.webkitTextStroke =
+                textState.outlineEnabled
+                    ? `${textState.outlineWidth}px ${textState.outlineColor}`
+                    : "0px transparent";
+
+
+            const scaleX =
+                textState.flipped
+                    ? -1
+                    : 1;
+
+
+            text.style.transform =
+                `translate(
+                    calc(-50% + ${textState.x}px),
+                    calc(-50% + ${textState.y}px)
+                )
+                rotate(${textState.rotation}deg)
+                scaleX(${scaleX})`;
+
+
+            text.style.zIndex =
+                textState.layer;
+
+
+            printAreaCopy.appendChild(
+                text
+            );
+        }
+    );
+
+
+    document.body.appendChild(
+        preview
+    );
+
+
+    return preview;
+}
+
+function testTshirtCartPreview(side) {
+
+    const preview =
+        createTshirtCartPreviewElement(
+            side
         );
 
-        customText.classList.remove(
-            "selected-element"
+
+    preview.style.left =
+        "20px";
+
+    preview.style.top =
+        "20px";
+
+    preview.style.zIndex =
+        "999999";
+
+    preview.style.border =
+        "3px solid red";
+
+    preview.style.backgroundColor =
+        "#eeeeee";
+
+
+    setTimeout(
+        function () {
+
+            preview.remove();
+
+        },
+        10000
+    );
+}
+
+const testPreviewButton =
+    document.createElement("button");
+
+testPreviewButton.type =
+    "button";
+
+testPreviewButton.textContent =
+    "TEST ANTEPRIMA RETRO";
+
+testPreviewButton.style.position =
+    "fixed";
+
+testPreviewButton.style.right =
+    "20px";
+
+testPreviewButton.style.bottom =
+    "20px";
+
+testPreviewButton.style.zIndex =
+    "999999";
+
+testPreviewButton.style.padding =
+    "12px 18px";
+
+testPreviewButton.style.fontWeight =
+    "700";
+
+testPreviewButton.style.cursor =
+    "pointer";
+
+
+testPreviewButton.addEventListener(
+    "click",
+    function () {
+
+        testTshirtCartPreview(
+            "back"
         );
-
-        guideVertical.style.display = "none";
-        guideHorizontal.style.display = "none";
-        rotationGuide.style.display = "none";
-
-        // Aspetta che il browser abbia aggiornato il lato
-        await new Promise(function (resolve) {
-            requestAnimationFrame(function () {
-                requestAnimationFrame(resolve);
-            });
-        });
-
-        // Aspetta l'immagine caricata dall'utente
-        if (
-    uploadedImage.src &&
-    uploadedImage.style.display !== "none"
-) {
-
-    try {
-
-        await uploadedImage.decode();
-
-    } catch (error) {
-
-        await new Promise(function (resolve) {
-
-            uploadedImage.addEventListener(
-                "load",
-                resolve,
-                { once: true }
-            );
-
-            uploadedImage.addEventListener(
-                "error",
-                resolve,
-                { once: true }
-            );
-
-        });
     }
+);
+
+
+document.body.appendChild(
+    testPreviewButton
+);
+
+function loadCanvasImage(src) {
+
+    return new Promise(
+        function (resolve, reject) {
+
+            const image =
+                new Image();
+
+
+            image.onload =
+                function () {
+                    resolve(image);
+                };
+
+
+            image.onerror =
+                reject;
+
+
+            image.src =
+                src;
+        }
+    );
 }
 
 
-// Diamo a Chrome il tempo di
-// disegnare realmente l'immagine
-// dopo la decodifica.
-await new Promise(function (resolve) {
 
-    requestAnimationFrame(function () {
+function wrapCanvasText(
+    context,
+    text,
+    maxWidth
+) {
 
-        requestAnimationFrame(function () {
+    const paragraphs =
+        String(text).split("\n");
 
-            requestAnimationFrame(resolve);
 
-        });
+    const lines = [];
 
-    });
 
-});
+    paragraphs.forEach(
+        function (paragraph) {
 
-        const canvas = await html2canvas(
-            productPreview,
-            {
-                backgroundColor: null,
-                scale: 1,
+            const words =
+                paragraph.split(" ");
 
-                onclone: function (clonedDocument) {
 
-                    const clonedPreview =
-                        clonedDocument.getElementById(
-                            "productPreview"
+            let currentLine =
+                "";
+
+
+            words.forEach(
+                function (word) {
+
+                    const testLine =
+                        currentLine
+                            ? currentLine + " " + word
+                            : word;
+
+
+                    const width =
+                        context.measureText(
+                            testLine
+                        ).width;
+
+
+                    if (
+                        width > maxWidth &&
+                        currentLine
+                    ) {
+
+                        lines.push(
+                            currentLine
                         );
 
-                    const clonedPrintArea =
-                        clonedDocument.getElementById(
-                            "printArea"
-                        );
+                        currentLine =
+                            word;
 
-                    const clonedSelection =
-                        clonedDocument.getElementById(
-                            "selectionControls"
-                        );
+                    } else {
 
-                    const clonedImage =
-                        clonedDocument.getElementById(
-                            "uploadedImage"
-                        );
-
-                    const clonedText =
-                        clonedDocument.getElementById(
-                            "customText"
-                        );
-
-                    if (clonedSelection) {
-                        clonedSelection.style.display =
-                            "none";
-                    }
-
-                    if (clonedPrintArea) {
-                        clonedPrintArea.style.border =
-                            "none";
-                    }
-
-                    if (clonedImage) {
-                        clonedImage.classList.remove(
-                            "selected-element"
-                        );
-                    }
-
-                    if (clonedText) {
-                        clonedText.classList.remove(
-                            "selected-element"
-                        );
-                    }
-
-                    if (clonedPreview) {
-                        clonedPreview
-                            .querySelectorAll(
-                                ".guide-line, .rotation-guide"
-                            )
-                            .forEach(function (element) {
-                                element.style.display =
-                                    "none";
-                            });
+                        currentLine =
+                            testLine;
                     }
                 }
-            }
+            );
+
+
+            lines.push(
+                currentLine
+            );
+        }
+    );
+
+
+    return lines;
+}
+
+
+
+async function createTshirtCartCanvas(side) {
+
+    const canvas =
+        document.createElement(
+            "canvas"
         );
 
-        // Riduce la fotografia per il carrello
-        // evitando immagini enormi nel localStorage
-        const maxSize = 320;
 
-        const ratio = Math.min(
+    canvas.width =
+        420;
+
+    canvas.height =
+        420;
+
+
+    const context =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    const state =
+        productStates
+            .tshirt[side];
+
+
+    /*
+        =========================
+        MOCKUP T-SHIRT
+        =========================
+    */
+    let mockupPath = "";
+
+
+    if (tshirtColor === "black") {
+
+        mockupPath =
+            side === "front"
+                ? "assets/tshirt-black-front.png"
+                : "assets/tshirt-black-back.png";
+
+    } else {
+
+        mockupPath =
+            side === "front"
+                ? "assets/tshirt-white-front.png"
+                : "assets/tshirt-white-back.png";
+    }
+
+
+    const mockupImage =
+        await loadCanvasImage(
+            mockupPath
+        );
+
+
+    /*
+        Equivalente a:
+        background-size: contain;
+    */
+    const mockupScale =
+        Math.min(
+            canvas.width /
+                mockupImage.naturalWidth,
+
+            canvas.height /
+                mockupImage.naturalHeight
+        );
+
+
+    const mockupWidth =
+        mockupImage.naturalWidth *
+        mockupScale;
+
+
+    const mockupHeight =
+        mockupImage.naturalHeight *
+        mockupScale;
+
+
+    const mockupX =
+        (
+            canvas.width -
+            mockupWidth
+        ) / 2;
+
+
+    const mockupY =
+        (
+            canvas.height -
+            mockupHeight
+        ) / 2;
+
+
+    context.drawImage(
+        mockupImage,
+        mockupX,
+        mockupY,
+        mockupWidth,
+        mockupHeight
+    );
+
+
+    /*
+        =========================
+        AREA DI STAMPA
+        =========================
+    */
+    const format =
+        tshirtPrintFormat[side];
+
+
+    let areaWidth;
+    let areaHeight;
+    let areaTopPercent;
+
+
+    if (
+        format === "vertical"
+    ) {
+
+        areaWidth =
+            95;
+
+        areaHeight =
+            142;
+
+        areaTopPercent =
+            side === "back"
+                ? 47
+                : 50;
+
+    } else {
+
+        areaWidth =
+            142;
+
+        areaHeight =
+            95;
+
+        areaTopPercent =
+            side === "back"
+                ? 44
+                : 47;
+    }
+
+
+    const areaLeftPercent =
+        side === "back"
+            ? 41
+            : 58;
+
+
+    const areaCenterX =
+        canvas.width *
+        areaLeftPercent /
+        100;
+
+
+    const areaCenterY =
+        canvas.height *
+        areaTopPercent /
+        100;
+
+
+    const areaLeft =
+        areaCenterX -
+        areaWidth / 2;
+
+
+    const areaTop =
+        areaCenterY -
+        areaHeight / 2;
+
+
+    /*
+        Salviamo il canvas e limitiamo
+        tutto all'area di stampa.
+    */
+    context.save();
+
+
+    context.beginPath();
+
+    context.rect(
+        areaLeft,
+        areaTop,
+        areaWidth,
+        areaHeight
+    );
+
+    context.clip();
+
+
+    /*
+        Sfondo area stampa
+    */
+    if (
+        state.printBgEnabled
+    ) {
+
+        context.fillStyle =
+            state.printBgColor;
+
+
+        context.fillRect(
+            areaLeft,
+            areaTop,
+            areaWidth,
+            areaHeight
+        );
+    }
+
+
+    /*
+        =========================
+        LIVELLI
+        =========================
+
+        Mettiamo foto e testi nello
+        stesso array e li ordiniamo
+        in base al layer.
+    */
+    const elements = [];
+
+
+    state.images.forEach(
+        function (imageState) {
+
+            if (
+                imageState.visible ===
+                false
+            ) {
+                return;
+            }
+
+
+            elements.push({
+                type:
+                    "image",
+
+                layer:
+                    imageState.layer,
+
+                state:
+                    imageState
+            });
+        }
+    );
+
+
+    state.texts.forEach(
+        function (textState) {
+
+            if (
+                textState.visible ===
+                    false ||
+                !textState.text
+            ) {
+                return;
+            }
+
+
+            elements.push({
+                type:
+                    "text",
+
+                layer:
+                    textState.layer,
+
+                state:
+                    textState
+            });
+        }
+    );
+
+
+    elements.sort(
+        function (a, b) {
+
+            return (
+                a.layer -
+                b.layer
+            );
+        }
+    );
+
+
+    /*
+        =========================
+        DISEGNO LIVELLI
+        =========================
+    */
+    for (
+        const element of elements
+    ) {
+
+        /*
+            FOTO
+        */
+        if (
+            element.type ===
+            "image"
+        ) {
+
+            const imageState =
+                element.state;
+
+
+            const image =
+                await loadCanvasImage(
+                    imageState.src
+                );
+
+
+            /*
+                Nell'editor l'immagine base
+                ha larghezza = 100%
+                dell'area di stampa.
+            */
+            const baseWidth =
+                areaWidth;
+
+
+            const baseHeight =
+                image.naturalHeight /
+                image.naturalWidth *
+                baseWidth;
+
+
+            context.save();
+
+
+            context.translate(
+                areaCenterX +
+                    imageState.x,
+
+                areaCenterY +
+                    imageState.y
+            );
+
+
+            context.rotate(
+                imageState.rotation *
+                Math.PI /
+                180
+            );
+
+
+            context.scale(
+                imageState.flipped
+                    ? -imageState.scale
+                    : imageState.scale,
+
+                imageState.scale
+            );
+
+
+            context.drawImage(
+                image,
+                -baseWidth / 2,
+                -baseHeight / 2,
+                baseWidth,
+                baseHeight
+            );
+
+
+            context.restore();
+        }
+
+
+        /*
+            TESTO
+        */
+        if (
+            element.type ===
+            "text"
+        ) {
+
+            const textState =
+                element.state;
+
+
+            context.save();
+
+
+            context.translate(
+                areaCenterX +
+                    textState.x,
+
+                areaCenterY +
+                    textState.y
+            );
+
+
+            context.rotate(
+                textState.rotation *
+                Math.PI /
+                180
+            );
+
+
+            context.scale(
+                textState.flipped
+                    ? -1
+                    : 1,
+                1
+            );
+
+
+            const fontStyle =
+                textState.italic
+                    ? "italic"
+                    : "normal";
+
+
+            const fontWeight =
+                textState.bold
+                    ? "700"
+                    : "400";
+
+
+            context.font =
+                `${fontStyle} ${fontWeight} ${textState.size}px ${textState.fontFamily}`;
+
+
+            context.textBaseline =
+                "middle";
+
+
+            const lines =
+                wrapCanvasText(
+                    context,
+                    textState.text,
+                    areaWidth
+                );
+
+
+            const lineHeight =
+                textState.size *
+                1.15;
+
+
+            /*
+                La larghezza del blocco testo
+                corrisponde alla riga più larga.
+            */
+            let blockWidth =
+                0;
+
+
+            lines.forEach(
+                function (line) {
+
+                    blockWidth =
+                        Math.max(
+                            blockWidth,
+                            context.measureText(
+                                line
+                            ).width
+                        );
+                }
+            );
+
+
+            blockWidth =
+                Math.min(
+                    blockWidth,
+                    areaWidth
+                );
+
+
+            lines.forEach(
+                function (
+                    line,
+                    index
+                ) {
+
+                    let textX =
+                        0;
+
+
+                    if (
+                        textState.align ===
+                        "left"
+                    ) {
+
+                        context.textAlign =
+                            "left";
+
+                        textX =
+                            -blockWidth / 2;
+
+                    } else if (
+                        textState.align ===
+                        "right"
+                    ) {
+
+                        context.textAlign =
+                            "right";
+
+                        textX =
+                            blockWidth / 2;
+
+                    } else {
+
+                        context.textAlign =
+                            "center";
+
+                        textX =
+                            0;
+                    }
+
+
+                    const textY =
+                        (
+                            index -
+                            (
+                                lines.length -
+                                1
+                            ) / 2
+                        ) *
+                        lineHeight;
+
+
+                    /*
+                        Contorno
+                    */
+                    if (
+                        textState
+                            .outlineEnabled
+                    ) {
+
+                        context.lineJoin =
+                            "round";
+
+                        context.miterLimit =
+                            2;
+
+                        context.lineWidth =
+                            textState
+                                .outlineWidth *
+                            2;
+
+                        context.strokeStyle =
+                            textState
+                                .outlineColor;
+
+
+                        context.strokeText(
+                            line,
+                            textX,
+                            textY
+                        );
+                    }
+
+
+                    /*
+                        Riempimento testo
+                    */
+                    context.fillStyle =
+                        textState.color;
+
+
+                    context.fillText(
+                        line,
+                        textX,
+                        textY
+                    );
+                }
+            );
+
+
+            context.restore();
+        }
+    }
+
+
+    /*
+        Chiude il clipping.
+    */
+    context.restore();
+
+
+    return canvas;
+}
+
+async function captureTshirtSide(side) {
+
+    const canvas =
+        await createTshirtCartCanvas(
+            side
+        );
+
+
+    /*
+        Riduciamo a max 320 px,
+        come facevamo prima.
+    */
+    const maxSize =
+        320;
+
+
+    const ratio =
+        Math.min(
             maxSize / canvas.width,
             maxSize / canvas.height,
             1
         );
 
-        const smallCanvas =
-            document.createElement("canvas");
 
-        smallCanvas.width =
-            Math.round(canvas.width * ratio);
-
-        smallCanvas.height =
-            Math.round(canvas.height * ratio);
-
-        const context =
-            smallCanvas.getContext("2d");
-
-        context.drawImage(
-            canvas,
-            0,
-            0,
-            smallCanvas.width,
-            smallCanvas.height
+    const smallCanvas =
+        document.createElement(
+            "canvas"
         );
 
-        return smallCanvas.toDataURL(
-            "image/jpeg",
-            0.85
+
+    smallCanvas.width =
+        Math.round(
+            canvas.width *
+            ratio
         );
 
-    } finally {
 
-        // Ripristina esattamente il lato
-        // che l'utente stava modificando
-        tshirtSide = originalSide;
+    smallCanvas.height =
+        Math.round(
+            canvas.height *
+            ratio
+        );
 
-        if (originalSide === "back") {
-            printArea.classList.add(
-                "tshirt-back-print-area"
-            );
-        } else {
-            printArea.classList.remove(
-                "tshirt-back-print-area"
-            );
-        }
 
-        updateTshirtPrintFormat();
-        updateTshirtMockup();
-        renderCurrentState();
+    const context =
+        smallCanvas.getContext(
+            "2d"
+        );
 
-        previewZoom = originalZoom;
-        updatePreviewZoom();
 
-        selectedElementType =
-            originalSelectedElement;
-    }
+    context.drawImage(
+        canvas,
+        0,
+        0,
+        smallCanvas.width,
+        smallCanvas.height
+    );
+
+
+    return smallCanvas.toDataURL(
+        "image/jpeg",
+        0.85
+    );
 }
-
 async function captureTshirtPreviews() {
 
     const frontPreview =
@@ -6771,6 +7815,7 @@ addToCartButton.addEventListener("click", async function () {
     trasformazione della foto attiva.
 */
 syncSelectedImageFromLegacyState();
+syncSelectedTextFromLegacyState();
 
 
 let cartPreviews = null;
@@ -6780,6 +7825,79 @@ if (currentProduct === "tshirt") {
 
     cartPreviews =
         await captureTshirtPreviews();
+
+        const debugPreviewBox =
+    document.createElement("div");
+
+debugPreviewBox.style.position =
+    "fixed";
+
+debugPreviewBox.style.left =
+    "20px";
+
+debugPreviewBox.style.top =
+    "20px";
+
+debugPreviewBox.style.zIndex =
+    "999999";
+
+debugPreviewBox.style.background =
+    "white";
+
+debugPreviewBox.style.padding =
+    "10px";
+
+debugPreviewBox.style.border =
+    "3px solid blue";
+
+debugPreviewBox.style.display =
+    "flex";
+
+debugPreviewBox.style.gap =
+    "10px";
+
+
+const debugFront =
+    document.createElement("img");
+
+debugFront.src =
+    cartPreviews.front;
+
+debugFront.style.width =
+    "220px";
+
+
+const debugBack =
+    document.createElement("img");
+
+debugBack.src =
+    cartPreviews.back;
+
+debugBack.style.width =
+    "220px";
+
+
+debugPreviewBox.appendChild(
+    debugFront
+);
+
+debugPreviewBox.appendChild(
+    debugBack
+);
+
+document.body.appendChild(
+    debugPreviewBox
+);
+
+
+setTimeout(
+    function () {
+
+        debugPreviewBox.remove();
+
+    },
+    15000
+);
 
 } else {
 
