@@ -5390,6 +5390,26 @@ guideHorizontal.style.display = "none";
 });
 
 
+/*
+    Salviamo la dimensione della foto
+    una sola volta, prima di iniziare
+    a trascinare lo slider.
+*/
+zoomRange.addEventListener(
+    "pointerdown",
+    function () {
+
+        const imageState =
+            getSelectedImageState();
+
+        if (!imageState) {
+            return;
+        }
+
+        saveHistoryState();
+    }
+);
+
 zoomRange.addEventListener(
     "input",
     function () {
@@ -5435,6 +5455,26 @@ zoomRange.addEventListener(
     }
 );
 
+
+/*
+    Salviamo la rotazione della foto
+    una sola volta, prima di iniziare
+    a trascinare lo slider.
+*/
+rotationRange.addEventListener(
+    "pointerdown",
+    function () {
+
+        const imageState =
+            getSelectedImageState();
+
+        if (!imageState) {
+            return;
+        }
+
+        saveHistoryState();
+    }
+);
 
 rotationRange.addEventListener("input", function () {
 
@@ -5946,6 +5986,26 @@ function refreshTextLayout() {
     }
 }
 
+/*
+    Salviamo la dimensione del testo
+    una sola volta, prima di iniziare
+    a trascinare lo slider.
+*/
+textSizeRange.addEventListener(
+    "pointerdown",
+    function () {
+
+        const textState =
+            getSelectedTextState();
+
+        if (!textState) {
+            return;
+        }
+
+        saveHistoryState();
+    }
+);
+
 textSizeRange.addEventListener(
     "input",
     function () {
@@ -6039,6 +6099,26 @@ function keepTextInsidePrintArea() {
 
     updateTextTransform();
 }
+
+/*
+    Salviamo la rotazione del testo
+    una sola volta, prima di iniziare
+    a trascinare lo slider.
+*/
+textRotationRange.addEventListener(
+    "pointerdown",
+    function () {
+
+        const textState =
+            getSelectedTextState();
+
+        if (!textState) {
+            return;
+        }
+
+        saveHistoryState();
+    }
+);
 
 textRotationRange.addEventListener("input", function () {
 
