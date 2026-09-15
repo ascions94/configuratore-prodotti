@@ -1661,9 +1661,18 @@ let productStates = {
     },
 
     tshirt: {
+
+    white: {
         front: createEmptyState(),
         back: createEmptyState()
     },
+
+    black: {
+        front: createEmptyState(),
+        back: createEmptyState()
+    }
+
+},
 
     keychain: {
         front: createEmptyState()
@@ -1684,8 +1693,59 @@ if (
     savedConfigurator.productStates
 ) {
 
-    productStates =
-        savedConfigurator.productStates;
+    const savedProductStates =
+    savedConfigurator.productStates;
+
+/*
+    Recuperiamo normalmente
+    Cuscino e Portachiavi.
+*/
+if (savedProductStates.cushion) {
+    productStates.cushion =
+        savedProductStates.cushion;
+}
+
+if (savedProductStates.keychain) {
+    productStates.keychain =
+        savedProductStates.keychain;
+}
+
+/*
+    T-SHIRT
+
+    Se il salvataggio possiede già
+    white e black utilizziamo
+    la nuova struttura.
+
+    Se invece troviamo front/back
+    direttamente dentro tshirt,
+    significa che è un vecchio
+    salvataggio: lo conserviamo
+    come personalizzazione Bianca.
+*/
+if (savedProductStates.tshirt) {
+
+    if (
+        savedProductStates.tshirt.white &&
+        savedProductStates.tshirt.black
+    ) {
+
+        productStates.tshirt =
+            savedProductStates.tshirt;
+
+    } else {
+
+        if (savedProductStates.tshirt.front) {
+            productStates.tshirt.white.front =
+                savedProductStates.tshirt.front;
+        }
+
+        if (savedProductStates.tshirt.back) {
+            productStates.tshirt.white.back =
+                savedProductStates.tshirt.back;
+        }
+    }
+}
 
             if (savedConfigurator.currentProduct) {
         currentProduct =
@@ -3402,7 +3462,15 @@ function renderLayersPanel() {
 
 function getCurrentState() {
 
-    return productStates[currentProduct][getCurrentSide()];
+    if (currentProduct === "tshirt") {
+
+        return productStates
+            .tshirt[tshirtColor][tshirtSide];
+    }
+
+    return productStates
+        [currentProduct]
+        [getCurrentSide()];
 }
 
 
@@ -4491,8 +4559,18 @@ function resetCurrentState() {
     const side =
         getCurrentSide();
 
-    productStates[currentProduct][side] =
+    if (currentProduct === "tshirt") {
+
+    productStates
+        .tshirt[tshirtColor][side] =
         createEmptyState();
+
+} else {
+
+    productStates
+        [currentProduct][side] =
+        createEmptyState();
+}
 
 
     imageUpload.value = "";
@@ -4656,7 +4734,10 @@ productSelect.addEventListener("change", function () {
     
     currentProduct = this.value;
 
-    previewZoom = 100;
+    previewZoom =
+    currentProduct === "tshirt"
+        ? 150
+        : 100;
 
     uploadedImage.classList.remove("selected-element");
     customText.classList.remove("selected-element");
@@ -5644,6 +5725,14 @@ document
 
         button.addEventListener("click", function () {
 
+            /*
+                Salviamo le ultime modifiche
+                del colore attuale prima
+                di passare all'altro.
+            */
+            syncSelectedImageFromLegacyState();
+            syncSelectedTextFromLegacyState();
+
             document
                 .querySelectorAll(".color-button")
                 .forEach(function (item) {
@@ -5652,9 +5741,28 @@ document
 
             this.classList.add("active");
 
+            /*
+                Cambiamo colore.
+                Da questo momento getCurrentState()
+                utilizzerà lo stato del nuovo colore.
+            */
             tshirtColor = this.dataset.color;
 
+            /*
+                Deselezioniamo eventuali controlli
+                appartenenti al vecchio colore.
+            */
+            selectedElementType = null;
+
+            selectionControls.style.display =
+                "none";
+
+            /*
+                Ricostruiamo completamente
+                il nuovo stato.
+            */
             updateTshirtMockup();
+            renderCurrentState();
         });
     });
 
@@ -5823,6 +5931,11 @@ let previewZoom = 100;
 
 function updatePreviewZoom() {
 
+        previewZoomRange.max =
+        currentProduct === "tshirt"
+            ? 180
+            : 160;
+
     const scale = previewZoom / 100;
 
     let horizontalOffset = 0;
@@ -5862,8 +5975,13 @@ previewZoomRange.addEventListener("input", function () {
 
 zoomInPreviewButton.addEventListener("click", function () {
 
-    previewZoom =
-        Math.min(160, previewZoom + 5);
+    const maxPreviewZoom =
+    currentProduct === "tshirt"
+        ? 180
+        : 160;
+
+previewZoom =
+    Math.min(maxPreviewZoom, previewZoom + 5);
 
     updatePreviewZoom();
 });
@@ -5880,7 +5998,10 @@ zoomOutPreviewButton.addEventListener("click", function () {
 
 resetPreviewZoomButton.addEventListener("click", function () {
 
-    previewZoom = 100;
+    previewZoom =
+    currentProduct === "tshirt"
+        ? 150
+        : 100;
 
     updatePreviewZoom();
 });
