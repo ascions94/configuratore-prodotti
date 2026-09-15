@@ -1926,3 +1926,33 @@ height: auto;
 
     pointer-events: auto;
 }
+
+/* ============================
+   ANNULLA / RIPRISTINA
+   ============================ */
+
+.history-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.history-button {
+    padding: 8px 14px;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.history-button:hover:not(:disabled) {
+    background: #f3f3f3;
+}
+
+.history-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}

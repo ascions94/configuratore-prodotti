@@ -151,6 +151,12 @@ const zoomInPreviewButton =
 const resetPreviewZoomButton =
     document.getElementById("resetPreviewZoomButton");
 
+    const undoButton =
+    document.getElementById("undoButton");
+
+const redoButton =
+    document.getElementById("redoButton");
+
 const sendBackwardButton =
     document.getElementById("sendBackwardButton");
 
@@ -271,6 +277,12 @@ const clearPrintBgButton =
         return;
     }
 
+    /*
+    Salviamo lo stato prima
+    del capovolgimento.
+*/
+saveHistoryState();
+
     if (selectedElementType === "image") {
         flipImage();
     }
@@ -287,6 +299,12 @@ bringForwardButton.addEventListener(
         if (!selectedElementType) {
             return;
         }
+
+                /*
+            Salviamo i livelli prima
+            di portare avanti l'elemento.
+        */
+        saveHistoryState();
 
 
         const state =
@@ -380,6 +398,12 @@ sendBackwardButton.addEventListener(
         if (!selectedElementType) {
             return;
         }
+
+                /*
+            Salviamo i livelli prima
+            di portare indietro l'elemento.
+        */
+        saveHistoryState();
 
 
         const state =
@@ -565,6 +589,12 @@ directRotateButton.addEventListener("mousedown", function (event) {
         return;
     }
 
+    /*
+        Salviamo la rotazione prima
+        di iniziare a ruotare.
+    */
+    saveHistoryState();
+
     const selectedElement =
         selectedElementType === "image"
             ? uploadedImage
@@ -589,6 +619,12 @@ directMoveButton.addEventListener("mousedown", function (event) {
     if (!selectedElementType) {
         return;
     }
+
+    /*
+        Salviamo la posizione PRIMA
+        dello spostamento.
+    */
+    saveHistoryState();
 
     const state = getCurrentState();
 
@@ -624,11 +660,17 @@ document
 
         handle.addEventListener("mousedown", function (event) {
 
-            if (!selectedElementType) {
-                return;
-            }
+    if (!selectedElementType) {
+        return;
+    }
 
-            const state = getCurrentState();
+    /*
+        Salviamo la dimensione PRIMA
+        del ridimensionamento.
+    */
+    saveHistoryState();
+
+    const state = getCurrentState();
 
             const selectedElement =
                 selectedElementType === "image"
@@ -674,7 +716,6 @@ directDeleteButton.addEventListener(
             return;
         }
 
-
         const state =
             getCurrentState();
 
@@ -685,20 +726,27 @@ directDeleteButton.addEventListener(
         ) {
 
             const selectedImage =
-                getSelectedImageState();
+    getSelectedImageState();
 
 
-            if (!selectedImage) {
-                return;
-            }
+if (!selectedImage) {
+    return;
+}
 
 
-            /*
-                Eliminiamo solamente
-                la foto selezionata.
-            */
-            state.images =
-                state.images.filter(
+/*
+    Salviamo lo stato prima
+    di eliminare la foto.
+*/
+saveHistoryState();
+
+
+/*
+    Eliminiamo solamente
+    la foto selezionata.
+*/
+state.images =
+    state.images.filter(
                     function (imageState) {
 
                         return (
@@ -816,17 +864,24 @@ if (
     syncSelectedTextFromLegacyState();
 
 
-    const selectedText =
-        getSelectedTextState();
+const selectedText =
+    getSelectedTextState();
 
 
-    if (!selectedText) {
-        return;
-    }
+if (!selectedText) {
+    return;
+}
 
 
-    state.texts =
-        state.texts.filter(
+/*
+    Salviamo lo stato prima
+    di eliminare la scritta.
+*/
+saveHistoryState();
+
+
+state.texts =
+    state.texts.filter(
             function (textState) {
 
                 return (
@@ -1166,6 +1221,20 @@ document.addEventListener("mouseup", function () {
 
     rotationGuide.style.display = "none";
 });
+
+/*
+    Indica se abbiamo già salvato
+    lo stato all'inizio della modifica
+    del testo.
+*/
+let isEditingText = false;
+
+/*
+    Memorizza la scritta appena creata.
+    Ci servirà per distinguerla
+    da una scritta già esistente.
+*/
+let newlyCreatedTextId = null;
 
 let selectedElementType = null;
 
@@ -1788,6 +1857,204 @@ setInterval(
     1000
 );
 
+/*
+    ============================
+    ANNULLA / RIPRISTINA
+    ============================
+*/
+
+const HISTORY_LIMIT = 20;
+
+let undoStack = [];
+let redoStack = [];
+
+let isRestoringHistory = false;
+
+
+/*
+    Crea una fotografia completa
+    dello stato del configuratore.
+*/
+function createHistorySnapshot() {
+
+    syncSelectedImageFromLegacyState();
+    syncSelectedTextFromLegacyState();
+
+    return JSON.stringify({
+        productStates: productStates,
+        currentProduct: currentProduct,
+        tshirtColor: tshirtColor,
+        tshirtSize: tshirtSize,
+        tshirtSide: tshirtSide,
+        tshirtPrintFormat: tshirtPrintFormat
+    });
+}
+
+
+/*
+    Registra lo stato PRIMA
+    di effettuare una modifica.
+*/
+function saveHistoryState() {
+
+    if (isRestoringHistory) {
+        return;
+    }
+
+    const snapshot =
+        createHistorySnapshot();
+
+    /*
+        Evitiamo di salvare due
+        stati consecutivi identici.
+    */
+    if (
+        undoStack.length > 0 &&
+        undoStack[
+            undoStack.length - 1
+        ] === snapshot
+    ) {
+        return;
+    }
+
+    undoStack.push(snapshot);
+
+    /*
+        Manteniamo al massimo
+        HISTORY_LIMIT stati.
+    */
+    if (
+        undoStack.length >
+        HISTORY_LIMIT
+    ) {
+        undoStack.shift();
+    }
+
+    /*
+        Una nuova modifica rende
+        non più valida la cronologia
+        del Ripristina.
+    */
+    redoStack = [];
+
+    updateHistoryButtons();
+}
+
+function updateHistoryButtons() {
+
+    undoButton.disabled =
+        undoStack.length === 0;
+
+    redoButton.disabled =
+        redoStack.length === 0;
+}
+
+
+function restoreHistorySnapshot(snapshot) {
+
+    const data =
+        JSON.parse(snapshot);
+
+    isRestoringHistory = true;
+
+    productStates =
+        data.productStates;
+
+    currentProduct =
+        data.currentProduct;
+
+    tshirtColor =
+        data.tshirtColor;
+
+    tshirtSize =
+        data.tshirtSize;
+
+    tshirtSide =
+        data.tshirtSide;
+
+    tshirtPrintFormat =
+        data.tshirtPrintFormat;
+
+    selectedElementType = null;
+
+    selectionControls.style.display =
+        "none";
+
+    productSelect.value =
+        currentProduct;
+
+    updateProductPreview();
+    updatePreviewZoom();
+
+    isRestoringHistory = false;
+}
+
+
+function undoHistory() {
+
+    if (undoStack.length === 0) {
+        return;
+    }
+
+    const currentSnapshot =
+        createHistorySnapshot();
+
+    redoStack.push(
+        currentSnapshot
+    );
+
+    const previousSnapshot =
+        undoStack.pop();
+
+    restoreHistorySnapshot(
+        previousSnapshot
+    );
+
+    updateHistoryButtons();
+}
+
+
+function redoHistory() {
+
+    if (redoStack.length === 0) {
+        return;
+    }
+
+    const currentSnapshot =
+        createHistorySnapshot();
+
+    undoStack.push(
+        currentSnapshot
+    );
+
+    const nextSnapshot =
+        redoStack.pop();
+
+    restoreHistorySnapshot(
+        nextSnapshot
+    );
+
+    updateHistoryButtons();
+}
+
+
+undoButton.addEventListener(
+    "click",
+    function () {
+
+        undoHistory();
+    }
+);
+
+
+redoButton.addEventListener(
+    "click",
+    function () {
+
+        redoHistory();
+    }
+);
+
 let cartItems = JSON.parse(
     localStorage.getItem("mycustomCart")
 ) || [];
@@ -2059,6 +2326,12 @@ function createNewText() {
     */
     syncSelectedTextFromLegacyState();
 
+    /*
+    Salviamo lo stato prima
+    di creare una nuova scritta.
+*/
+saveHistoryState();
+
 
     const textState =
         createTextState("");
@@ -2068,19 +2341,18 @@ function createNewText() {
         getHighestContentLayer() + 1;
 
 
-    state.texts.push(
-        textState
-    );
+    state.texts.push(textState);
+state.selectedTextId = textState.id;
 
+/*
+    Ricordiamo che questa scritta
+    è appena stata creata.
+*/
+newlyCreatedTextId = textState.id;
 
-    state.selectedTextId =
-        textState.id;
+loadSelectedTextIntoLegacyState();
 
-
-    loadSelectedTextIntoLegacyState();
-
-
-    return textState;
+return textState;
 }
 
 function createMultiTextElement(
@@ -2639,6 +2911,17 @@ function selectTextLayer(textId) {
         return;
     }
 
+    /*
+    Da questo momento la scritta selezionata
+    viene considerata una scritta esistente.
+
+    La prossima modifica del contenuto
+    dovrà quindi creare un nuovo punto
+    nella cronologia.
+*/
+newlyCreatedTextId = null;
+isEditingText = false;
+
 
     selectedElementType =
         "text";
@@ -3152,15 +3435,22 @@ function renderLayersPanel() {
                 MOSTRA / NASCONDI
             */
             visibilityButton.addEventListener(
-                "click",
-                function (event) {
+    "click",
+    function (event) {
 
-                    event.stopPropagation();
+        event.stopPropagation();
+
+        /*
+            Salviamo lo stato prima
+            di mostrare/nascondere
+            l'elemento.
+        */
+        saveHistoryState();
 
 
-                    item.itemState.visible =
-                        item.itemState.visible ===
-                        false;
+        item.itemState.visible =
+            item.itemState.visible ===
+            false;
 
 
                     if (
@@ -3290,6 +3580,12 @@ function renderLayersPanel() {
                             return;
                         }
 
+                        /*
+    Salviamo lo stato prima
+    di duplicare la foto.
+*/
+saveHistoryState();
+
 
                         const duplicatedImage = {
 
@@ -3383,6 +3679,12 @@ function renderLayersPanel() {
                     if (!originalText) {
                         return;
                     }
+
+                    /*
+    Salviamo lo stato prima
+    di duplicare il testo.
+*/
+saveHistoryState();
 
 
                     const duplicatedText = {
@@ -4877,14 +5179,20 @@ imageUpload.addEventListener(
 
 
                 const newImage =
-                    createImageState(
-                        event.target.result
-                    );
+    createImageState(
+        event.target.result
+    );
+
+/*
+    Salviamo lo stato prima
+    di aggiungere la nuova foto.
+*/
+saveHistoryState();
 
 
-                state.images.push(
-                    newImage
-                );
+state.images.push(
+    newImage
+);
 
 
                 setSelectedImage(
@@ -4919,11 +5227,18 @@ imageUpload.addEventListener(
 
 uploadedImage.addEventListener("mousedown", function (event) {
 
+    /*
+        Salviamo la posizione prima
+        del trascinamento diretto.
+    */
+    saveHistoryState();
+
     const state = getCurrentState();
+
     showSelectionControls(
-    uploadedImage,
-    "image"
-);
+        uploadedImage,
+        "image"
+    );
 
 renderLayersPanel();
 
@@ -4998,6 +5313,12 @@ customText.addEventListener("mousedown", function (event) {
     if (!customText.textContent.trim()) {
         return;
     }
+
+    /*
+        Salviamo la posizione prima
+        del trascinamento diretto.
+    */
+    saveHistoryState();
 
     const state = getCurrentState();
     showSelectionControls(
@@ -5161,34 +5482,108 @@ rotationRange.addEventListener("input", function () {
     keepImageInsidePrintArea();
 });
 
+textInput.addEventListener(
+    "beforeinput",
+    function () {
+
+        const textState =
+            getSelectedTextState();
+
+        if (!textState) {
+            return;
+        }
+
+        /*
+            Se è una scritta appena creata,
+            createNewText() ha già salvato
+            lo stato precedente alla creazione.
+
+            NON salviamo altri snapshot
+            mentre continuiamo a scriverla.
+        */
+        if (
+            textState.id ===
+            newlyCreatedTextId
+        ) {
+            return;
+        }
+
+        /*
+            Per una scritta già esistente
+            salviamo lo stato soltanto alla
+            prima modifica della sessione.
+        */
+        if (!isEditingText) {
+
+            saveHistoryState();
+
+            isEditingText = true;
+        }
+    }
+);
+
+textInput.addEventListener(
+    "blur",
+    function () {
+
+        /*
+            Uscendo dal campo testo termina
+            la sessione di scrittura.
+
+            La prossima modifica sarà quindi
+            una nuova operazione Annulla/Ripristina.
+        */
+        newlyCreatedTextId = null;
+        isEditingText = false;
+    }
+);
 
 textInput.addEventListener(
     "input",
     function () {
 
         const state =
-    getCurrentState();
+            getCurrentState();
+
+        const selectedText =
+            getSelectedTextState();
 
 
-if (!getSelectedTextState()) {
+        /*
+            Se non esiste ancora una scritta,
+            ne creiamo una nuova.
+        */
+        if (!selectedText) {
 
-    createNewText();
+            createNewText();
 
-    selectedElementType =
-        "text";
-}
+            selectedElementType =
+                "text";
+        }
 
 
-state.text =
-    this.value;
+        /*
+            Se stiamo modificando una scritta
+            già esistente, salviamo il suo stato
+            una sola volta prima della modifica.
+
+            La scritta appena creata viene esclusa:
+            la sua cronologia è già stata salvata
+            da createNewText().
+        */
+        
+
+
+        state.text =
+            this.value;
 
         customText.textContent =
             state.text;
 
-            syncSelectedTextFromLegacyState();
-renderMultiTexts();
+        syncSelectedTextFromLegacyState();
+        renderMultiTexts();
 
-            renderLayersPanel();
+        renderLayersPanel();
 
 
         /*
@@ -5225,6 +5620,14 @@ addTextButton.addEventListener(
     function () {
 
         createNewText();
+
+        /*
+    La creazione della nuova scritta
+    ha già salvato lo stato nella cronologia.
+    Evitiamo quindi un secondo salvataggio
+    alla prima lettera digitata.
+*/
+isEditingText = true;
 
 
         selectedElementType =
