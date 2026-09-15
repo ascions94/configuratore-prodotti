@@ -1566,7 +1566,95 @@ function createCartStateCopy(state) {
     };
 }
 
-const productStates = {
+/*
+    ============================
+    SALVATAGGIO CONFIGURATORE
+    ============================
+*/
+
+const CONFIGURATOR_STORAGE_KEY =
+    "mycustomConfigurator";
+
+
+function saveConfiguratorState() {
+
+    /*
+        Prima di salvare sincronizziamo
+        gli elementi attualmente selezionati.
+    */
+    syncSelectedImageFromLegacyState();
+    syncSelectedTextFromLegacyState();
+
+
+    const configuratorData = {
+
+        currentProduct:
+            currentProduct,
+
+        tshirtColor:
+            tshirtColor,
+
+        tshirtSize:
+            tshirtSize,
+
+        tshirtSide:
+            tshirtSide,
+
+        tshirtPrintFormat:
+            tshirtPrintFormat,
+
+        productStates:
+            productStates
+    };
+
+
+    try {
+
+        localStorage.setItem(
+            CONFIGURATOR_STORAGE_KEY,
+            JSON.stringify(configuratorData)
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Impossibile salvare il configuratore:",
+            error
+        );
+    }
+}
+
+function loadConfiguratorState() {
+
+    const savedData =
+        localStorage.getItem(
+            CONFIGURATOR_STORAGE_KEY
+        );
+
+
+    if (!savedData) {
+        return null;
+    }
+
+
+    try {
+
+        return JSON.parse(
+            savedData
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Impossibile caricare il configuratore:",
+            error
+        );
+
+        return null;
+    }
+}
+
+let productStates = {
 
     cushion: {
         front: createEmptyState()
@@ -1582,6 +1670,63 @@ const productStates = {
     }
 
 };
+
+/*
+    Recuperiamo un eventuale
+    progetto salvato.
+*/
+const savedConfigurator =
+    loadConfiguratorState();
+
+
+if (
+    savedConfigurator &&
+    savedConfigurator.productStates
+) {
+
+    productStates =
+        savedConfigurator.productStates;
+
+            if (savedConfigurator.currentProduct) {
+        currentProduct =
+            savedConfigurator.currentProduct;
+    }
+
+    if (savedConfigurator.tshirtColor) {
+        tshirtColor =
+            savedConfigurator.tshirtColor;
+    }
+
+    if (savedConfigurator.tshirtSize) {
+        tshirtSize =
+            savedConfigurator.tshirtSize;
+    }
+
+    if (savedConfigurator.tshirtSide) {
+        tshirtSide =
+            savedConfigurator.tshirtSide;
+    }
+
+    if (savedConfigurator.tshirtPrintFormat) {
+        tshirtPrintFormat =
+            savedConfigurator.tshirtPrintFormat;
+    }
+}
+
+/*
+    ============================
+    AUTOSALVATAGGIO
+    ============================
+*/
+
+setInterval(
+    function () {
+
+        saveConfiguratorState();
+
+    },
+    1000
+);
 
 let cartItems = JSON.parse(
     localStorage.getItem("mycustomCart")
@@ -7853,6 +7998,32 @@ updateCartCount();
 statusMessage.textContent =
     `${products[currentProduct].name} aggiunto al carrello.`;
 });
-updateCartCount();
+
+/*
+    ============================
+    RIPRISTINO INTERFACCIA
+    ============================
+*/
+
+if (savedConfigurator) {
+
+    productSelect.value =
+        currentProduct;
+}
+
+
+/*
+    Forziamo la sincronizzazione iniziale
+    tra il menu prodotto e il configuratore.
+*/
+currentProduct =
+    productSelect.value;
+
+
+/*
+    Costruiamo l'interfaccia corretta
+    solo dopo aver recuperato il salvataggio.
+*/
 updateProductPreview();
 updatePreviewZoom();
+updateCartCount();
