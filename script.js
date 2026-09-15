@@ -1984,6 +1984,26 @@ function restoreHistorySnapshot(snapshot) {
         currentProduct;
 
     updateProductPreview();
+        /*
+        Sincronizziamo anche i pulsanti
+        Verticale / Orizzontale con
+        il formato appena ripristinato.
+    */
+    if (currentProduct === "tshirt") {
+
+        document
+            .querySelectorAll(".print-format-button")
+            .forEach(function (button) {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.format ===
+                        tshirtPrintFormat[tshirtSide]
+                );
+            });
+
+        updateTshirtPrintFormat();
+    }
     updatePreviewZoom();
 
     isRestoringHistory = false;
@@ -4830,6 +4850,8 @@ textAlignLeft.addEventListener(
     "click",
     function () {
 
+        saveHistoryState();
+
         setTextAlignment("left");
 
     }
@@ -4839,6 +4861,8 @@ textAlignLeft.addEventListener(
 textAlignCenter.addEventListener(
     "click",
     function () {
+
+        saveHistoryState();
 
         setTextAlignment("center");
 
@@ -4850,6 +4874,8 @@ textAlignRight.addEventListener(
     "click",
     function () {
 
+        saveHistoryState();
+
         setTextAlignment("right");
 
     }
@@ -4857,6 +4883,16 @@ textAlignRight.addEventListener(
 
 
 function resetCurrentState() {
+
+    /*
+        Salviamo tutta la personalizzazione
+        prima di eseguire il reset.
+
+        In questo modo Annulla può recuperare
+        foto, testi, sfondo e impostazioni
+        in un solo passaggio.
+    */
+    saveHistoryState();
 
     const side =
         getCurrentSide();
@@ -5066,6 +5102,8 @@ centerImageButton.addEventListener("click", function () {
         return;
     }
 
+    saveHistoryState();
+
     state.x = 0;
     state.y = 0;
 
@@ -5110,6 +5148,13 @@ heartLogoButton.addEventListener(
         }
 
 
+        /*
+            Salviamo posizione, dimensione
+            e rotazione dell'immagine prima
+            di applicare il preset lato cuore.
+        */
+        saveHistoryState();
+
         applyHeartLogoPreset();
 
     }
@@ -5129,6 +5174,8 @@ centerTextButton.addEventListener(
 
             return;
         }
+
+        saveHistoryState();
 
         state.textX = 0;
         state.textY = 0;
@@ -5691,6 +5738,8 @@ isEditingText = true;
 
 fontSelect.addEventListener("change", function () {
 
+    saveHistoryState();
+
     const state = getCurrentState();
 
     state.fontFamily = this.value;
@@ -5712,6 +5761,15 @@ fontSelect.addEventListener("change", function () {
 });
 
 boldButton.addEventListener("click", function () {
+
+                /*
+                Salviamo formato e personalizzazione
+                prima di passare da verticale
+                a orizzontale o viceversa.
+            */
+            saveHistoryState();
+
+    saveHistoryState();
 
     const state = getCurrentState();
 
@@ -5742,6 +5800,8 @@ boldButton.addEventListener("click", function () {
 
 italicButton.addEventListener("click", function () {
 
+    saveHistoryState();
+
     const state = getCurrentState();
 
     state.textItalic = !state.textItalic;
@@ -5768,6 +5828,26 @@ italicButton.addEventListener("click", function () {
 });
 });
 
+/*
+    Salviamo il colore del testo
+    una sola volta, prima di iniziare
+    a modificarlo.
+*/
+textColor.addEventListener(
+    "pointerdown",
+    function () {
+
+        const textState =
+            getSelectedTextState();
+
+        if (!textState) {
+            return;
+        }
+
+        saveHistoryState();
+    }
+);
+
 textColor.addEventListener("input", function () {
 
     const state = getCurrentState();
@@ -5776,6 +5856,18 @@ textColor.addEventListener("input", function () {
 
     customText.style.color = state.textColor;
 });
+
+/*
+    Salviamo lo sfondo dell'area di stampa
+    una sola volta prima della modifica.
+*/
+printBgColor.addEventListener(
+    "pointerdown",
+    function () {
+
+        saveHistoryState();
+    }
+);
 
 printBgColor.addEventListener(
     "input",
@@ -5799,6 +5891,8 @@ clearPrintBgButton.addEventListener(
     "click",
     function () {
 
+        saveHistoryState();
+
         const state =
             getCurrentState();
 
@@ -5813,6 +5907,8 @@ textOutlineEnabled.addEventListener(
     "change",
     function () {
 
+        saveHistoryState();
+
         const state =
             getCurrentState();
 
@@ -5826,6 +5922,21 @@ textOutlineEnabled.addEventListener(
     }
 );
 
+
+textOutlineColor.addEventListener(
+    "pointerdown",
+    function () {
+
+        const textState =
+            getSelectedTextState();
+
+        if (!textState) {
+            return;
+        }
+
+        saveHistoryState();
+    }
+);
 
 textOutlineColor.addEventListener(
     "input",
@@ -5845,6 +5956,21 @@ textOutlineColor.addEventListener(
     }
 );
 
+
+textOutlineWidth.addEventListener(
+    "pointerdown",
+    function () {
+
+        const textState =
+            getSelectedTextState();
+
+        if (!textState) {
+            return;
+        }
+
+        saveHistoryState();
+    }
+);
 
 textOutlineWidth.addEventListener(
     "input",
