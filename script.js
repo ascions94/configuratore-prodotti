@@ -583,7 +583,7 @@ let resizeStartTextSize = 26;
 let resizeCenterX = 0;
 let resizeCenterY = 0;
 
-directRotateButton.addEventListener("mousedown", function (event) {
+directRotateButton.addEventListener("pointerdown", function (event) {
 
     if (!selectedElementType) {
         return;
@@ -614,7 +614,7 @@ directRotateButton.addEventListener("mousedown", function (event) {
     event.preventDefault();
     event.stopPropagation();
 });
-directMoveButton.addEventListener("mousedown", function (event) {
+directMoveButton.addEventListener("pointerdown", function (event) {
 
     if (!selectedElementType) {
         return;
@@ -658,7 +658,7 @@ document
     .querySelectorAll(".resize-handle")
     .forEach(function (handle) {
 
-        handle.addEventListener("mousedown", function (event) {
+        handle.addEventListener("pointerdown", function (event) {
 
     if (!selectedElementType) {
         return;
@@ -1011,7 +1011,7 @@ state.texts =
     }
 );
 
-document.addEventListener("mousemove", function (event) {
+document.addEventListener("pointermove", function (event) {
 
     if (!isDirectResizing) {
         return;
@@ -1100,7 +1100,7 @@ newScale =
     refreshTextLayout();
 }
 });
-document.addEventListener("mouseup", function () {
+document.addEventListener("pointerup", function () {
 
     if (!isDirectResizing) {
         return;
@@ -1109,7 +1109,7 @@ document.addEventListener("mouseup", function () {
     isDirectResizing = false;
 });
 
-document.addEventListener("mousemove", function (event) {
+document.addEventListener("pointermove", function (event) {
 
     if (!isDirectRotating) {
         return;
@@ -1211,7 +1211,7 @@ if (snappedAngle !== null) {
     }
 });
 
-document.addEventListener("mouseup", function () {
+document.addEventListener("pointerup", function () {
 
     if (!isDirectRotating) {
         return;
@@ -2509,8 +2509,8 @@ function renderMultiTexts() {
 
 
             element.addEventListener(
-                "mousedown",
-                function (event) {
+    "pointerdown",
+    function (event) {
 
                     event.preventDefault();
                     event.stopPropagation();
@@ -2645,8 +2645,8 @@ function renderMultiImages() {
 
 
             imageElement.addEventListener(
-                "mousedown",
-                function (event) {
+    "pointerdown",
+    function (event) {
 
                     event.preventDefault();
                     event.stopPropagation();
@@ -5272,7 +5272,7 @@ state.images.push(
 );
 
 
-uploadedImage.addEventListener("mousedown", function (event) {
+uploadedImage.addEventListener("pointerdown", function (event) {
 
     /*
         Salviamo la posizione prima
@@ -5300,7 +5300,7 @@ renderLayersPanel();
 });
 
 
-document.addEventListener("mousemove", function (event) {
+document.addEventListener("pointermove", function (event) {
 
     if (!isDragging) {
         return;
@@ -5341,7 +5341,7 @@ showSelectionControls(
 });
 
 
-document.addEventListener("mouseup", function () {
+document.addEventListener("pointerup", function () {
 
     isDragging = false;
 
@@ -5354,8 +5354,7 @@ let isDraggingText = false;
 let textStartX = 0;
 let textStartY = 0;
 
-
-customText.addEventListener("mousedown", function (event) {
+customText.addEventListener("pointerdown", function (event) {
 
     if (!customText.textContent.trim()) {
         return;
@@ -5386,7 +5385,7 @@ renderLayersPanel();
 });
 
 
-document.addEventListener("mousemove", function (event) {
+document.addEventListener("pointermove", function (event) {
 
     if (!isDraggingText) {
         return;
@@ -5426,7 +5425,7 @@ showSelectionControls(
 });
 
 
-document.addEventListener("mouseup", function () {
+document.addEventListener("pointerup", function () {
 
     isDraggingText = false;
 

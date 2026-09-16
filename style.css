@@ -2000,3 +2000,16 @@ height: auto;
     opacity: 0.45;
     cursor: not-allowed;
 }
+
+/* =========================================
+   SUPPORTO TOUCH CONFIGURATORE
+   ========================================= */
+
+#uploadedImage,
+#customText,
+.multi-uploaded-image,
+.multi-custom-text,
+.direct-control-button,
+.resize-handle {
+    touch-action: none;
+}
