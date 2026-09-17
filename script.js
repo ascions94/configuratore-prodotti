@@ -142,6 +142,8 @@ const directMoveButton =
 const previewZoomValue =
     document.getElementById("previewZoomValue");
 
+    const previewPanel = document.querySelector(".preview-panel");
+
 const zoomOutPreviewButton =
     document.getElementById("zoomOutPreviewButton");
 
@@ -5074,7 +5076,7 @@ productSelect.addEventListener("change", function () {
 
     previewZoom =
     currentProduct === "tshirt"
-        ? 150
+        ? (window.innerWidth <= 600 ? 100 : 150)
         : 100;
 
     uploadedImage.classList.remove("selected-element");
@@ -6608,7 +6610,7 @@ resetPreviewZoomButton.addEventListener("click", function () {
 
     previewZoom =
     currentProduct === "tshirt"
-        ? 150
+        ? (window.innerWidth <= 600 ? 100 : 150)
         : 100;
 
     updatePreviewZoom();
@@ -8756,3 +8758,58 @@ currentProduct =
 updateProductPreview();
 updatePreviewZoom();
 updateCartCount();
+
+/* =========================================
+   ANTEPRIMA COMPATTA SU MOBILE
+   ========================================= */
+
+let mobilePreviewWasCompact = false;
+let mobilePreviewPreviousZoom = 100;
+
+function updateMobileStickyPreview() {
+
+    /* Desktop: nessuna modalità compatta */
+    if (window.innerWidth > 600) {
+
+        if (mobilePreviewWasCompact) {
+            previewZoom = mobilePreviewPreviousZoom;
+            updatePreviewZoom();
+        }
+
+        previewPanel.classList.remove("mobile-compact");
+        mobilePreviewWasCompact = false;
+
+        return;
+    }
+
+    const rect = previewPanel.getBoundingClientRect();
+    const shouldBeCompact =
+        rect.top <= 0 && window.scrollY > 0;
+
+    /* Entra nella modalità compatta */
+    if (shouldBeCompact && !mobilePreviewWasCompact) {
+
+        mobilePreviewPreviousZoom = previewZoom;
+
+        previewPanel.classList.add("mobile-compact");
+
+        previewZoom = 60;
+        updatePreviewZoom();
+
+        mobilePreviewWasCompact = true;
+    }
+
+    /* Esce dalla modalità compatta */
+    else if (!shouldBeCompact && mobilePreviewWasCompact) {
+
+        previewPanel.classList.remove("mobile-compact");
+
+        previewZoom = mobilePreviewPreviousZoom;
+        updatePreviewZoom();
+
+        mobilePreviewWasCompact = false;
+    }
+}
+
+window.addEventListener("scroll", updateMobileStickyPreview);
+window.addEventListener("resize", updateMobileStickyPreview);

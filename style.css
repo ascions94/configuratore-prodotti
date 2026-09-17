@@ -355,8 +355,12 @@ overflow: visible;
 @media (max-width: 600px) {
 
     .site-header {
-        padding: 18px;
-    }
+    padding: 18px;
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+    align-self: stretch;
+}
 
     .customizer {
         padding: 0 10px;
@@ -2012,4 +2016,125 @@ height: auto;
 .direct-control-button,
 .resize-handle {
     touch-action: none;
+}
+
+/* =========================================
+   LAYOUT MOBILE CONFIGURATORE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    /* 1. Anteprima prodotto */
+    .preview-panel {
+        order: 1;
+    }
+
+    /* 2. Strumenti di personalizzazione */
+    .tools-panel {
+        order: 2;
+    }
+
+    /* 3. Riepilogo / acquisto */
+    .product-panel {
+        order: 3;
+    }
+
+/* Anteprima più compatta su smartphone */
+.preview-panel {
+    padding: 14px;
+
+    /* Mantiene l'anteprima visibile durante lo scroll */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    background: #fff;
+}
+
+.preview-header h1 {
+    font-size: 22px;
+    margin-bottom: 3px;
+}
+
+.preview-header p {
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.preview-area {
+    min-height: 330px;
+    height: 330px;
+    padding: 8px;
+    overflow: hidden;
+}
+
+/* Anteprima compatta durante lo scroll */
+.preview-panel.mobile-compact {
+    padding: 8px 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Titolo più piccolo */
+.preview-panel.mobile-compact .preview-header h1 {
+    font-size: 16px;
+    margin: 0;
+}
+
+.preview-panel.mobile-compact .preview-header p {
+    display: none;
+}
+
+/* Riduce lo spazio dedicato alla preview */
+.preview-panel.mobile-compact .preview-area {
+    height: 190px;
+    min-height: 190px;
+    padding: 4px;
+}
+
+/* Riduce visivamente il prodotto solo nella preview sticky */
+
+
+/* Nasconde i controlli zoom mentre è compatta */
+.preview-panel.mobile-compact .preview-zoom-controls {
+    display: none;
+}
+
+/* Nasconde Annulla/Ripristina sotto l'anteprima */
+.preview-panel.mobile-compact .history-controls {
+    display: none;
+}
+
+/* =========================================
+   HEADER COMPATTO MOBILE
+   ========================================= */
+
+header {
+    padding: 10px 14px;
+    gap: 8px;
+}
+
+.site-logo {
+    width: 150px;
+}
+
+nav {
+    gap: 8px;
+}
+
+nav a {
+    font-size: 14px;
+}
+
+.cart-button {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* Allinea la larghezza dell'header ai pannelli sottostanti */
+.site-header {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
 }
