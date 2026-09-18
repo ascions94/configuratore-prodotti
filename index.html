@@ -11,7 +11,225 @@
 
 <body>
 
-    <header class="site-header">
+    <!-- =========================================
+     HEADER MOBILE
+     ========================================= -->
+
+<header class="mobile-site-header">
+
+    <div class="mobile-site-logo">
+        <img
+            src="assets/sublimami-logo.png"
+            alt="SubliMaMi"
+        >
+    </div>
+
+
+    <div class="mobile-site-actions">
+
+        <button
+            type="button"
+            class="mobile-header-button"
+            id="mobileCartButton"
+            aria-label="Carrello"
+        >
+            <span class="mobile-cart-icon">🛒</span>
+
+            <span
+                class="mobile-cart-count"
+                id="mobileCartCount"
+            >
+                0
+            </span>
+        </button>
+
+
+        <button
+            type="button"
+            class="mobile-header-button mobile-menu-button"
+            id="mobileMenuButton"
+            aria-label="Menu"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div
+    class="mobile-navigation-menu"
+    id="mobileNavigationMenu"
+>
+    <button
+        type="button"
+        data-mobile-product="cushion"
+    >
+        Cuscini
+    </button>
+
+    <button
+        type="button"
+        data-mobile-product="tshirt"
+    >
+        T-Shirt
+    </button>
+
+    <button
+        type="button"
+        data-mobile-product="keychain"
+    >
+        Portachiavi
+    </button>
+</div>
+
+    </div>
+
+</header>
+
+    <!-- =========================================
+     BARRA SUPERIORE MOBILE CONFIGURATORE
+     ========================================= -->
+
+<div class="mobile-editor-topbar">
+
+    <!-- ANNULLA / RIPRISTINA -->
+    <div class="mobile-history-buttons">
+
+        <button
+            type="button"
+            class="mobile-top-button"
+            id="mobileUndoButton"
+            aria-label="Annulla"
+        >
+            ↶
+        </button>
+
+        <button
+            type="button"
+            class="mobile-top-button"
+            id="mobileRedoButton"
+            aria-label="Ripristina"
+        >
+            ↷
+        </button>
+
+    </div>
+
+
+    <!-- =====================================
+         BARRA CONTESTUALE TESTO
+         compare solo con testo selezionato
+         ===================================== -->
+
+    <div
+        class="mobile-text-selection-bar"
+        id="mobileTextSelectionBar"
+    >
+
+        <button
+            type="button"
+            class="mobile-selection-tool"
+            id="mobileSelectedTextColor"
+        >
+            <span class="mobile-selection-color"></span>
+            <span>Colore</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-selection-tool"
+            id="mobileSelectedTextFont"
+        >
+            <span class="mobile-selection-icon">Aa</span>
+            <span>Font</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-selection-tool"
+            id="mobileSelectedTextFormat"
+        >
+            <span class="mobile-selection-icon">
+                B<i>I</i>
+            </span>
+            <span>Formato</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-selection-tool"
+            id="mobileSelectedTextAlign"
+        >
+            <span class="mobile-selection-icon">☰</span>
+            <span>Allinea</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-selection-tool"
+            id="mobileSelectedTextOutline"
+        >
+            <span class="mobile-selection-icon">T</span>
+            <span>Contorno</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-selection-tool"
+            id="mobileSelectedTextDuplicate"
+        >
+            <span class="mobile-selection-icon">▣</span>
+            <span>Duplica</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-selection-tool mobile-selection-delete"
+            id="mobileSelectedTextDelete"
+        >
+            <span class="mobile-selection-icon">🗑</span>
+            <span>Elimina</span>
+        </button>
+
+    </div>
+
+
+    <!-- ALTRE AZIONI -->
+    <button
+        type="button"
+        class="mobile-top-button mobile-more-fixed"
+        id="mobileMoreButton"
+        aria-label="Altre opzioni"
+    >
+        •••
+    </button>
+
+</div>
+
+<!-- MOBILE - MENU FORMATO TESTO -->
+<div
+    class="mobile-text-format-menu"
+    id="mobileTextFormatMenu"
+>
+    <button
+        type="button"
+        class="mobile-format-option"
+        id="mobileTextBoldOption"
+    >
+        <strong>B</strong>
+        <span>Grassetto</span>
+    </button>
+
+    <button
+        type="button"
+        class="mobile-format-option"
+        id="mobileTextItalicOption"
+    >
+        <em>I</em>
+        <span>Corsivo</span>
+    </button>
+</div>    
+
+<header class="site-header">
 
     <div class="logo">
         <img
@@ -796,6 +1014,870 @@
         </aside>
 
     </main>
+
+    <!-- =========================================
+     PANNELLO INFERIORE MOBILE
+     ========================================= -->
+
+<!-- =========================================
+     MOBILE - CONTROLLI RAPIDI T-SHIRT
+     ========================================= -->
+
+
+
+     <div class="mobile-editor-bottom">
+
+    <div class="mobile-design-card">
+
+        <h2 class="mobile-design-title">
+            Progetta ora!
+        </h2>
+
+        <div
+    class="mobile-tshirt-quick-controls"
+    id="mobileTshirtQuickControls"
+>
+
+    <div class="mobile-quick-group">
+
+        <button
+            type="button"
+            class="mobile-quick-button"
+            data-mobile-quick-side="front"
+        >
+            Fronte
+        </button>
+
+        <button
+            type="button"
+            class="mobile-quick-button"
+            data-mobile-quick-side="back"
+        >
+            Retro
+        </button>
+
+    </div>
+
+
+    <div class="mobile-quick-group">
+
+        <button
+            type="button"
+            class="mobile-quick-button"
+            data-mobile-quick-format="vertical"
+        >
+            Verticale
+        </button>
+
+        <button
+            type="button"
+            class="mobile-quick-button"
+            data-mobile-quick-format="horizontal"
+        >
+            Orizzontale
+        </button>
+
+    </div>
+
+</div>
+
+
+        <!-- MENU DESIGN:
+             inizialmente nascosto -->
+        <div
+            class="mobile-design-tools"
+            id="mobileDesignTools"
+        >
+
+            <button
+                type="button"
+                class="mobile-design-tool"
+                id="mobileImagesButton"
+            >
+                <span class="mobile-design-icon">▧</span>
+                <span>Immagini</span>
+            </button>
+
+            <button
+                type="button"
+                class="mobile-design-tool"
+                id="mobileTextButton"
+            >
+                <span class="mobile-design-icon">T</span>
+                <span>Testo</span>
+            </button>
+
+            <button
+                type="button"
+                class="mobile-design-tool"
+                id="mobileUploadButton"
+            >
+                <span class="mobile-design-icon">↥</span>
+                <span>Caricamenti</span>
+            </button>
+
+            <button
+                type="button"
+                class="mobile-design-tool"
+                id="mobileLayersButton"
+            >
+                <span class="mobile-design-icon">▱</span>
+                <span>Livelli</span>
+            </button>
+
+        </div>
+
+
+        <!-- AZIONI PRINCIPALI -->
+        <div class="mobile-design-main-actions">
+
+            <button
+                type="button"
+                class="mobile-design-main-button"
+                id="mobileProductsButton"
+            >
+                <span class="mobile-main-icon">◇</span>
+                <span>Prodotti</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="mobile-design-main-button mobile-add-design-button"
+                id="mobileAddDesignButton"
+            >
+                <span class="mobile-main-icon">＋</span>
+                <span>Aggiungi design</span>
+            </button>
+
+            <button
+    type="button"
+    class="mobile-design-main-button mobile-cart-add-button"
+    id="mobileAddToCartButton"
+>
+    <span class="mobile-main-icon">🛒</span>
+    <span>Aggiungi al carrello</span>
+</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     PANNELLO MOBILE - PRODOTTI
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileProductsOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet"
+    id="mobileProductsSheet"
+>
+
+    <div class="mobile-sheet-header">
+
+        <h2>Prodotti</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileProductsClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <p class="mobile-sheet-subtitle">
+        Scegli il prodotto da personalizzare
+    </p>
+
+
+    <div class="mobile-product-options">
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="cushion"
+        >
+            <span class="mobile-product-option-icon">▢</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Cuscino</strong>
+                <small>40 × 40 cm</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="tshirt"
+        >
+            <span class="mobile-product-option-icon">👕</span>
+
+            <span class="mobile-product-option-text">
+                <strong>T-Shirt</strong>
+                <small>Personalizza fronte e retro</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="keychain"
+        >
+            <span class="mobile-product-option-icon">◇</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Portachiavi</strong>
+                <small>4,5 × 4,5 cm</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     PANNELLO MOBILE - SCEGLI T-SHIRT
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileTshirtOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet"
+    id="mobileTshirtSheet"
+>
+
+    <div class="mobile-sheet-header">
+
+        <button
+            type="button"
+            class="mobile-sheet-back"
+            id="mobileTshirtBack"
+            aria-label="Torna ai prodotti"
+        >
+            ‹
+        </button>
+
+        <h2>Scegli la T-Shirt</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileTshirtClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <p class="mobile-sheet-subtitle">
+        Scegli il modello da personalizzare
+    </p>
+
+
+    <div class="mobile-tshirt-models">
+
+        <button
+            type="button"
+            class="mobile-tshirt-model"
+            id="mobileClassicTshirt"
+        >
+
+            <div class="mobile-tshirt-model-preview">
+
+                <img
+                    src="assets/tshirt-white-front.png"
+                    alt="T-Shirt Cotone 100%"
+                >
+
+            </div>
+
+
+            <div class="mobile-tshirt-model-info">
+
+                <strong>
+    T-Shirt Cotone 100%
+</strong>
+
+                <span>
+                    Personalizzabile fronte e retro
+                </span>
+
+                <b>
+                    €19,90
+                </b>
+
+            </div>
+
+
+            <span class="mobile-product-arrow">
+                ›
+            </span>
+
+        </button>
+
+
+        <div class="mobile-tshirt-model coming-soon">
+
+            <div class="mobile-tshirt-model-preview">
+
+                <span class="mobile-coming-icon">
+                    👕
+                </span>
+
+            </div>
+
+
+            <div class="mobile-tshirt-model-info">
+
+                <strong>
+                    Altri modelli
+                </strong>
+
+                <span>
+                    Nuove T-Shirt in arrivo
+                </span>
+
+                <b>
+                    Prossimamente
+                </b>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     PANNELLO MOBILE - COLORE T-SHIRT
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileTshirtColorOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet"
+    id="mobileTshirtColorSheet"
+>
+
+    <div class="mobile-sheet-header">
+
+        <button
+            type="button"
+            class="mobile-sheet-back"
+            id="mobileTshirtColorBack"
+            aria-label="Torna ai modelli"
+        >
+            ‹
+        </button>
+
+        <h2>Scegli il colore</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileTshirtColorClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <p class="mobile-sheet-subtitle">
+        T-Shirt Cotone 100%
+    </p>
+
+
+    <div class="mobile-tshirt-color-options">
+
+        <button
+            type="button"
+            class="mobile-tshirt-color-card"
+            data-tshirt-mobile-color="white"
+        >
+
+            <div class="mobile-tshirt-color-preview">
+                <img
+                    src="assets/tshirt-white-front.png"
+                    alt="T-Shirt bianca"
+                >
+            </div>
+
+            <div class="mobile-tshirt-color-name">
+                <span class="mobile-color-dot white"></span>
+                <strong>Bianca</strong>
+            </div>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="mobile-tshirt-color-card"
+            data-tshirt-mobile-color="black"
+        >
+
+            <div class="mobile-tshirt-color-preview">
+                <img
+                    src="assets/tshirt-black-front.png"
+                    alt="T-Shirt nera"
+                >
+            </div>
+
+            <div class="mobile-tshirt-color-name">
+                <span class="mobile-color-dot black"></span>
+                <strong>Nera</strong>
+            </div>
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     MOBILE - ALTRE AZIONI
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileMoreOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet mobile-more-sheet"
+    id="mobileMoreSheet"
+>
+
+    <div class="mobile-sheet-header">
+
+        <h2>Altre azioni</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileMoreClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div class="mobile-more-actions">
+
+        <!-- TUTTI I PRODOTTI -->
+
+        <button
+            type="button"
+            class="mobile-more-action"
+            id="mobileProductDetailsAction"
+        >
+            <span class="mobile-more-icon">ⓘ</span>
+
+            <span class="mobile-more-text">
+                <strong>Dettagli prodotto</strong>
+                <small>Informazioni sul prodotto selezionato</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+
+        <button
+            type="button"
+            class="mobile-more-action mobile-more-danger"
+            id="mobileResetAction"
+        >
+            <span class="mobile-more-icon">↻</span>
+
+            <span class="mobile-more-text">
+                <strong>Azzera personalizzazione</strong>
+                <small>Rimuovi il design dal prodotto</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     MOBILE - FRONTE / RETRO
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileSideOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet"
+    id="mobileSideSheet"
+>
+
+    <div class="mobile-sheet-header">
+
+        <button
+            type="button"
+            class="mobile-sheet-back"
+            id="mobileSideBack"
+            aria-label="Torna alle altre azioni"
+        >
+            ‹
+        </button>
+
+        <h2>Fronte / Retro</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileSideClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <p class="mobile-sheet-subtitle">
+        Scegli il lato della T-Shirt da personalizzare
+    </p>
+
+
+    <div class="mobile-side-options">
+
+        <button
+            type="button"
+            class="mobile-side-card"
+            data-mobile-side="front"
+        >
+
+            <div class="mobile-side-preview">
+
+                <img
+                    id="mobileFrontPreview"
+                    src="assets/tshirt-white-front.png"
+                    alt="Fronte T-Shirt"
+                >
+
+            </div>
+
+            <div class="mobile-side-label">
+                <strong>Fronte</strong>
+
+                <span class="mobile-side-check">
+                    ✓
+                </span>
+            </div>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="mobile-side-card"
+            data-mobile-side="back"
+        >
+
+            <div class="mobile-side-preview">
+
+                <img
+                    id="mobileBackPreview"
+                    src="assets/tshirt-white-back.png"
+                    alt="Retro T-Shirt"
+                >
+
+            </div>
+
+            <div class="mobile-side-label">
+                <strong>Retro</strong>
+
+                <span class="mobile-side-check">
+                    ✓
+                </span>
+            </div>
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     MOBILE - FORMATO STAMPA
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileFormatOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet"
+    id="mobileFormatSheet"
+>
+
+    <div class="mobile-sheet-header">
+
+        <button
+            type="button"
+            class="mobile-sheet-back"
+            id="mobileFormatBack"
+            aria-label="Torna alle altre azioni"
+        >
+            ‹
+        </button>
+
+        <h2>Formato stampa</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileFormatClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <p class="mobile-sheet-subtitle">
+        Scegli l'orientamento dell'area di stampa
+    </p>
+
+
+    <div class="mobile-format-options">
+
+        <button
+            type="button"
+            class="mobile-format-card"
+            data-mobile-format="vertical"
+        >
+
+            <div class="mobile-format-preview">
+
+                <div class="mobile-format-shape vertical">
+                    <span>20 × 30</span>
+                </div>
+
+            </div>
+
+            <div class="mobile-format-label">
+
+                <div>
+                    <strong>Verticale</strong>
+                    <small>20 × 30 cm</small>
+                </div>
+
+                <span class="mobile-format-check">
+                    ✓
+                </span>
+
+            </div>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="mobile-format-card"
+            data-mobile-format="horizontal"
+        >
+
+            <div class="mobile-format-preview">
+
+                <div class="mobile-format-shape horizontal">
+                    <span>30 × 20</span>
+                </div>
+
+            </div>
+
+            <div class="mobile-format-label">
+
+                <div>
+                    <strong>Orizzontale</strong>
+                    <small>30 × 20 cm</small>
+                </div>
+
+                <span class="mobile-format-check">
+                    ✓
+                </span>
+
+            </div>
+
+        </button>
+
+    </div>
+
+</div>
+
+<div
+    class="mobile-text-color-menu"
+    id="mobileTextColorMenu"
+>
+    <button type="button" class="mobile-color-swatch" data-text-color="#000000" style="background:#000000;" aria-label="Nero"></button>
+
+    <button type="button" class="mobile-color-swatch mobile-white-swatch" data-text-color="#ffffff" style="background:#ffffff;" aria-label="Bianco"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#e53935" style="background:#e53935;" aria-label="Rosso"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#1976d2" style="background:#1976d2;" aria-label="Blu"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#43a047" style="background:#43a047;" aria-label="Verde"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#fdd835" style="background:#fdd835;" aria-label="Giallo"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#ec407a" style="background:#ec407a;" aria-label="Rosa"></button>
+
+    <button
+        type="button"
+        class="mobile-custom-color-button"
+        id="mobileCustomColorButton"
+        aria-label="Altro colore"
+    >
+        +
+    </button>
+</div>
+
+<!-- MOBILE - COLORE PERSONALIZZATO -->
+<div
+    class="mobile-custom-color-menu"
+    id="mobileCustomColorMenu"
+>
+    <button
+        type="button"
+        class="mobile-custom-color-back"
+        id="mobileCustomColorBack"
+        aria-label="Indietro"
+    >
+        ‹
+    </button>
+
+    <div class="mobile-color-sliders">
+
+    <input
+        type="range"
+        id="mobileHueRange"
+        class="mobile-hue-range"
+        min="0"
+        max="360"
+        value="0"
+        aria-label="Tonalità"
+    >
+
+    <input
+        type="range"
+        id="mobileLightRange"
+        class="mobile-light-range"
+        min="15"
+        max="85"
+        value="50"
+        aria-label="Chiaro o scuro"
+    >
+
+</div>
+
+    <span
+        class="mobile-custom-color-preview"
+        id="mobileCustomColorPreview"
+    ></span>
+
+    <input
+        type="text"
+        id="mobileHexColor"
+        class="mobile-hex-color"
+        value="#000000"
+        maxlength="7"
+        aria-label="Codice colore HEX"
+    >
+</div>
+
+<!-- =========================================
+     MOBILE - EDITOR TESTO
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileTextOverlay"
+></div>
+
+<div
+    class="mobile-text-editor-sheet"
+    id="mobileTextEditorSheet"
+>
+    <div class="mobile-text-editor-header">
+
+        <h2>Testo</h2>
+
+        <button
+            type="button"
+            class="mobile-text-editor-close"
+            id="mobileTextEditorClose"
+            aria-label="Chiudi editor testo"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <div class="mobile-text-editor-content">
+
+        <label
+            class="mobile-text-label"
+            for="mobileTextInput"
+        >
+            Il tuo testo
+        </label>
+
+        <textarea
+            id="mobileTextInput"
+            class="mobile-text-input"
+            rows="2"
+            placeholder="Scrivi il tuo testo..."
+        ></textarea>
+
+
+        <button
+            type="button"
+            class="mobile-text-done-button"
+            id="mobileTextDoneButton"
+        >
+            Fatto
+        </button>
+
+    </div>
+</div>
 
     <!-- SFONDO CARRELLO -->
 <div id="cartOverlay" class="cart-overlay"></div>

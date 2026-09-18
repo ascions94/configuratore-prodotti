@@ -2138,3 +2138,2776 @@ nav a {
 }
 
 }
+
+/* =========================================
+   NUOVA INTERFACCIA EDITOR MOBILE
+   ========================================= */
+
+/* Mai visibile su PC */
+.mobile-editor-topbar {
+    display: none;
+}
+
+
+@media (max-width: 600px) {
+
+    /* Nasconde il normale header SOLO su smartphone */
+    .site-header {
+        display: none;
+    }
+
+
+    /* Barra superiore editor */
+    .mobile-editor-topbar {
+        display: grid;
+
+        grid-template-columns:
+            1fr auto 1fr;
+
+        align-items: center;
+
+        width: 100%;
+        height: 58px;
+
+        padding: 6px 12px;
+
+        background: #ffffff;
+
+        border-bottom:
+            1px solid #e7e7e7;
+
+        position: sticky;
+        top: 0;
+
+        z-index: 1000;
+    }
+
+
+    /* Annulla / Ripristina */
+    .mobile-history-buttons {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        justify-self: start;
+    }
+
+
+    /* Pulsanti tondi */
+    .mobile-top-button {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: none;
+        border-radius: 50%;
+
+        background: transparent;
+
+        font-size: 25px;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-top-button:active {
+        background: #eeeeee;
+    }
+
+
+    /* Colore centrale */
+    .mobile-color-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        justify-self: center;
+
+        padding: 8px 14px;
+
+        border: none;
+        border-radius: 20px;
+
+        background: transparent;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        cursor: pointer;
+    }
+
+
+    /* Pallino colore */
+    .mobile-color-circle {
+        width: 22px;
+        height: 22px;
+
+        border-radius: 50%;
+
+        background: #ffffff;
+
+        border: 2px solid #bdbdbd;
+
+        box-shadow:
+            inset 0 0 0 2px #ffffff;
+    }
+
+
+    /* Tre puntini a destra */
+    #mobileMoreButton {
+        justify-self: end;
+
+        font-size: 20px;
+        letter-spacing: 2px;
+    }
+
+}
+
+/* =========================================
+   MOBILE - AREA DI LAVORO A TUTTO SCHERMO
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    /* Pagina editor */
+    body {
+        background: #eeeeee;
+    }
+
+
+    /* Elimina gli spazi del vecchio layout */
+    .customizer {
+        display: block;
+
+        width: 100%;
+        max-width: none;
+
+        margin: 0;
+        padding: 0;
+    }
+
+
+    /* Anteprima non è più una card */
+    .preview-panel {
+        width: 100%;
+
+        margin: 0;
+        padding: 0;
+
+        border-radius: 0;
+        box-shadow: none;
+
+        background: #eeeeee;
+
+        position: relative;
+        top: auto;
+
+        z-index: 1;
+    }
+
+
+    /* Il titolo non serve nel nuovo editor mobile */
+    .preview-header {
+        display: none;
+    }
+
+
+    /* Area principale */
+    .preview-area {
+        width: 100%;
+
+        height: calc(100svh - 58px);
+        min-height: 500px;
+
+        margin: 0;
+        padding: 10px;
+
+        border-radius: 0;
+
+        background: #eeeeee;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+    }
+
+
+    /*
+       Annulliamo il vecchio comportamento
+       dell'anteprima compatta durante lo scroll
+    */
+    .preview-panel.mobile-compact {
+        padding: 0;
+        box-shadow: none;
+    }
+
+
+    .preview-panel.mobile-compact .preview-area {
+        height: calc(100svh - 58px);
+        min-height: 500px;
+        padding: 10px;
+    }
+
+
+    /* I vecchi controlli zoom spariscono su mobile */
+    .preview-zoom-controls {
+        display: none;
+    }
+
+
+    /* Anche i vecchi Annulla/Ripristina */
+    .history-controls {
+        display: none;
+    }
+
+}
+
+/* =========================================
+   MOBILE - NASCONDE I VECCHI PANNELLI
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    /* Il vecchio pannello strumenti
+       verrà sostituito dalla toolbar mobile */
+    .tools-panel {
+        display: none;
+    }
+
+    /* Anche il vecchio riepilogo prodotto
+       verrà richiamato dalla nuova interfaccia */
+    .product-panel {
+        display: none;
+    }
+
+}
+
+/* =========================================
+   MOBILE - PANNELLO DESIGN INFERIORE
+   ========================================= */
+
+.mobile-editor-bottom {
+    display: none;
+}
+
+
+@media (max-width: 600px) {
+
+    .mobile-editor-bottom {
+        display: block;
+
+        position: fixed;
+
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+
+        z-index: 1200;
+    }
+
+
+    /* Card bianca */
+    .mobile-design-card {
+        width: 100%;
+
+        padding: 18px 14px 14px;
+
+        background: #ffffff;
+
+        border-radius: 22px;
+
+        box-shadow:
+            0 4px 18px
+            rgba(0, 0, 0, 0.08);
+    }
+
+
+    /* Titolo */
+    .mobile-design-title {
+        margin: 0 0 16px;
+
+        text-align: center;
+
+        font-size: 24px;
+        font-weight: 800;
+
+        color: #222;
+    }
+
+
+    /* Menu Immagini / Testo / ecc. */
+    .mobile-design-tools {
+        display: none;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 5px;
+
+        margin-bottom: 14px;
+
+        padding-bottom: 14px;
+
+        border-bottom:
+            1px solid #eeeeee;
+    }
+
+
+    /*
+       Questa classe verrà aggiunta
+       quando premiamo Aggiungi design
+    */
+    .mobile-design-tools.open {
+        display: grid;
+    }
+
+
+    .mobile-design-tool {
+        min-width: 0;
+
+        padding: 9px 2px;
+
+        border: none;
+        border-radius: 12px;
+
+        background: #f4f4f4;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 5px;
+
+        font-size: 10px;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-design-icon {
+        font-size: 22px;
+        line-height: 1;
+    }
+
+
+    /* Prodotti + Aggiungi design */
+    .mobile-design-main-actions {
+        display: grid;
+
+        grid-template-columns:
+    0.75fr 1.05fr 1.2fr;
+
+        gap: 10px;
+    }
+
+
+    .mobile-design-main-button {
+        height: 52px;
+
+        padding: 0 12px;
+
+        border: none;
+        border-radius: 26px;
+
+        background: #f1f1f1;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-main-icon {
+        font-size: 25px;
+        line-height: 1;
+    }
+
+
+    /* Pulsante principale */
+    .mobile-add-design-button {
+        background: #dddddd;
+    }
+
+
+    /* Area disponibile per il prodotto */
+    .preview-area {
+        height: calc(100svh - 205px);
+        min-height: 350px;
+
+        padding-bottom: 15px;
+    }
+
+
+    .preview-panel.mobile-compact .preview-area {
+        height: calc(100svh - 205px);
+        min-height: 350px;
+    }
+
+}
+
+/* =========================================
+   HEADER MOBILE
+   ========================================= */
+
+.mobile-site-header {
+    display: none;
+}
+
+
+@media (max-width: 600px) {
+
+    .mobile-site-header {
+        height: 64px;
+
+        padding: 8px 16px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        background: #ffffff;
+
+        border-bottom: 1px solid #e5e5e5;
+
+        position: relative;
+
+        z-index: 1300;
+    }
+
+
+    /* Logo */
+    .mobile-site-logo {
+        display: flex;
+        align-items: center;
+
+        height: 100%;
+    }
+
+
+    .mobile-site-logo img {
+        display: block;
+
+        width: auto;
+        height: 42px;
+
+        max-width: 180px;
+
+        object-fit: contain;
+    }
+
+
+    /* Zona destra */
+    .mobile-site-actions {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+    }
+
+
+    .mobile-header-button {
+        position: relative;
+
+        width: 42px;
+        height: 42px;
+
+        padding: 0;
+
+        border: none;
+        border-radius: 50%;
+
+        background: transparent;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-header-button:active {
+        background: #f1f1f1;
+    }
+
+
+    /* Carrello */
+    .mobile-cart-icon {
+        font-size: 23px;
+        line-height: 1;
+    }
+
+
+    .mobile-cart-count {
+        position: absolute;
+
+        top: 0;
+        right: 0;
+
+        min-width: 17px;
+        height: 17px;
+
+        padding: 0 4px;
+
+        border-radius: 9px;
+
+        background: #ef7893;
+        color: #ffffff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+
+    /* Menu hamburger */
+    .mobile-menu-button {
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+
+    .mobile-menu-button span {
+        display: block;
+
+        width: 25px;
+        height: 2px;
+
+        border-radius: 2px;
+
+        background: #222222;
+    }
+
+        .preview-area {
+        height: calc(100svh - 269px);
+        min-height: 300px;
+    }
+
+
+    .preview-panel.mobile-compact .preview-area {
+        height: calc(100svh - 269px);
+        min-height: 300px;
+    }
+
+}
+
+/* =========================================
+   MENU NAVIGAZIONE MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-site-actions {
+        position: relative;
+    }
+
+
+    .mobile-navigation-menu {
+        display: none;
+
+        position: absolute;
+
+        top: 52px;
+        right: 0;
+
+        width: 190px;
+
+        padding: 8px;
+
+        background: #ffffff;
+
+        border: 1px solid #e5e5e5;
+        border-radius: 14px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(0, 0, 0, 0.12);
+
+        z-index: 2000;
+    }
+
+
+    .mobile-navigation-menu.open {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+
+    .mobile-navigation-menu button {
+        width: 100%;
+
+        padding: 12px 14px;
+
+        border: none;
+        border-radius: 9px;
+
+        background: transparent;
+
+        text-align: left;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-navigation-menu button:active {
+        background: #f1f1f1;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .mobile-cart-add-button {
+        background: #ffffff;
+
+        border: 2px solid #ef7893;
+
+        color: #b91f4a;
+
+        font-weight: 700;
+    }
+
+
+    .mobile-cart-add-button .mobile-main-icon {
+        font-size: 20px;
+    }
+
+
+    .mobile-cart-add-button span:last-child {
+        line-height: 1.05;
+    }
+
+}
+
+/* =========================================
+   CARRELLO MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .cart-drawer {
+        width: calc(100% - 24px);
+        max-width: none;
+
+        top: 12px;
+        right: 12px;
+        bottom: 12px;
+
+        height: auto;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+    }
+
+
+    .cart-header {
+        position: sticky;
+        top: 0;
+
+        z-index: 20;
+
+        background: #ffffff;
+
+        padding: 14px 16px;
+
+        border-bottom: 1px solid #eeeeee;
+    }
+
+
+    #closeCartButton {
+        width: 42px;
+        height: 42px;
+
+        border: none;
+        border-radius: 50%;
+
+        background: #f1f1f1;
+
+        font-size: 26px;
+        line-height: 1;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    body.mobile-cart-open
+    .mobile-design-panel {
+        display: none;
+    }
+
+}
+
+/* =========================================
+   MOBILE - CARRELLO OTTIMIZZATO
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    /* Carrello sotto l'header mobile */
+    .cart-drawer {
+        top: 68px;
+        right: 8px;
+
+        width: calc(100% - 16px);
+        height: calc(100svh - 76px);
+
+        padding: 16px;
+
+        border-radius: 18px 18px 0 0;
+
+        z-index: 2000;
+    }
+
+    /* Header del carrello sempre visibile */
+    .cart-drawer-header {
+        position: sticky;
+        top: 0;
+
+        background: white;
+
+        z-index: 10;
+
+        padding: 4px 0 14px;
+    }
+
+    /* X più grande e facile da premere */
+    .close-cart-button {
+        width: 44px;
+        height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        font-size: 32px;
+        line-height: 1;
+
+        border-radius: 50%;
+    }
+
+    .close-cart-button:active {
+        background: #eeeeee;
+    }
+
+    /* Il contenuto scorre senza portarsi via la X */
+    .cart-items {
+        min-height: 0;
+        overflow-y: auto;
+        padding: 12px 0;
+    }
+
+    /* Nasconde la card inferiore mentre il carrello è aperto */
+    body.mobile-cart-open .mobile-editor-bottom {
+        display: none;
+    }
+}
+
+/* =========================================
+   MOBILE - BOTTOM SHEET PRODOTTI
+   ========================================= */
+
+.mobile-sheet-overlay,
+.mobile-bottom-sheet {
+    display: none;
+}
+
+
+@media (max-width: 600px) {
+
+    .mobile-sheet-overlay {
+        position: fixed;
+
+        inset: 0;
+
+        background: rgba(0, 0, 0, 0.45);
+
+        z-index: 3000;
+    }
+
+
+    .mobile-sheet-overlay.open {
+        display: block;
+    }
+
+
+    .mobile-bottom-sheet {
+        position: fixed;
+
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+
+        padding: 20px 16px 18px;
+
+        background: #ffffff;
+
+        border-radius: 24px;
+
+        z-index: 3100;
+
+        box-shadow:
+            0 -5px 30px
+            rgba(0, 0, 0, 0.15);
+    }
+
+
+    .mobile-bottom-sheet.open {
+        display: block;
+    }
+
+
+    .mobile-sheet-header {
+        display: flex;
+
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+    }
+
+
+    .mobile-sheet-header h2 {
+        margin: 0;
+
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+
+    .mobile-sheet-close {
+        width: 42px;
+        height: 42px;
+
+        border: none;
+        border-radius: 50%;
+
+        background: #f1f1f1;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 30px;
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-sheet-subtitle {
+        margin: 4px 0 18px;
+
+        color: #777777;
+
+        font-size: 13px;
+    }
+
+
+    .mobile-product-options {
+        display: flex;
+        flex-direction: column;
+
+        gap: 9px;
+    }
+
+
+    .mobile-product-option {
+        width: 100%;
+        min-height: 72px;
+
+        padding: 10px 14px;
+
+        border: none;
+        border-radius: 16px;
+
+        background: #f4f4f4;
+
+        display: grid;
+
+        grid-template-columns:
+            46px 1fr 24px;
+
+        align-items: center;
+
+        gap: 10px;
+
+        text-align: left;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-product-option-icon {
+        font-size: 26px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .mobile-product-option-text {
+        display: flex;
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+
+    .mobile-product-option-text strong {
+        font-size: 15px;
+    }
+
+
+    .mobile-product-option-text small {
+        color: #777777;
+
+        font-size: 11px;
+    }
+
+
+    .mobile-product-arrow {
+        font-size: 28px;
+
+        color: #777777;
+
+        text-align: right;
+    }
+
+}
+
+/* =========================================
+   MOBILE - SCELTA MODELLO T-SHIRT
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-sheet-header {
+        position: relative;
+    }
+
+
+    .mobile-sheet-back {
+        width: 42px;
+        height: 42px;
+
+        border: none;
+        border-radius: 50%;
+
+        background: #f1f1f1;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        font-size: 34px;
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+
+    #mobileTshirtSheet
+    .mobile-sheet-header h2 {
+        flex: 1;
+
+        font-size: 22px;
+    }
+
+
+    .mobile-tshirt-models {
+        display: flex;
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+
+    .mobile-tshirt-model {
+        width: 100%;
+        min-height: 125px;
+
+        padding: 10px;
+
+        border: 2px solid transparent;
+        border-radius: 18px;
+
+        background: #f4f4f4;
+
+        display: grid;
+
+        grid-template-columns:
+            100px 1fr 22px;
+
+        align-items: center;
+
+        gap: 12px;
+
+        text-align: left;
+
+        cursor: pointer;
+    }
+
+
+    button.mobile-tshirt-model:active {
+        border-color: #58b6c5;
+
+        background: #ffffff;
+    }
+
+
+    .mobile-tshirt-model-preview {
+        width: 100px;
+        height: 105px;
+
+        border-radius: 13px;
+
+        background: #eeeeee;
+
+        overflow: hidden;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .mobile-tshirt-model-preview img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+
+    .mobile-tshirt-model-info {
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+
+    .mobile-tshirt-model-info strong {
+        font-size: 16px;
+    }
+
+
+    .mobile-tshirt-model-info span {
+        color: #777777;
+
+        font-size: 12px;
+        line-height: 1.25;
+    }
+
+
+    .mobile-tshirt-model-info b {
+        margin-top: 4px;
+
+        font-size: 14px;
+
+        color: #222222;
+    }
+
+
+    .mobile-tshirt-model.coming-soon {
+        opacity: 0.55;
+
+        cursor: default;
+
+        grid-template-columns:
+            100px 1fr;
+    }
+
+
+    .mobile-coming-icon {
+        font-size: 42px;
+    }
+
+}
+
+/* =========================================
+   MOBILE - SCELTA COLORE T-SHIRT
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-tshirt-color-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        gap: 12px;
+    }
+
+
+    .mobile-tshirt-color-card {
+        padding: 8px;
+
+        border: 2px solid transparent;
+        border-radius: 18px;
+
+        background: #f4f4f4;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-tshirt-color-card:active {
+        border-color: #58b6c5;
+
+        background: #ffffff;
+    }
+
+
+    .mobile-tshirt-color-preview {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+
+        border-radius: 14px;
+
+        background: #eeeeee;
+
+        overflow: hidden;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .mobile-tshirt-color-preview img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+
+    .mobile-tshirt-color-name {
+        padding: 10px 4px 5px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        font-size: 14px;
+    }
+
+
+    .mobile-color-dot {
+        width: 18px;
+        height: 18px;
+
+        border-radius: 50%;
+
+        display: block;
+
+        border: 1px solid #aaaaaa;
+    }
+
+
+    .mobile-color-dot.white {
+        background: #ffffff;
+    }
+
+
+    .mobile-color-dot.black {
+        background: #111111;
+    }
+
+}
+
+/* =========================================
+   MOBILE - ALTRE AZIONI
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-more-sheet {
+        padding-bottom:
+            calc(18px + env(safe-area-inset-bottom));
+    }
+
+
+    .mobile-more-actions {
+        margin-top: 18px;
+
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+    }
+
+
+    .mobile-more-action {
+        min-height: 125px;
+
+        padding: 16px 14px;
+
+        border: none;
+        border-radius: 18px;
+
+        background: #f3f3f3;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        text-align: left;
+
+        position: relative;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-more-icon {
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 12px;
+
+        border-radius: 50%;
+
+        background: #ffffff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 21px;
+    }
+
+
+    .mobile-more-text {
+        padding-right: 18px;
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 4px;
+    }
+
+
+    .mobile-more-text strong {
+        font-size: 14px;
+        line-height: 1.15;
+    }
+
+
+    .mobile-more-text small {
+        color: #777777;
+
+        font-size: 11px;
+        line-height: 1.25;
+    }
+
+
+    .mobile-more-action
+    .mobile-product-arrow {
+        position: absolute;
+
+        right: 12px;
+        bottom: 10px;
+
+        font-size: 24px;
+    }
+
+
+    .mobile-more-danger
+    .mobile-more-icon {
+        background: #ffe8ed;
+    }
+
+
+    .mobile-more-danger
+    .mobile-more-text strong {
+        color: #d93b59;
+    }
+
+}
+
+/* =========================================
+   MOBILE - FRONTE / RETRO
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-side-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        gap: 12px;
+    }
+
+
+    .mobile-side-card {
+        padding: 8px;
+
+        border: 2px solid transparent;
+        border-radius: 18px;
+
+        background: #f4f4f4;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-side-card.active {
+        border-color: #58b6c5;
+
+        background: #ffffff;
+    }
+
+
+    .mobile-side-preview {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+
+        border-radius: 14px;
+
+        background: #eeeeee;
+
+        overflow: hidden;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .mobile-side-preview img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+
+    .mobile-side-label {
+        padding: 10px 5px 5px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 8px;
+
+        font-size: 14px;
+    }
+
+
+    .mobile-side-check {
+        width: 22px;
+        height: 22px;
+
+        border-radius: 50%;
+
+        background: #58b6c5;
+        color: #ffffff;
+
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+
+    .mobile-side-card.active
+    .mobile-side-check {
+        display: flex;
+    }
+
+}
+
+/* =========================================
+   MOBILE - FORMATO STAMPA
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-format-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        gap: 12px;
+    }
+
+
+    .mobile-format-card {
+        padding: 8px;
+
+        border: 2px solid transparent;
+        border-radius: 18px;
+
+        background: #f4f4f4;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-format-card.active {
+        border-color: #58b6c5;
+
+        background: #ffffff;
+    }
+
+
+    .mobile-format-preview {
+        height: 145px;
+
+        border-radius: 14px;
+
+        background: #eeeeee;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .mobile-format-shape {
+        border: 2px dashed #58b6c5;
+
+        background: #ffffff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        color: #555555;
+    }
+
+
+    .mobile-format-shape.vertical {
+        width: 70px;
+        height: 105px;
+    }
+
+
+    .mobile-format-shape.horizontal {
+        width: 105px;
+        height: 70px;
+    }
+
+
+    .mobile-format-label {
+        padding: 10px 5px 5px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 8px;
+
+        text-align: left;
+    }
+
+
+    .mobile-format-label > div {
+        display: flex;
+        flex-direction: column;
+
+        gap: 2px;
+    }
+
+
+    .mobile-format-label strong {
+        font-size: 14px;
+    }
+
+
+    .mobile-format-label small {
+        color: #777777;
+
+        font-size: 11px;
+    }
+
+
+    .mobile-format-check {
+        width: 22px;
+        height: 22px;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        background: #58b6c5;
+        color: #ffffff;
+
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+
+    .mobile-format-card.active
+    .mobile-format-check {
+        display: flex;
+    }
+
+}
+
+/* =========================================
+   MOBILE - CONTROLLI RAPIDI T-SHIRT
+   ========================================= */
+
+.mobile-tshirt-quick-controls {
+    display: none;
+}
+
+
+@media (max-width: 600px) {
+
+    .mobile-tshirt-quick-controls {
+        position: fixed;
+
+        left: 50%;
+        bottom: 116px;
+
+        transform: translateX(-50%);
+
+        width: calc(100% - 24px);
+        max-width: 450px;
+
+        display: none;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 8px;
+
+        z-index: 900;
+    }
+
+
+    .mobile-tshirt-quick-controls.visible {
+        display: grid;
+    }
+
+
+    .mobile-quick-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        gap: 5px;
+
+        padding: 4px;
+
+        border-radius: 14px;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 2px 10px
+            rgba(0, 0, 0, 0.08);
+    }
+
+
+    .mobile-quick-button {
+        min-width: 0;
+
+        padding: 9px 4px;
+
+        border: 1px solid #dddddd;
+        border-radius: 10px;
+
+        background: #f5f5f5;
+
+        color: #333333;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-quick-button.active {
+        border-color: #58b6c5;
+
+        background: #eaf8fa;
+
+        color: #247f8e;
+    }
+
+
+    /*
+       Quando Aggiungi design è aperto,
+       lasciamo spazio agli strumenti.
+    */
+
+    body.mobile-design-open
+    .mobile-tshirt-quick-controls {
+        display: none;
+    }
+
+}
+
+/* =========================================
+   MOBILE - MODALITÀ PERSONALIZZAZIONE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    body.mobile-customizing
+    .mobile-design-title {
+        display: none;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    body.mobile-customizing
+    .mobile-design-card
+    .mobile-design-title {
+        display: none !important;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    body.mobile-customizing
+    .mobile-tshirt-quick-controls.visible {
+        position: static;
+
+        left: auto;
+        bottom: auto;
+
+        transform: none;
+
+        width: 100%;
+        max-width: none;
+
+        margin: 0 0 10px;
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 8px;
+    }
+
+
+    body.mobile-customizing
+    .mobile-design-tools.open
+    ~ .mobile-design-main-actions {
+        margin-top: 0;
+    }
+
+}
+
+/* =========================================
+   MOBILE - QUICK CONTROLS PIÙ COMPATTI
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    body.mobile-customizing
+    .mobile-tshirt-quick-controls.visible {
+        margin: 0 0 6px;
+
+        gap: 5px;
+    }
+
+
+    body.mobile-customizing
+    .mobile-quick-group {
+        gap: 3px;
+
+        padding: 2px;
+
+        border-radius: 10px;
+
+        box-shadow: none;
+
+        background: #f3f3f3;
+    }
+
+
+    body.mobile-customizing
+    .mobile-quick-button {
+        min-height: 28px;
+
+        padding: 4px 3px;
+
+        border-radius: 7px;
+
+        font-size: 10px;
+        font-weight: 600;
+
+        line-height: 1;
+    }
+
+
+    body.mobile-customizing
+    .mobile-design-tools.open {
+        margin-top: 2px;
+    }
+
+}
+
+/* =========================================
+   MOBILE - BARRA INFERIORE COMPATTA
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    /* Card bianca inferiore */
+    .mobile-design-card {
+        padding: 7px 8px 8px !important;
+        border-radius: 18px 18px 0 0;
+    }
+
+
+    /* "Progetta ora!" */
+    .mobile-design-title {
+        font-size: 19px !important;
+        line-height: 1 !important;
+
+        margin: 3px 0 8px !important;
+    }
+
+
+    /* Riga Prodotti / Aggiungi design / Carrello */
+    .mobile-design-main-actions {
+        gap: 5px !important;
+        margin-top: 0 !important;
+    }
+
+
+    /* Tre pulsanti principali */
+    .mobile-design-main-button {
+        min-height: 45px !important;
+
+        padding: 5px 5px !important;
+
+        border-radius: 22px !important;
+
+        font-size: 12px !important;
+        line-height: 1.05 !important;
+    }
+
+
+    /* Icone dei pulsanti */
+    .mobile-main-icon {
+        font-size: 17px !important;
+    }
+
+
+    /* Quando Aggiungi design è aperto */
+    .mobile-design-tools {
+        gap: 5px !important;
+        margin: 4px 0 6px !important;
+    }
+
+
+    .mobile-design-tool {
+        min-height: 48px !important;
+
+        padding: 5px 3px !important;
+
+        font-size: 10px !important;
+
+        border-radius: 10px !important;
+    }
+
+
+    .mobile-design-icon {
+        font-size: 17px !important;
+        margin-bottom: 2px !important;
+    }
+
+}
+
+/* =========================================
+   MOBILE - STATI PANNELLO DESIGN
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    /*
+       Nasconde il titolo quando:
+       1. esiste già un design
+       2. Aggiungi design è aperto
+    */
+
+    body.mobile-customizing
+    .mobile-design-title,
+
+    body.mobile-design-open
+    .mobile-design-title {
+        display: none !important;
+    }
+
+
+    /*
+       Quando il menu design è chiuso
+       gli strumenti non devono occupare spazio.
+    */
+
+    body:not(.mobile-design-open)
+    .mobile-design-tools {
+        display: none !important;
+    }
+
+
+    /*
+       Quando viene aperto Aggiungi design
+    */
+
+    body.mobile-design-open
+    .mobile-design-tools {
+        display: grid !important;
+
+        margin: 4px 0 6px !important;
+    }
+
+}
+
+/* =========================================
+   MOBILE - EDITOR TESTO
+   ========================================= */
+
+.mobile-text-editor-sheet {
+    display: none;
+}
+
+
+@media (max-width: 600px) {
+
+    .mobile-text-editor-sheet {
+        position: fixed;
+
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        z-index: 2200;
+
+        display: block;
+
+        padding: 14px 14px 18px;
+
+        background: #ffffff;
+
+        border-radius: 22px 22px 0 0;
+
+        box-shadow:
+            0 -6px 25px
+            rgba(0, 0, 0, 0.16);
+
+        transform: translateY(110%);
+
+        transition:
+            transform 0.25s ease;
+    }
+
+
+    .mobile-text-editor-sheet.open {
+        transform: translateY(0);
+    }
+
+
+    .mobile-text-editor-header {
+        display: flex;
+
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 12px;
+    }
+
+
+    .mobile-text-editor-header h2 {
+        margin: 0;
+
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+
+    .mobile-text-editor-close {
+        width: 36px;
+        height: 36px;
+
+        padding: 0;
+
+        border: none;
+        border-radius: 50%;
+
+        background: #f1f1f1;
+
+        font-size: 25px;
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-text-editor-content {
+        display: flex;
+        flex-direction: column;
+
+        gap: 9px;
+    }
+
+
+    .mobile-text-label {
+        font-size: 12px;
+        font-weight: 700;
+
+        color: #555555;
+    }
+
+
+    .mobile-text-input {
+        width: 100%;
+        min-height: 58px;
+
+        box-sizing: border-box;
+
+        padding: 10px 12px;
+
+        border: 2px solid #dddddd;
+        border-radius: 12px;
+
+        background: #ffffff;
+
+        font: inherit;
+        font-size: 16px;
+
+        resize: none;
+
+        outline: none;
+    }
+
+
+    .mobile-text-input:focus {
+        border-color: #58b6c5;
+    }
+
+
+    .mobile-text-toolbar {
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 6px;
+    }
+
+
+    .mobile-text-tool {
+        min-width: 0;
+        min-height: 54px;
+
+        padding: 6px 3px;
+
+        border: 1px solid #e1e1e1;
+        border-radius: 10px;
+
+        background: #f5f5f5;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 3px;
+
+        font-size: 10px;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-text-tool-icon {
+        font-size: 17px;
+        line-height: 1;
+    }
+
+
+    .mobile-text-tool.active {
+        border-color: #58b6c5;
+
+        background: #eaf8fa;
+
+        color: #247f8e;
+    }
+
+
+    .mobile-text-done-button {
+        width: 100%;
+
+        margin-top: 3px;
+
+        padding: 11px;
+
+        border: none;
+        border-radius: 20px;
+
+        background: #58b6c5;
+        color: #ffffff;
+
+        font-size: 14px;
+        font-weight: 800;
+
+        cursor: pointer;
+    }
+
+}
+
+/* =========================================
+   FIX MOBILE - EDITOR TESTO SOPRA OVERLAY
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    #mobileTextOverlay {
+        z-index: 2190 !important;
+    }
+
+    #mobileTextEditorSheet {
+        z-index: 2200 !important;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    #mobileTextOverlay.open {
+        pointer-events: auto;
+    }
+
+    #mobileTextEditorSheet.open {
+        pointer-events: auto;
+    }
+
+}
+
+/* =========================================
+   MOBILE - BARRA TESTO SELEZIONATO
+   ========================================= */
+
+.mobile-text-selection-bar {
+    display: none;
+}
+
+
+@media (max-width: 600px) {
+
+    .mobile-text-selection-bar {
+        position: fixed;
+
+        top: 76px;
+        left: 10px;
+        right: 10px;
+
+        height: 58px;
+
+        z-index: 1150;
+
+        background: #ffffff;
+
+        border-radius: 28px;
+
+        box-shadow:
+            0 3px 14px
+            rgba(0, 0, 0, 0.10);
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        scrollbar-width: none;
+
+        align-items: stretch;
+    }
+
+
+    .mobile-text-selection-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    .mobile-text-selection-bar.visible {
+        display: flex;
+    }
+
+
+    .mobile-selection-tool {
+        flex: 0 0 auto;
+
+        min-width: 82px;
+        height: 58px;
+
+        padding: 5px 12px;
+
+        border: none;
+        border-right: 1px solid #e5e5e5;
+
+        background: #ffffff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        white-space: nowrap;
+
+        cursor: pointer;
+    }
+
+
+    .mobile-selection-back {
+        min-width: 48px;
+
+        padding: 0;
+
+        font-size: 29px;
+
+        position: sticky;
+        left: 0;
+
+        z-index: 2;
+    }
+
+
+    .mobile-selection-icon {
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+
+    .mobile-selection-color {
+        width: 22px;
+        height: 22px;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        background: #000000;
+
+        border: 2px solid #dddddd;
+    }
+
+
+    .mobile-selection-delete {
+        color: #d93434;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .mobile-text-selection-bar {
+        top: 276px !important;
+
+        left: 282px !important;
+        right: 282px !important;
+    }
+
+}
+
+/* =========================================
+   MOBILE - TOPBAR CON BARRA CONTESTUALE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-editor-topbar {
+        display: flex !important;
+        align-items: center !important;
+
+        gap: 4px;
+
+        overflow: hidden;
+    }
+
+
+    /* SINISTRA - sempre visibile */
+
+    .mobile-history-buttons {
+        flex: 0 0 auto;
+
+        position: relative;
+        z-index: 5;
+
+        background: #ffffff;
+    }
+
+
+    /* CENTRO */
+
+    .mobile-text-selection-bar {
+        position: static !important;
+
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+
+        flex: 1 1 auto;
+
+        width: auto !important;
+        min-width: 0;
+
+        height: 52px !important;
+
+        margin: 0;
+
+        border-radius: 0;
+
+        box-shadow: none;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        scrollbar-width: none;
+
+        background: #ffffff;
+    }
+
+
+    .mobile-text-selection-bar.visible {
+        display: flex !important;
+    }
+
+
+    .mobile-text-selection-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    .mobile-selection-tool {
+        height: 52px !important;
+
+        min-width: 76px;
+
+        padding: 4px 8px;
+
+        flex-shrink: 0;
+
+        font-size: 11px;
+    }
+
+
+    /* DESTRA - sempre visibile */
+
+    .mobile-more-fixed {
+        flex: 0 0 auto;
+
+        position: relative;
+        z-index: 5;
+
+        background: #ffffff;
+    }
+
+}
+
+/* =========================================
+   MOBILE - NASCONDI CONTROLLI T-SHIRT
+   QUANDO "AGGIUNGI DESIGN" È APERTO
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    body.mobile-design-open
+    .mobile-tshirt-quick-controls {
+        display: none !important;
+    }
+
+}
+
+/* =========================================
+   MOBILE - MENU FORMATO TESTO
+   ========================================= */
+
+.mobile-text-format-menu {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    .mobile-text-format-menu {
+        position: fixed;
+
+        top: 132px;
+        left: 50%;
+
+        transform: translateX(-50%);
+
+        z-index: 1250;
+
+        width: 210px;
+
+        padding: 6px;
+
+        background: #ffffff;
+
+        border-radius: 14px;
+
+        box-shadow:
+            0 5px 18px
+            rgba(0, 0, 0, 0.16);
+    }
+
+    .mobile-text-format-menu.open {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mobile-format-option {
+        width: 100%;
+
+        min-height: 44px;
+
+        padding: 8px 12px;
+
+        border: none;
+        border-radius: 9px;
+
+        background: #ffffff;
+
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        font-size: 14px;
+        text-align: left;
+
+        cursor: pointer;
+    }
+
+    .mobile-format-option strong,
+    .mobile-format-option em {
+        width: 25px;
+
+        font-size: 19px;
+        text-align: center;
+    }
+
+    .mobile-format-option.active {
+        background: #eaf7f9;
+        color: #3199aa;
+    }
+
+    .mobile-format-option:active {
+        background: #eeeeee;
+    }
+
+}
+
+/* =========================================
+   MOBILE - SPAZIO MENU FORMATO APERTO
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    body.mobile-format-open
+.preview-panel {
+    padding-top: 62px !important;
+}
+
+    .mobile-text-format-menu {
+        top: 132px !important;
+
+        width: auto !important;
+
+        min-width: 230px;
+
+        padding: 5px !important;
+
+        border-radius: 12px !important;
+    }
+
+    .mobile-text-format-menu.open {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 4px;
+    }
+
+    .mobile-format-option {
+        min-height: 38px !important;
+        padding: 6px 10px !important;
+
+        justify-content: center;
+
+        white-space: nowrap;
+    }
+
+}
+
+/* =========================================
+   MOBILE - PALETTE COLORE TESTO
+   ========================================= */
+
+.mobile-text-color-menu {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    .mobile-text-color-menu {
+        position: fixed;
+        top: 132px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        z-index: 1250;
+
+        padding: 7px 9px;
+
+        background: #ffffff;
+        border-radius: 24px;
+
+        box-shadow:
+            0 5px 18px
+            rgba(0, 0, 0, 0.16);
+
+        align-items: center;
+        gap: 7px;
+    }
+
+    .mobile-text-color-menu.open {
+        display: flex;
+    }
+
+    .mobile-color-swatch {
+        width: 27px;
+        height: 27px;
+
+        flex: 0 0 27px;
+
+        padding: 0;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+
+        box-shadow:
+            0 0 0 1px #d5d5d5;
+
+        cursor: pointer;
+    }
+
+    .mobile-color-swatch.active {
+        box-shadow:
+            0 0 0 3px #58b6c5;
+    }
+
+    .mobile-white-swatch {
+        border-color: #eeeeee;
+    }
+
+    .mobile-custom-color-button {
+        width: 29px;
+        height: 29px;
+
+        flex: 0 0 29px;
+
+        padding: 0;
+
+        border: 1px solid #cccccc;
+        border-radius: 50%;
+
+        background: #f5f5f5;
+
+        font-size: 22px;
+        line-height: 1;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+    }
+
+    body.mobile-color-open
+    .preview-panel {
+        padding-top: 62px !important;
+    }
+}
+
+/* =========================================
+   MOBILE - COLORE PERSONALIZZATO
+   ========================================= */
+
+.mobile-custom-color-menu {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    .mobile-custom-color-menu {
+        position: fixed;
+
+        top: 132px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        z-index: 1260;
+
+        width: min(360px, calc(100% - 24px));
+        box-sizing: border-box;
+
+        padding: 7px 9px;
+
+        background: #ffffff;
+        border-radius: 24px;
+
+        box-shadow:
+            0 5px 18px
+            rgba(0, 0, 0, 0.16);
+
+        align-items: center;
+        gap: 8px;
+    }
+
+    .mobile-custom-color-menu.open {
+        display: flex;
+    }
+
+
+    /* FRECCIA */
+
+    .mobile-custom-color-back {
+        width: 30px;
+        height: 30px;
+
+        flex: 0 0 30px;
+
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+
+        background: #f1f1f1;
+
+        font-size: 25px;
+        line-height: 1;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+    }
+
+
+    /* BARRA ARCOBALENO */
+
+    .mobile-hue-range {
+        flex: 1 1 auto;
+
+        min-width: 80px;
+        height: 24px;
+
+        margin: 0;
+
+        appearance: none;
+        -webkit-appearance: none;
+
+        border-radius: 12px;
+
+        background:
+            linear-gradient(
+                to right,
+                #ff0000,
+                #ffff00,
+                #00ff00,
+                #00ffff,
+                #0000ff,
+                #ff00ff,
+                #ff0000
+            );
+
+        outline: none;
+    }
+
+    .mobile-hue-range::-webkit-slider-thumb {
+        appearance: none;
+        -webkit-appearance: none;
+
+        width: 22px;
+        height: 22px;
+
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+
+        background: transparent;
+
+        box-shadow:
+            0 0 0 1px #777777;
+
+        cursor: pointer;
+    }
+
+
+    /* ANTEPRIMA */
+
+    .mobile-custom-color-preview {
+        width: 27px;
+        height: 27px;
+
+        flex: 0 0 27px;
+
+        border-radius: 50%;
+
+        background: #000000;
+
+        box-shadow:
+            0 0 0 1px #cccccc;
+    }
+
+
+    /* HEX */
+
+    .mobile-hex-color {
+        width: 72px;
+
+        box-sizing: border-box;
+
+        padding: 6px 5px;
+
+        border: 1px solid #d4d4d4;
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        font-size: 12px;
+        text-align: center;
+        text-transform: uppercase;
+
+        outline: none;
+    }
+
+    .mobile-hex-color:focus {
+        border-color: #58b6c5;
+    }
+
+}
+
+/* =========================================
+   MOBILE - TONALITÀ + CHIARO/SCURO
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-color-sliders {
+        flex: 1 1 auto;
+
+        min-width: 100px;
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+
+    .mobile-color-sliders
+    .mobile-hue-range {
+        width: 100%;
+        min-width: 0;
+    }
+
+
+    .mobile-light-range {
+        width: 100%;
+        height: 16px;
+
+        margin: 0;
+
+        appearance: none;
+        -webkit-appearance: none;
+
+        border-radius: 8px;
+
+        background:
+            linear-gradient(
+                to right,
+                #000000,
+                #808080,
+                #ffffff
+            );
+
+        outline: none;
+    }
+
+
+    .mobile-light-range::-webkit-slider-thumb {
+        appearance: none;
+        -webkit-appearance: none;
+
+        width: 18px;
+        height: 18px;
+
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+
+        background: transparent;
+
+        box-shadow:
+            0 0 0 1px #777777;
+
+        cursor: pointer;
+    }
+
+}

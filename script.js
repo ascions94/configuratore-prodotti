@@ -488,7 +488,30 @@ sendBackwardButton.addEventListener(
     }
 );
 
-    function showSelectionControls(element, type) {
+function updateMobileTextSelectionBar() {
+
+    const mobileTextSelectionBar =
+        document.getElementById(
+            "mobileTextSelectionBar"
+        );
+
+    if (!mobileTextSelectionBar) {
+        return;
+    }
+
+    const shouldShow =
+        window.innerWidth <= 600 &&
+        selectedElementType === "text";
+
+    mobileTextSelectionBar.classList.toggle(
+        "visible",
+        shouldShow
+    );
+}
+
+function showSelectionControls(element, type) {
+
+    updateMobileTextSelectionBar();
 
     selectedElementType = type;
 
@@ -555,22 +578,32 @@ selectionControls.classList.toggle(
         updateSelectionSizeLabels();
 }
 
-productPreview.addEventListener("mousedown", function (event) {
+productPreview.addEventListener("pointerdown", function (event) {
 
     if (
         event.target === uploadedImage ||
         event.target === customText ||
+        event.target.closest(".multi-uploaded-image") ||
+        event.target.closest(".multi-custom-text") ||
         selectionControls.contains(event.target)
     ) {
         return;
     }
 
-    uploadedImage.classList.remove("selected-element");
-    customText.classList.remove("selected-element");
+    uploadedImage.classList.remove(
+        "selected-element"
+    );
 
-    selectionControls.style.display = "none";
+    customText.classList.remove(
+        "selected-element"
+    );
+
+    selectionControls.style.display =
+        "none";
 
     selectedElementType = null;
+
+    updateMobileTextSelectionBar();
 });
 
 let isDirectRotating = false;
@@ -1944,11 +1977,29 @@ function saveHistoryState() {
 
 function updateHistoryButtons() {
 
-    undoButton.disabled =
+    const undoDisabled =
         undoStack.length === 0;
 
-    redoButton.disabled =
+    const redoDisabled =
         redoStack.length === 0;
+
+
+    undoButton.disabled =
+        undoDisabled;
+
+    redoButton.disabled =
+        redoDisabled;
+
+
+    if (mobileUndoButton) {
+        mobileUndoButton.disabled =
+            undoDisabled;
+    }
+
+    if (mobileRedoButton) {
+        mobileRedoButton.disabled =
+            redoDisabled;
+    }
 }
 
 
@@ -4663,6 +4714,32 @@ function fitImageInsidePrintArea() {
 }
 
 
+function updateMobileCustomizingState() {
+
+    const state = getCurrentState();
+
+    const hasImages =
+        Array.isArray(state.images) &&
+        state.images.length > 0;
+
+    const hasTexts =
+        Array.isArray(state.texts) &&
+        state.texts.some(function (textState) {
+            return (
+                textState.text &&
+                textState.text.trim() !== ""
+            );
+        });
+
+    const hasDesign =
+        hasImages || hasTexts;
+
+    document.body.classList.toggle(
+        "mobile-customizing",
+        hasDesign
+    );
+}
+
 function renderCurrentState() {
 
     const state = getCurrentState();
@@ -4810,6 +4887,8 @@ renderMultiImages();
 renderMultiTexts();
 
 updateImageTransform();
+
+updateMobileCustomizingState();
 }
 
 function setTextAlignment(alignment) {
@@ -5254,6 +5333,17 @@ state.images.push(
 
                 renderCurrentState();
 
+                if (window.innerWidth <= 600) {
+
+    mobileDesignTools.classList.remove(
+        "open"
+    );
+
+    document.body.classList.remove(
+        "mobile-design-open"
+    );
+}
+
 
                 /*
                     Permette anche di scegliere
@@ -5361,6 +5451,10 @@ customText.addEventListener("pointerdown", function (event) {
     if (!customText.textContent.trim()) {
         return;
     }
+
+    selectedElementType = "text";
+
+updateMobileTextSelectionBar();
 
     /*
         Salviamo la posizione prima
@@ -5723,6 +5817,17 @@ isEditingText = true;
 
 
         renderCurrentState();
+
+        if (window.innerWidth <= 600) {
+
+    mobileDesignTools.classList.remove(
+        "open"
+    );
+
+    document.body.classList.remove(
+        "mobile-design-open"
+    );
+}
 
 
         selectionControls.style.display =
@@ -7262,8 +7367,8 @@ async function createTshirtCartCanvas(side) {
 
 
     const state =
-        productStates
-            .tshirt[side];
+    productStates
+        .tshirt[tshirtColor][side];
 
 
     /*
@@ -8670,14 +8775,14 @@ if (currentProduct === "tshirt") {
             front:
                 createCartStateCopy(
                     productStates
-                        .tshirt
+                        .tshirt[tshirtColor]
                         .front
                 ),
 
             back:
                 createCartStateCopy(
                     productStates
-                        .tshirt
+                        .tshirt[tshirtColor]
                         .back
                 )
         }
@@ -8813,3 +8918,1725 @@ function updateMobileStickyPreview() {
 
 window.addEventListener("scroll", updateMobileStickyPreview);
 window.addEventListener("resize", updateMobileStickyPreview);
+
+/* =========================================
+   CONTROLLI EDITOR MOBILE
+   ========================================= */
+
+const mobileUndoButton =
+    document.getElementById("mobileUndoButton");
+
+const mobileRedoButton =
+    document.getElementById("mobileRedoButton");
+
+const mobileUploadButton =
+    document.getElementById("mobileUploadButton");
+
+    const mobileTextButton =
+    document.getElementById(
+        "mobileTextButton"
+    );
+
+
+/* ANNULLA */
+mobileUndoButton.addEventListener(
+    "click",
+    function () {
+
+        undoHistory();
+    }
+);
+
+
+/* RIPRISTINA */
+mobileRedoButton.addEventListener(
+    "click",
+    function () {
+
+        redoHistory();
+    }
+);
+
+
+/* CARICA FOTO */
+mobileUploadButton.addEventListener(
+    "click",
+    function () {
+
+        imageUpload.click();
+    }
+);
+
+/* =========================================
+   MOBILE - APRI EDITOR TESTO
+   ========================================= */
+
+const mobileTextEditorSheet =
+    document.getElementById(
+        "mobileTextEditorSheet"
+    );
+
+const mobileTextOverlay =
+    document.getElementById(
+        "mobileTextOverlay"
+    );
+
+const mobileTextEditorClose =
+    document.getElementById(
+        "mobileTextEditorClose"
+    );
+
+const mobileTextDoneButton =
+    document.getElementById(
+        "mobileTextDoneButton"
+    );
+
+const mobileTextInput =
+    document.getElementById(
+        "mobileTextInput"
+    );
+
+
+/* =========================================
+   MOBILE - SINCRONIZZA TESTO
+   ========================================= */
+
+mobileTextInput.addEventListener(
+    "input",
+    function () {
+
+        textInput.value =
+            mobileTextInput.value;
+
+        textInput.dispatchEvent(
+            new Event(
+                "input",
+                {
+                    bubbles: true
+                }
+            )
+        );
+    }
+);
+
+    function openMobileTextEditor() {
+
+    /*
+       Crea il testo usando la logica
+       originale del configuratore.
+    */
+
+    addTextButton.click();
+
+    mobileTextInput.value =
+    textInput.value;
+
+
+    /*
+       Chiude Aggiungi design.
+    */
+
+    mobileDesignTools.classList.remove(
+        "open"
+    );
+
+    document.body.classList.remove(
+        "mobile-design-open"
+    );
+
+
+    /*
+       Apre l'editor testo mobile.
+    */
+
+    mobileTextEditorSheet.classList.add(
+        "open"
+    );
+
+    mobileTextOverlay.classList.add(
+        "open"
+    );
+
+
+    /*
+       Porta subito il cursore
+       nel campo di testo.
+    */
+
+    setTimeout(
+        function () {
+            mobileTextInput.focus();
+        },
+        250
+    );
+}
+
+
+function closeMobileTextEditor() {
+
+    mobileTextEditorSheet.classList.remove(
+        "open"
+    );
+
+    mobileTextOverlay.classList.remove(
+        "open"
+    );
+}
+
+
+mobileTextButton.addEventListener(
+    "click",
+    openMobileTextEditor
+);
+
+
+mobileTextEditorClose.addEventListener(
+    "click",
+    closeMobileTextEditor
+);
+
+
+mobileTextDoneButton.addEventListener(
+    "click",
+    closeMobileTextEditor
+);
+
+mobileTextEditorSheet.addEventListener(
+    "pointerdown",
+    function (event) {
+
+        event.stopPropagation();
+    }
+);
+
+
+mobileTextEditorSheet.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+    }
+);
+
+/* =========================================
+   APERTURA MENU AGGIUNGI DESIGN
+   ========================================= */
+
+const mobileAddDesignButton =
+    document.getElementById(
+        "mobileAddDesignButton"
+    );
+
+const mobileDesignTools =
+    document.getElementById(
+        "mobileDesignTools"
+    );
+
+
+mobileAddDesignButton.addEventListener(
+    "click",
+    function () {
+
+        mobileDesignTools.classList.toggle(
+            "open"
+        );
+
+        const menuIsOpen =
+            mobileDesignTools.classList.contains(
+                "open"
+            );
+
+        document.body.classList.toggle(
+            "mobile-design-open",
+            menuIsOpen
+        );
+
+        updateMobileCustomizingState();
+    }
+);
+
+/* =========================================
+   HEADER MOBILE - CARRELLO
+   ========================================= */
+
+const mobileCartButton =
+    document.getElementById("mobileCartButton");
+
+const mobileCartCount =
+    document.getElementById("mobileCartCount");
+
+
+mobileCartButton.addEventListener(
+    "click",
+    function () {
+
+        cartButton.click();
+
+        document.body.classList.add(
+            "mobile-cart-open"
+        );
+    }
+);
+
+
+/* Sincronizza automaticamente il numerino
+   mobile con quello del carrello desktop */
+const mobileCartObserver =
+    new MutationObserver(function () {
+
+        mobileCartCount.textContent =
+            cartCount.textContent;
+    });
+
+
+mobileCartObserver.observe(
+    cartCount,
+    {
+        childList: true,
+        subtree: true,
+        characterData: true
+    }
+);
+
+
+/* Valore iniziale */
+mobileCartCount.textContent =
+    cartCount.textContent;
+
+    /* =========================================
+   HEADER MOBILE - MENU
+   ========================================= */
+
+const mobileMenuButton =
+    document.getElementById("mobileMenuButton");
+
+const mobileNavigationMenu =
+    document.getElementById(
+        "mobileNavigationMenu"
+    );
+
+
+mobileMenuButton.addEventListener(
+    "click",
+    function () {
+
+        mobileNavigationMenu.classList.toggle(
+            "open"
+        );
+    }
+);
+
+
+document
+    .querySelectorAll(
+        "[data-mobile-product]"
+    )
+    .forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const product =
+                    button.dataset.mobileProduct;
+
+                /*
+                   Utilizziamo il selettore
+                   prodotto originale.
+                */
+                productSelect.value =
+                    product;
+
+                productSelect.dispatchEvent(
+                    new Event(
+                        "change",
+                        {
+                            bubbles: true
+                        }
+                    )
+                );
+
+
+                mobileNavigationMenu
+                    .classList.remove(
+                        "open"
+                    );
+            }
+        );
+    });
+
+    /* =========================================
+   MOBILE - AGGIUNGI AL CARRELLO
+   ========================================= */
+
+const mobileAddToCartButton =
+    document.getElementById(
+        "mobileAddToCartButton"
+    );
+
+
+mobileAddToCartButton.addEventListener(
+    "click",
+    function () {
+
+        addToCartButton.click();
+    }
+);
+
+closeCartButton.addEventListener(
+    "click",
+    function () {
+
+        document.body.classList.remove(
+            "mobile-cart-open"
+        );
+    }
+);
+
+
+cartOverlay.addEventListener(
+    "click",
+    function () {
+
+        document.body.classList.remove(
+            "mobile-cart-open"
+        );
+    }
+);
+
+/* =========================================
+   MOBILE - SELEZIONE PRODOTTI
+   ========================================= */
+
+const mobileProductsButton =
+    document.getElementById(
+        "mobileProductsButton"
+    );
+
+const mobileProductsSheet =
+    document.getElementById(
+        "mobileProductsSheet"
+    );
+
+const mobileProductsOverlay =
+    document.getElementById(
+        "mobileProductsOverlay"
+    );
+
+const mobileProductsClose =
+    document.getElementById(
+        "mobileProductsClose"
+    );
+
+
+function openMobileProducts() {
+
+    mobileProductsSheet.classList.add(
+        "open"
+    );
+
+    mobileProductsOverlay.classList.add(
+        "open"
+    );
+}
+
+
+function closeMobileProducts() {
+
+    mobileProductsSheet.classList.remove(
+        "open"
+    );
+
+    mobileProductsOverlay.classList.remove(
+        "open"
+    );
+}
+
+
+mobileProductsButton.addEventListener(
+    "click",
+    openMobileProducts
+);
+
+
+mobileProductsClose.addEventListener(
+    "click",
+    closeMobileProducts
+);
+
+
+mobileProductsOverlay.addEventListener(
+    "click",
+    closeMobileProducts
+);
+
+
+const mobileTshirtSheet =
+    document.getElementById(
+        "mobileTshirtSheet"
+    );
+
+const mobileTshirtOverlay =
+    document.getElementById(
+        "mobileTshirtOverlay"
+    );
+
+const mobileTshirtClose =
+    document.getElementById(
+        "mobileTshirtClose"
+    );
+
+const mobileTshirtBack =
+    document.getElementById(
+        "mobileTshirtBack"
+    );
+
+const mobileClassicTshirt =
+    document.getElementById(
+        "mobileClassicTshirt"
+    );
+
+
+function openMobileTshirtModels() {
+
+    closeMobileProducts();
+
+    mobileTshirtSheet.classList.add(
+        "open"
+    );
+
+    mobileTshirtOverlay.classList.add(
+        "open"
+    );
+}
+
+
+function closeMobileTshirtModels() {
+
+    mobileTshirtSheet.classList.remove(
+        "open"
+    );
+
+    mobileTshirtOverlay.classList.remove(
+        "open"
+    );
+}
+
+
+document
+    .querySelectorAll(
+        "[data-mobile-product-choice]"
+    )
+    .forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const product =
+                    button.dataset
+                        .mobileProductChoice;
+
+
+                /* T-Shirt:
+                   prima scegliamo il modello */
+                if (product === "tshirt") {
+
+                    openMobileTshirtModels();
+
+                    return;
+                }
+
+
+                /* Cuscino e Portachiavi:
+                   entrano direttamente nell'editor */
+                productSelect.value =
+                    product;
+
+
+                productSelect.dispatchEvent(
+                    new Event(
+                        "change",
+                        {
+                            bubbles: true
+                        }
+                    )
+                );
+
+
+                closeMobileProducts();
+            }
+        );
+    });
+
+
+mobileTshirtBack.addEventListener(
+    "click",
+    function () {
+
+        closeMobileTshirtModels();
+
+        openMobileProducts();
+    }
+);
+
+
+mobileTshirtClose.addEventListener(
+    "click",
+    closeMobileTshirtModels
+);
+
+
+mobileTshirtOverlay.addEventListener(
+    "click",
+    closeMobileTshirtModels
+);
+
+
+const mobileTshirtColorSheet =
+    document.getElementById(
+        "mobileTshirtColorSheet"
+    );
+
+const mobileTshirtColorOverlay =
+    document.getElementById(
+        "mobileTshirtColorOverlay"
+    );
+
+const mobileTshirtColorBack =
+    document.getElementById(
+        "mobileTshirtColorBack"
+    );
+
+const mobileTshirtColorClose =
+    document.getElementById(
+        "mobileTshirtColorClose"
+    );
+
+
+function openMobileTshirtColors() {
+
+    closeMobileTshirtModels();
+
+    mobileTshirtColorSheet.classList.add(
+        "open"
+    );
+
+    mobileTshirtColorOverlay.classList.add(
+        "open"
+    );
+}
+
+
+function closeMobileTshirtColors() {
+
+    mobileTshirtColorSheet.classList.remove(
+        "open"
+    );
+
+    mobileTshirtColorOverlay.classList.remove(
+        "open"
+    );
+}
+
+
+mobileClassicTshirt.addEventListener(
+    "click",
+    openMobileTshirtColors
+);
+
+
+mobileTshirtColorBack.addEventListener(
+    "click",
+    function () {
+
+        closeMobileTshirtColors();
+
+        openMobileTshirtModels();
+    }
+);
+
+
+mobileTshirtColorClose.addEventListener(
+    "click",
+    closeMobileTshirtColors
+);
+
+
+mobileTshirtColorOverlay.addEventListener(
+    "click",
+    closeMobileTshirtColors
+);
+
+/* =========================================
+   MOBILE - SELEZIONE COLORE T-SHIRT
+   ========================================= */
+
+document
+    .querySelectorAll(
+        "[data-tshirt-mobile-color]"
+    )
+    .forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const selectedColor =
+                    button.dataset
+                        .tshirtMobileColor;
+
+
+                /* Entriamo nella T-Shirt */
+                productSelect.value =
+                    "tshirt";
+
+
+                productSelect.dispatchEvent(
+                    new Event(
+                        "change",
+                        {
+                            bubbles: true
+                        }
+                    )
+                );
+
+
+                /*
+                   Utilizziamo i pulsanti colore
+                   originali del configuratore.
+                */
+                const originalColorButton =
+                    document.querySelector(
+                        `.color-button[data-color="${selectedColor}"]`
+                    );
+
+
+                if (originalColorButton) {
+
+                    originalColorButton.click();
+                }
+
+
+                /* Chiude la scelta colore */
+                closeMobileTshirtColors();
+            }
+        );
+    });
+
+    /* =========================================
+   MOBILE - ALTRE AZIONI
+   ========================================= */
+
+const mobileMoreSheet =
+    document.getElementById(
+        "mobileMoreSheet"
+    );
+
+const mobileMoreOverlay =
+    document.getElementById(
+        "mobileMoreOverlay"
+    );
+
+const mobileMoreClose =
+    document.getElementById(
+        "mobileMoreClose"
+    );
+
+
+function updateMobileMoreActions() {
+
+    const tshirtActions =
+        document.querySelectorAll(
+            ".tshirt-only-action"
+        );
+
+
+    tshirtActions.forEach(
+        function (action) {
+
+            action.style.display =
+                currentProduct === "tshirt"
+                    ? ""
+                    : "none";
+        }
+    );
+}
+
+
+function openMobileMore() {
+
+    updateMobileMoreActions();
+
+    mobileMoreSheet.classList.add(
+        "open"
+    );
+
+    mobileMoreOverlay.classList.add(
+        "open"
+    );
+}
+
+
+function closeMobileMore() {
+
+    mobileMoreSheet.classList.remove(
+        "open"
+    );
+
+    mobileMoreOverlay.classList.remove(
+        "open"
+    );
+}
+
+
+mobileMoreButton.addEventListener(
+    "click",
+    openMobileMore
+);
+
+
+mobileMoreClose.addEventListener(
+    "click",
+    closeMobileMore
+);
+
+
+mobileMoreOverlay.addEventListener(
+    "click",
+    closeMobileMore
+);
+
+/* =========================================
+   MOBILE - FRONTE / RETRO
+   ========================================= */
+
+const mobileSideAction =
+    document.getElementById(
+        "mobileSideAction"
+    );
+
+const mobileSideSheet =
+    document.getElementById(
+        "mobileSideSheet"
+    );
+
+const mobileSideOverlay =
+    document.getElementById(
+        "mobileSideOverlay"
+    );
+
+const mobileSideBack =
+    document.getElementById(
+        "mobileSideBack"
+    );
+
+const mobileSideClose =
+    document.getElementById(
+        "mobileSideClose"
+    );
+
+const mobileFrontPreview =
+    document.getElementById(
+        "mobileFrontPreview"
+    );
+
+const mobileBackPreview =
+    document.getElementById(
+        "mobileBackPreview"
+    );
+
+
+function updateMobileSideSheet() {
+
+    const mobileSideCards =
+        document.querySelectorAll(
+            "[data-mobile-side]"
+        );
+
+
+    mobileSideCards.forEach(
+        function (card) {
+
+            card.classList.toggle(
+                "active",
+                card.dataset.mobileSide ===
+                    tshirtSide
+            );
+        }
+    );
+
+
+    /*
+       Mostra nel pannello il colore
+       T-Shirt attualmente selezionato.
+    */
+
+    mobileFrontPreview.src =
+        tshirtColor === "black"
+            ? "assets/tshirt-black-front.png"
+            : "assets/tshirt-white-front.png";
+
+
+    mobileBackPreview.src =
+        tshirtColor === "black"
+            ? "assets/tshirt-black-back.png"
+            : "assets/tshirt-white-back.png";
+}
+
+
+function openMobileSideSheet() {
+
+    closeMobileMore();
+
+    updateMobileSideSheet();
+
+    mobileSideSheet.classList.add(
+        "open"
+    );
+
+    mobileSideOverlay.classList.add(
+        "open"
+    );
+}
+
+
+function closeMobileSideSheet() {
+
+    mobileSideSheet.classList.remove(
+        "open"
+    );
+
+    mobileSideOverlay.classList.remove(
+        "open"
+    );
+}
+
+
+if (mobileSideAction) {
+
+    mobileSideAction.addEventListener(
+        "click",
+        openMobileSideSheet
+    );
+}
+
+
+mobileSideBack.addEventListener(
+    "click",
+    function () {
+
+        closeMobileSideSheet();
+
+        openMobileMore();
+    }
+);
+
+
+mobileSideClose.addEventListener(
+    "click",
+    closeMobileSideSheet
+);
+
+
+mobileSideOverlay.addEventListener(
+    "click",
+    closeMobileSideSheet
+);
+
+
+document
+    .querySelectorAll(
+        "[data-mobile-side]"
+    )
+    .forEach(function (mobileButton) {
+
+        mobileButton.addEventListener(
+            "click",
+            function () {
+
+                const selectedSide =
+                    mobileButton.dataset
+                        .mobileSide;
+
+
+                const originalSideButton =
+                    document.querySelector(
+                        `.side-button[data-side="${selectedSide}"]`
+                    );
+
+
+                if (originalSideButton) {
+
+                    originalSideButton.click();
+                }
+
+
+                updateMobileSideSheet();
+
+                closeMobileSideSheet();
+            }
+        );
+    });
+
+    /* =========================================
+   MOBILE - FORMATO STAMPA
+   ========================================= */
+
+const mobileFormatAction =
+    document.getElementById(
+        "mobileFormatAction"
+    );
+
+const mobileFormatSheet =
+    document.getElementById(
+        "mobileFormatSheet"
+    );
+
+const mobileFormatOverlay =
+    document.getElementById(
+        "mobileFormatOverlay"
+    );
+
+const mobileFormatBack =
+    document.getElementById(
+        "mobileFormatBack"
+    );
+
+const mobileFormatClose =
+    document.getElementById(
+        "mobileFormatClose"
+    );
+
+
+function updateMobileFormatSheet() {
+
+    const mobileFormatCards =
+        document.querySelectorAll(
+            "[data-mobile-format]"
+        );
+
+
+    mobileFormatCards.forEach(
+        function (card) {
+
+            card.classList.toggle(
+                "active",
+                card.dataset.mobileFormat ===
+                    tshirtPrintFormat
+            );
+        }
+    );
+}
+
+
+function openMobileFormatSheet() {
+
+    closeMobileMore();
+
+    updateMobileFormatSheet();
+
+    mobileFormatSheet.classList.add(
+        "open"
+    );
+
+    mobileFormatOverlay.classList.add(
+        "open"
+    );
+}
+
+
+function closeMobileFormatSheet() {
+
+    mobileFormatSheet.classList.remove(
+        "open"
+    );
+
+    mobileFormatOverlay.classList.remove(
+        "open"
+    );
+}
+
+
+if (mobileFormatAction) {
+
+    mobileFormatAction.addEventListener(
+        "click",
+        openMobileFormatSheet
+    );
+}
+
+
+mobileFormatBack.addEventListener(
+    "click",
+    function () {
+
+        closeMobileFormatSheet();
+
+        openMobileMore();
+    }
+);
+
+
+mobileFormatClose.addEventListener(
+    "click",
+    closeMobileFormatSheet
+);
+
+
+mobileFormatOverlay.addEventListener(
+    "click",
+    closeMobileFormatSheet
+);
+
+
+document
+    .querySelectorAll(
+        "[data-mobile-format]"
+    )
+    .forEach(function (mobileButton) {
+
+        mobileButton.addEventListener(
+            "click",
+            function () {
+
+                const selectedFormat =
+                    mobileButton.dataset
+                        .mobileFormat;
+
+
+                const originalFormatButton =
+                    document.querySelector(
+                        `.print-format-button[data-format="${selectedFormat}"]`
+                    );
+
+
+                if (originalFormatButton) {
+
+                    originalFormatButton.click();
+                }
+
+
+                updateMobileFormatSheet();
+
+                closeMobileFormatSheet();
+            }
+        );
+    });
+
+    /* =========================================
+   MOBILE - CONTROLLI RAPIDI T-SHIRT
+   ========================================= */
+
+const mobileTshirtQuickControls =
+    document.getElementById(
+        "mobileTshirtQuickControls"
+    );
+
+
+function updateMobileQuickControls() {
+
+    if (!mobileTshirtQuickControls) {
+        return;
+    }
+
+
+    /* Mostra i controlli solo sulla T-Shirt */
+
+    mobileTshirtQuickControls.classList.toggle(
+        "visible",
+        currentProduct === "tshirt"
+    );
+
+
+    /* Fronte / Retro */
+
+    document
+        .querySelectorAll(
+            "[data-mobile-quick-side]"
+        )
+        .forEach(function (button) {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.mobileQuickSide ===
+                    tshirtSide
+            );
+        });
+
+
+    /* Verticale / Orizzontale */
+
+    document
+        .querySelectorAll(
+            "[data-mobile-quick-format]"
+        )
+        .forEach(function (button) {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.mobileQuickFormat ===
+                    tshirtPrintFormat
+            );
+        });
+}
+
+
+/* FRONTE / RETRO */
+
+document
+    .querySelectorAll(
+        "[data-mobile-quick-side]"
+    )
+    .forEach(function (mobileButton) {
+
+        mobileButton.addEventListener(
+            "click",
+            function () {
+
+                const selectedSide =
+                    mobileButton.dataset
+                        .mobileQuickSide;
+
+
+                const originalButton =
+                    document.querySelector(
+                        `.side-button[data-side="${selectedSide}"]`
+                    );
+
+
+                if (originalButton) {
+
+                    originalButton.click();
+                }
+
+
+                updateMobileQuickControls();
+            }
+        );
+    });
+
+
+/* VERTICALE / ORIZZONTALE */
+
+document
+    .querySelectorAll(
+        "[data-mobile-quick-format]"
+    )
+    .forEach(function (mobileButton) {
+
+        mobileButton.addEventListener(
+            "click",
+            function () {
+
+                const selectedFormat =
+                    mobileButton.dataset
+                        .mobileQuickFormat;
+
+
+                const originalButton =
+                    document.querySelector(
+                        `.print-format-button[data-format="${selectedFormat}"]`
+                    );
+
+
+                if (originalButton) {
+
+                    originalButton.click();
+                }
+
+
+                updateMobileQuickControls();
+            }
+        );
+    });
+
+
+/*
+   Aggiorna i pulsanti anche quando
+   cambia qualcosa dai controlli originali.
+*/
+
+document
+    .querySelectorAll(
+        ".side-button, .print-format-button"
+    )
+    .forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                setTimeout(
+                    updateMobileQuickControls,
+                    0
+                );
+            }
+        );
+    });
+
+
+/* Stato iniziale */
+
+updateMobileQuickControls();
+
+/* =========================================
+   MOBILE - MENU FORMATO TESTO
+   ========================================= */
+
+const mobileSelectedTextFormat =
+    document.getElementById(
+        "mobileSelectedTextFormat"
+    );
+
+const mobileTextFormatMenu =
+    document.getElementById(
+        "mobileTextFormatMenu"
+    );
+
+const mobileTextBoldOption =
+    document.getElementById(
+        "mobileTextBoldOption"
+    );
+
+const mobileTextItalicOption =
+    document.getElementById(
+        "mobileTextItalicOption"
+    );
+
+
+function updateMobileTextFormatMenu() {
+
+    const state =
+        getCurrentState();
+
+    mobileTextBoldOption.classList.toggle(
+        "active",
+        state.textBold
+    );
+
+    mobileTextItalicOption.classList.toggle(
+        "active",
+        state.textItalic
+    );
+}
+
+
+mobileSelectedTextFormat.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        updateMobileTextFormatMenu();
+
+        mobileTextFormatMenu.classList.toggle(
+            "open"
+        );
+
+        document.body.classList.toggle(
+    "mobile-format-open",
+    mobileTextFormatMenu.classList.contains(
+        "open"
+    )
+);
+    }
+);
+
+
+mobileTextBoldOption.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        boldButton.click();
+
+        updateMobileTextFormatMenu();
+    }
+);
+
+
+mobileTextItalicOption.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        italicButton.click();
+
+        updateMobileTextFormatMenu();
+    }
+);
+
+/* =========================================
+   MOBILE - PALETTE COLORE TESTO
+   ========================================= */
+
+const mobileSelectedTextColor =
+    document.getElementById(
+        "mobileSelectedTextColor"
+    );
+
+const mobileSelectionColor =
+    document.querySelector(
+        ".mobile-selection-color"
+    );
+
+const mobileTextColorMenu =
+    document.getElementById(
+        "mobileTextColorMenu"
+    );
+
+const mobileCustomColorButton =
+    document.getElementById(
+        "mobileCustomColorButton"
+    );
+
+const mobileColorSwatches =
+    document.querySelectorAll(
+        ".mobile-color-swatch"
+    );
+
+
+function updateMobileTextColor() {
+
+    const state =
+        getCurrentState();
+
+    const currentColor =
+        state.textColor.toLowerCase();
+
+    mobileSelectionColor.style.backgroundColor =
+        currentColor;
+
+    mobileColorSwatches.forEach(
+        function (button) {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.textColor.toLowerCase() ===
+                    currentColor
+            );
+        }
+    );
+}
+
+
+mobileSelectedTextColor.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        if (
+            selectedElementType !== "text"
+        ) {
+            return;
+        }
+
+        /* Chiudiamo Formato se era aperto */
+        mobileTextFormatMenu.classList.remove(
+            "open"
+        );
+
+        document.body.classList.remove(
+            "mobile-format-open"
+        );
+
+        updateMobileTextColor();
+
+        mobileTextColorMenu.classList.toggle(
+            "open"
+        );
+
+        document.body.classList.toggle(
+            "mobile-color-open",
+            mobileTextColorMenu.classList.contains(
+                "open"
+            )
+        );
+    }
+);
+
+
+mobileColorSwatches.forEach(
+    function (button) {
+
+        button.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                const selectedColor =
+                    button.dataset.textColor;
+
+                textColor.value =
+                    selectedColor;
+
+                textColor.dispatchEvent(
+                    new Event(
+                        "input",
+                        { bubbles: true }
+                    )
+                );
+
+                updateMobileTextColor();
+
+                mobileTextColorMenu.classList.remove(
+    "open"
+);
+
+document.body.classList.remove(
+    "mobile-color-open"
+);
+            }
+        );
+    }
+);
+
+
+const mobileCustomColorMenu =
+    document.getElementById(
+        "mobileCustomColorMenu"
+    );
+
+const mobileCustomColorBack =
+    document.getElementById(
+        "mobileCustomColorBack"
+    );
+
+const mobileHueRange =
+    document.getElementById(
+        "mobileHueRange"
+    );
+
+    const mobileLightRange =
+    document.getElementById(
+        "mobileLightRange"
+    );
+
+const mobileHexColor =
+    document.getElementById(
+        "mobileHexColor"
+    );
+
+const mobileCustomColorPreview =
+    document.getElementById(
+        "mobileCustomColorPreview"
+    );
+
+
+function rgbToHex(r, g, b) {
+
+    return "#" +
+        [r, g, b]
+            .map(function (value) {
+                return value
+                    .toString(16)
+                    .padStart(2, "0");
+            })
+            .join("")
+            .toUpperCase();
+}
+
+
+function hslToHex(
+    hue,
+    saturation,
+    lightness
+) {
+
+    const s =
+        saturation / 100;
+
+    const l =
+        lightness / 100;
+
+    const c =
+        (1 - Math.abs(2 * l - 1)) * s;
+
+    const h =
+        hue / 60;
+
+    const x =
+        c * (1 - Math.abs((h % 2) - 1));
+
+    const m =
+        l - c / 2;
+
+    let r = 0;
+    let g = 0;
+    let b = 0;
+
+    if (h < 1) {
+        r = c;
+        g = x;
+    } else if (h < 2) {
+        r = x;
+        g = c;
+    } else if (h < 3) {
+        g = c;
+        b = x;
+    } else if (h < 4) {
+        g = x;
+        b = c;
+    } else if (h < 5) {
+        r = x;
+        b = c;
+    } else {
+        r = c;
+        b = x;
+    }
+
+    return rgbToHex(
+        Math.round((r + m) * 255),
+        Math.round((g + m) * 255),
+        Math.round((b + m) * 255)
+    );
+}
+
+
+function applyMobileCustomColor(color) {
+
+    textColor.value =
+        color;
+
+    textColor.dispatchEvent(
+        new Event(
+            "input",
+            { bubbles: true }
+        )
+    );
+
+    mobileHexColor.value =
+        color.toUpperCase();
+
+    mobileCustomColorPreview.style.backgroundColor =
+        color;
+
+    updateMobileTextColor();
+}
+
+
+mobileCustomColorButton.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        mobileTextColorMenu.classList.remove(
+            "open"
+        );
+
+        mobileCustomColorMenu.classList.add(
+            "open"
+        );
+
+        mobileHexColor.value =
+            textColor.value.toUpperCase();
+
+        mobileCustomColorPreview.style.backgroundColor =
+            textColor.value;
+    }
+);
+
+
+function updateColorFromMobileSliders() {
+
+    const color =
+        hslToHex(
+            Number(mobileHueRange.value),
+            100,
+            Number(mobileLightRange.value)
+        );
+
+    applyMobileCustomColor(color);
+
+
+    /* Il secondo slider mostra
+       chiaro/scuro della tonalità scelta */
+
+    const hueColor =
+        hslToHex(
+            Number(mobileHueRange.value),
+            100,
+            50
+        );
+
+    mobileLightRange.style.background =
+        `linear-gradient(
+            to right,
+            #000000,
+            ${hueColor},
+            #ffffff
+        )`;
+}
+
+
+mobileHueRange.addEventListener(
+    "input",
+    updateColorFromMobileSliders
+);
+
+
+mobileLightRange.addEventListener(
+    "input",
+    updateColorFromMobileSliders
+);
+
+
+mobileHexColor.addEventListener(
+    "change",
+    function () {
+
+        let color =
+            mobileHexColor.value.trim();
+
+        if (!color.startsWith("#")) {
+            color = "#" + color;
+        }
+
+        if (
+            /^#[0-9A-Fa-f]{6}$/.test(color)
+        ) {
+            applyMobileCustomColor(color);
+        }
+    }
+);
+
+
+mobileCustomColorBack.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        mobileCustomColorMenu.classList.remove(
+            "open"
+        );
+
+        document.body.classList.remove(
+            "mobile-color-open"
+        );
+    }
+);
+
+
+textColor.addEventListener(
+    "input",
+    function () {
+
+        updateMobileTextColor();
+    }
+);
+
+
+textColor.addEventListener(
+    "input",
+    function () {
+
+        updateMobileTextColor();
+    }
+);
