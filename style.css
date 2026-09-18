@@ -4911,3 +4911,15 @@ nav a {
     }
 
 }
+
+/* =========================================
+   TEST - PROPORZIONE AREA STAMPA T-SHIRT MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .tshirt-preview .tshirt-print-area {
+        scale: 0.78;
+    }
+
+}
