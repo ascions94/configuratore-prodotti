@@ -5144,6 +5144,34 @@ function updateTshirtMockup() {
 
     productPreview.style.backgroundImage =
         `url("${imagePath}")`;
+
+        if (window.innerWidth <= 600) {
+
+    if (tshirtSide === "front") {
+
+        productPreview.style.setProperty(
+            "background-position",
+            "calc(50% - 25px) center",
+            "important"
+        );
+
+    } else {
+
+        productPreview.style.setProperty(
+            "background-position",
+            "calc(50% + 34px) center",
+            "important"
+        );
+
+    }
+
+} else {
+
+    productPreview.style.removeProperty(
+        "background-position"
+    );
+
+}
 }
 
 
@@ -6596,50 +6624,126 @@ resetButton.addEventListener("click", function () {
 
 function updateTshirtPrintFormat() {
 
+    console.log("🔥 TEST NUOVA FUNZIONE 18-09 🔥");
+
     if (currentProduct !== "tshirt") {
         return;
     }
 
-    if (tshirtPrintFormat[tshirtSide] === "vertical") {
+    const isVertical =
+        tshirtPrintFormat[tshirtSide] === "vertical";
 
+    /*
+    DIMENSIONI AREA DI STAMPA
+    Desktop invariato - Mobile più compatto
+*/
+if (window.innerWidth <= 600) {
+
+    if (isVertical) {
+        printArea.style.width = "70px";
+        printArea.style.height = "105px";
+    } else {
+        printArea.style.width = "105px";
+        printArea.style.height = "70px";
+    }
+
+} else {
+
+    if (isVertical) {
         printArea.style.width = "95px";
         printArea.style.height = "142px";
-        if (tshirtSide === "back") {
-        printArea.style.top = "47%";
     } else {
-        printArea.style.top = "50%";
-    }
-
-    } else {
-
         printArea.style.width = "142px";
         printArea.style.height = "95px";
-        if (tshirtSide === "back") {
-        printArea.style.top = "44%";
+    }
+}
+
+
+    /*
+        MOBILE
+        Centriamo visivamente l'area
+        rispetto al mockup della maglietta.
+    */
+    if (window.innerWidth <= 600) {
+
+        printArea.style.left = "51%";
+printArea.style.transform =
+    "translate(-50%, -50%)";
+
+        /*
+            Manteniamo per ora l'altezza
+            che avevamo già impostato.
+        */
+        if (isVertical) {
+            printArea.style.top =
+                tshirtSide === "back"
+                    ? "47%"
+                    : "50%";
+        } else {
+            printArea.style.top =
+                tshirtSide === "back"
+                    ? "44%"
+                    : "47%";
+        }
+
     } else {
-        printArea.style.top = "47%";
+
+        /*
+            DESKTOP INVARIATO
+        */
+        printArea.style.transform = "";
+
+        if (tshirtSide === "back") {
+            printArea.style.left = "41%";
+        } else {
+            printArea.style.left = "58%";
+        }
+
+        if (isVertical) {
+
+            printArea.style.top =
+                tshirtSide === "back"
+                    ? "47%"
+                    : "50%";
+
+        } else {
+
+            printArea.style.top =
+                tshirtSide === "back"
+                    ? "44%"
+                    : "47%";
+        }
     }
-    }
+
 
     requestAnimationFrame(function () {
 
         updateMinimumImageScale();
         updateMaximumImageScale();
 
-    fitImageInsidePrintArea();
-    keepImageInsidePrintArea();
+        fitImageInsidePrintArea();
+        keepImageInsidePrintArea();
 
-    fitTextInsidePrintArea();
-    keepTextInsidePrintArea();
+        fitTextInsidePrintArea();
+        keepTextInsidePrintArea();
 
-    updateImageSizeInfo();
+        updateImageSizeInfo();
 
-    if (selectedElementType === "image") {
-        showSelectionControls(uploadedImage, "image");
-    } else if (selectedElementType === "text") {
-        showSelectionControls(customText, "text");
-    }
-});
+        if (selectedElementType === "image") {
+
+            showSelectionControls(
+                uploadedImage,
+                "image"
+            );
+
+        } else if (selectedElementType === "text") {
+
+            showSelectionControls(
+                customText,
+                "text"
+            );
+        }
+    });
 }
 
 let previewZoom = 100;
@@ -6657,11 +6761,25 @@ function updatePreviewZoom() {
 
     if (currentProduct === "tshirt") {
 
+    /*
+        MOBILE:
+        il mockup deve rimanere centrato nel configuratore.
+    */
+    if (window.innerWidth <= 600) {
+
+        horizontalOffset = 0;
+
+    } else {
+
+        /*
+            Desktop invariato.
+        */
         if (tshirtSide === "front") {
             horizontalOffset = -37;
         } else {
             horizontalOffset = 41;
         }
+    }
     }
 
     const scaledOffset =
