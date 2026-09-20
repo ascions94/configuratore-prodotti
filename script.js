@@ -142,6 +142,13 @@ const directMoveButton =
 const previewZoomValue =
     document.getElementById("previewZoomValue");
 
+const mobileTshirtZoomOut =
+    document.getElementById("mobileTshirtZoomOut");
+const mobileTshirtZoomIn =
+    document.getElementById("mobileTshirtZoomIn");
+const mobileTshirtZoomValue =
+    document.getElementById("mobileTshirtZoomValue");
+
     const previewPanel = document.querySelector(".preview-panel");
 
 const zoomOutPreviewButton =
@@ -667,8 +674,8 @@ directMoveButton.addEventListener("pointerdown", function (event) {
 
         isDragging = true;
 
-        startX = event.clientX - state.x;
-        startY = event.clientY - state.y;
+        startX = event.clientX / getMobileTshirtDragScale() - state.x;
+        startY = event.clientY / getMobileTshirtDragScale() - state.y;
 
         uploadedImage.style.cursor = "grabbing";
 
@@ -677,10 +684,10 @@ directMoveButton.addEventListener("pointerdown", function (event) {
         isDraggingText = true;
 
         textStartX =
-            event.clientX - state.textX;
+            event.clientX / getMobileTshirtDragScale() - state.textX;
 
         textStartY =
-            event.clientY - state.textY;
+            event.clientY / getMobileTshirtDragScale() - state.textY;
 
         customText.style.cursor = "grabbing";
     }
@@ -5411,8 +5418,8 @@ renderLayersPanel();
 
     isDragging = true;
 
-    startX = event.clientX - state.x;
-    startY = event.clientY - state.y;
+    startX = event.clientX / getMobileTshirtDragScale() - state.x;
+    startY = event.clientY / getMobileTshirtDragScale() - state.y;
 
     uploadedImage.style.cursor = "grabbing";
 
@@ -5428,8 +5435,8 @@ document.addEventListener("pointermove", function (event) {
 
     const state = getCurrentState();
 
-    let newX = event.clientX - startX;
-    let newY = event.clientY - startY;
+    let newX = event.clientX / getMobileTshirtDragScale() - startX;
+    let newY = event.clientY / getMobileTshirtDragScale() - startY;
 
     const snapDistance = 8;
 
@@ -5500,8 +5507,8 @@ renderLayersPanel();
 
     isDraggingText = true;
 
-    textStartX = event.clientX - state.textX;
-    textStartY = event.clientY - state.textY;
+    textStartX = event.clientX / getMobileTshirtDragScale() - state.textX;
+    textStartY = event.clientY / getMobileTshirtDragScale() - state.textY;
 
     customText.style.cursor = "grabbing";
 
@@ -5517,8 +5524,8 @@ document.addEventListener("pointermove", function (event) {
 
     const state = getCurrentState();
 
-    let newX = event.clientX - textStartX;
-    let newY = event.clientY - textStartY;
+    let newX = event.clientX / getMobileTshirtDragScale() - textStartX;
+    let newY = event.clientY / getMobileTshirtDragScale() - textStartY;
     const snapDistance = 8;
 
 if (Math.abs(newX) <= snapDistance) {
@@ -6748,6 +6755,14 @@ printArea.style.transform =
 
 let previewZoom = 100;
 
+// Converte il movimento del puntatore nelle coordinate esistenti dell'editor.
+// Gli altri prodotti e il desktop mantengono il comportamento attuale.
+function getMobileTshirtDragScale() {
+    return window.innerWidth <= 600 && currentProduct === "tshirt"
+        ? previewZoom / 100
+        : 1;
+}
+
 function updatePreviewZoom() {
 
         previewZoomRange.max =
@@ -6795,6 +6810,12 @@ function updatePreviewZoom() {
 
     previewZoomValue.textContent =
         `${previewZoom}%`;
+
+    mobileTshirtZoomValue.textContent = `${previewZoom}%`;
+    document.body.classList.toggle(
+        "mobile-tshirt-active",
+        currentProduct === "tshirt"
+    );
 }
 
 
@@ -8991,6 +9012,13 @@ let mobilePreviewPreviousZoom = 100;
 
 function updateMobileStickyPreview() {
 
+    // Sulla T-shirt mobile lo zoom è controllato esclusivamente dai pulsanti.
+    if (window.innerWidth <= 600 && currentProduct === "tshirt") {
+        previewPanel.classList.remove("mobile-compact");
+        mobilePreviewWasCompact = false;
+        return;
+    }
+
     /* Desktop: nessuna modalità compatta */
     if (window.innerWidth > 600) {
 
@@ -10166,7 +10194,6 @@ function updateMobileQuickControls() {
         currentProduct === "tshirt"
     );
 
-
     /* Fronte / Retro */
 
     document
@@ -10360,6 +10387,25 @@ mobileSelectedTextFormat.addEventListener(
 );
     }
 );
+
+document.addEventListener("click", function (event) {
+
+    if (
+        !mobileTextFormatMenu.classList.contains("open")
+    ) {
+        return;
+    }
+
+    if (
+        mobileTextFormatMenu.contains(event.target) ||
+        mobileSelectedTextFormat.contains(event.target)
+    ) {
+        return;
+    }
+
+    mobileTextFormatMenu.classList.remove("open");
+    document.body.classList.remove("mobile-format-open");
+});
 
 
 mobileTextBoldOption.addEventListener(
@@ -10758,3 +10804,26 @@ textColor.addEventListener(
         updateMobileTextColor();
     }
 );
+
+
+/* =========================================
+   ZOOM VISIVO T-SHIRT MOBILE
+   ========================================= */
+
+function applyMobileTshirtZoom(step) {
+    if (window.innerWidth > 600 || currentProduct !== "tshirt") {
+        return;
+    }
+
+    // Scala soltanto il contenitore: stato, misure e coordinate non cambiano.
+    previewZoom = Math.max(80, Math.min(160, previewZoom + step));
+    updatePreviewZoom();
+}
+
+mobileTshirtZoomIn.addEventListener("click", function () {
+    applyMobileTshirtZoom(10);
+});
+
+mobileTshirtZoomOut.addEventListener("click", function () {
+    applyMobileTshirtZoom(-10);
+});
