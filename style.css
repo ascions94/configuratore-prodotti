@@ -4377,10 +4377,11 @@ nav a {
     .mobile-editor-topbar {
         display: flex !important;
         align-items: center !important;
+        flex-wrap: nowrap;
 
         gap: 4px;
 
-        overflow: hidden;
+        overflow: visible;
     }
 
 
@@ -4413,6 +4414,10 @@ nav a {
         height: 52px !important;
 
         margin: 0;
+        flex-wrap: nowrap;
+        touch-action: pan-x;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x proximity;
 
         border-radius: 0;
 
@@ -4440,13 +4445,18 @@ nav a {
     .mobile-selection-tool {
         height: 52px !important;
 
-        min-width: 76px;
+        min-width: max-content;
 
-        padding: 4px 8px;
+        padding: 4px 12px;
 
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+
+        font-size: 13px;
+    }
+
+    .mobile-selection-tool > span {
         flex-shrink: 0;
-
-        font-size: 11px;
     }
 
 
@@ -4912,6 +4922,125 @@ nav a {
 
 }
 
+/* Pannelli della barra contestuale testo: solo mobile. */
+.mobile-text-context-menu {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .mobile-text-context-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1260;
+        width: 100%;
+        max-height: calc(100dvh - 156px);
+        overflow-x: auto;
+        overflow-y: auto;
+        padding: 4px 8px;
+        border-top: 1px solid #eeeeee;
+        border-bottom: 1px solid #dddddd;
+        border-radius: 0;
+        background: #ffffff;
+        box-shadow: none;
+    }
+
+    .mobile-text-context-menu.open {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .mobile-text-context-menu button {
+        flex: 0 0 auto;
+        min-width: max-content;
+        min-height: 44px;
+        padding: 6px 10px;
+        border: 1px solid #dddddd;
+        border-radius: 4px;
+        background: #ffffff;
+        font-size: 13px;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .mobile-text-context-menu button.active {
+        background: #eaf7f9;
+        border-color: #58b6c5;
+        color: #247f8e;
+    }
+
+    #mobileTextFontMenu {
+        touch-action: pan-x;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        scroll-snap-type: x proximity;
+    }
+
+    #mobileTextFontMenu::-webkit-scrollbar {
+        display: none;
+    }
+
+    #mobileTextFontMenu button {
+        scroll-snap-align: start;
+    }
+
+    #mobileTextAlignMenu {
+        justify-content: center;
+    }
+
+    #mobileTextOutlineMenu {
+        grid-template-columns: max-content max-content max-content minmax(70px, 1fr);
+        align-items: center;
+        column-gap: 10px;
+        font-size: 13px;
+    }
+
+    #mobileTextOutlineMenu.open {
+        display: grid;
+    }
+
+    #mobileTextOutlineMenu label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+        min-height: 36px;
+        margin: 0;
+    }
+
+    #mobileTextOutlineMenu input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    #mobileTextOutlineMenu input[type="color"] {
+        width: 40px;
+        height: 32px;
+        padding: 2px;
+    }
+
+    #mobileTextOutlineMenu input[type="range"] {
+        min-width: 0;
+        min-height: 36px;
+        margin: 0;
+    }
+
+    #mobileTextOutlineWidthValue {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 460px) {
+    #mobileTextOutlineMenu {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+
 /* ZOOM T-SHIRT MOBILE */
 .mobile-tshirt-zoom {
     display: none;
@@ -4920,10 +5049,11 @@ nav a {
 @media (max-width: 600px) {
 
     .mobile-tshirt-zoom {
-        position: fixed;
+        position: absolute;
 
-        top: 145px;
-        right: 14px;
+        top: auto;
+        bottom: calc(100% + 8px);
+        right: 4px;
 
         z-index: 1100;
 
@@ -4943,6 +5073,17 @@ nav a {
 
     body.mobile-tshirt-active .mobile-tshirt-zoom {
         display: flex;
+    }
+
+    /* Prima del design i controlli rapidi sono fixed, sopra la card. */
+    body:not(.mobile-customizing):not(.mobile-design-open) .mobile-tshirt-zoom {
+        bottom: max(calc(100% + 8px), 160px);
+    }
+
+    /* Nasconde solo gli strumenti visuali, senza perdere la selezione. */
+    body:has(#mobileTextFontMenu.open, #mobileTextAlignMenu.open, #mobileTextOutlineMenu.open)
+    #selectionControls {
+        display: none !important;
     }
 
     .mobile-tshirt-zoom-button {

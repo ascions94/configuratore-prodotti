@@ -6,7 +6,7 @@
 
     <title>Personalizza il tuo prodotto</title>
 
-    <link rel="stylesheet" href="style.css?v=287fa4271882">
+    <link rel="stylesheet" href="style.css?v=bd26551a99d3">
 </head>
 
 <body>
@@ -203,31 +203,22 @@
         •••
     </button>
 
+<!-- MOBILE - STRUMENTI DEL TESTO SELEZIONATO -->
+<div id="mobileTextFontMenu" class="mobile-text-context-menu" role="group" aria-label="Font del testo"></div>
+
+<div id="mobileTextAlignMenu" class="mobile-text-context-menu" role="group" aria-label="Allineamento del testo">
+    <button type="button" data-text-align="left">Sinistra</button>
+    <button type="button" data-text-align="center">Centro</button>
+    <button type="button" data-text-align="right">Destra</button>
 </div>
 
-<!-- ZOOM T-SHIRT MOBILE -->
-<div class="mobile-tshirt-zoom" id="mobileTshirtZoom">
-    <button
-        type="button"
-        class="mobile-tshirt-zoom-button"
-        id="mobileTshirtZoomOut"
-        aria-label="Riduci T-shirt"
-    >
-        −
-    </button>
+<div id="mobileTextOutlineMenu" class="mobile-text-context-menu" role="group" aria-label="Contorno del testo">
+    <label><input type="checkbox" id="mobileTextOutlineEnabled"> Attiva contorno</label>
+    <label>Colore <input type="color" id="mobileTextOutlineColor"></label>
+    <label for="mobileTextOutlineWidth">Spessore: <output id="mobileTextOutlineWidthValue"></output></label>
+    <input type="range" id="mobileTextOutlineWidth">
+</div>
 
-    <span class="mobile-tshirt-zoom-value" id="mobileTshirtZoomValue">
-        100%
-    </span>
-
-    <button
-        type="button"
-        class="mobile-tshirt-zoom-button"
-        id="mobileTshirtZoomIn"
-        aria-label="Ingrandisci T-shirt"
-    >
-        +
-    </button>
 </div>
 
 <!-- MOBILE - MENU FORMATO TESTO -->
@@ -1051,6 +1042,33 @@
 
 
      <div class="mobile-editor-bottom">
+
+<!-- ZOOM T-SHIRT MOBILE -->
+<div class="mobile-tshirt-zoom" id="mobileTshirtZoom">
+    <button
+        type="button"
+        class="mobile-tshirt-zoom-button"
+        id="mobileTshirtZoomOut"
+        aria-label="Riduci T-shirt"
+    >
+        −
+    </button>
+
+    <span class="mobile-tshirt-zoom-value" id="mobileTshirtZoomValue">
+        100%
+    </span>
+
+    <button
+        type="button"
+        class="mobile-tshirt-zoom-button"
+        id="mobileTshirtZoomIn"
+        aria-label="Ingrandisci T-shirt"
+    >
+        +
+    </button>
+</div>
+
+
 
     <div class="mobile-design-card">
 
@@ -1960,7 +1978,7 @@
     src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
 </script>
 
-<script src="script.js?v=20d90577b0e5"></script>
+<script src="script.js?v=7ccf989326e9"></script>
 
 </body>
 </html>

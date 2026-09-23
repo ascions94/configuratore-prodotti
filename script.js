@@ -514,13 +514,16 @@ function updateMobileTextSelectionBar() {
         "visible",
         shouldShow
     );
+
+    if (!shouldShow) {
+        closeMobileTextMenus();
+    }
 }
 
 function showSelectionControls(element, type) {
 
-    updateMobileTextSelectionBar();
-
     selectedElementType = type;
+    updateMobileTextSelectionBar();
 
     uploadedImage.classList.remove("selected-element");
     customText.classList.remove("selected-element");
@@ -3150,6 +3153,10 @@ function renderLayersPanel() {
                 item.type ===
                 "text";
 
+            if (isText) {
+                row.dataset.textId = item.id;
+            }
+
 
             const isActive =
                 (
@@ -4896,6 +4903,7 @@ renderMultiTexts();
 updateImageTransform();
 
 updateMobileCustomizingState();
+updateMobileTextSelectionBar();
 }
 
 function setTextAlignment(alignment) {
@@ -10375,16 +10383,7 @@ mobileSelectedTextFormat.addEventListener(
 
         updateMobileTextFormatMenu();
 
-        mobileTextFormatMenu.classList.toggle(
-            "open"
-        );
-
-        document.body.classList.toggle(
-    "mobile-format-open",
-    mobileTextFormatMenu.classList.contains(
-        "open"
-    )
-);
+        toggleMobileTextMenu(mobileTextFormatMenu);
     }
 );
 
@@ -10414,7 +10413,7 @@ mobileTextBoldOption.addEventListener(
 
         event.stopPropagation();
 
-        boldButton.click();
+        runMobileTextCommand(function () { boldButton.click(); });
 
         updateMobileTextFormatMenu();
     }
@@ -10427,7 +10426,7 @@ mobileTextItalicOption.addEventListener(
 
         event.stopPropagation();
 
-        italicButton.click();
+        runMobileTextCommand(function () { italicButton.click(); });
 
         updateMobileTextFormatMenu();
     }
@@ -10499,27 +10498,8 @@ mobileSelectedTextColor.addEventListener(
             return;
         }
 
-        /* Chiudiamo Formato se era aperto */
-        mobileTextFormatMenu.classList.remove(
-            "open"
-        );
-
-        document.body.classList.remove(
-            "mobile-format-open"
-        );
-
         updateMobileTextColor();
-
-        mobileTextColorMenu.classList.toggle(
-            "open"
-        );
-
-        document.body.classList.toggle(
-            "mobile-color-open",
-            mobileTextColorMenu.classList.contains(
-                "open"
-            )
-        );
+        toggleMobileTextMenu(mobileTextColorMenu);
     }
 );
 
@@ -10536,6 +10516,9 @@ mobileColorSwatches.forEach(
                 const selectedColor =
                     button.dataset.textColor;
 
+                if (!hasMobileSelectedText()) return;
+                saveHistoryState();
+
                 textColor.value =
                     selectedColor;
 
@@ -10546,6 +10529,7 @@ mobileColorSwatches.forEach(
                     )
                 );
 
+                syncSelectedTextFromLegacyState();
                 updateMobileTextColor();
 
                 mobileTextColorMenu.classList.remove(
@@ -10664,6 +10648,8 @@ function hslToHex(
 
 function applyMobileCustomColor(color) {
 
+    if (!hasMobileSelectedText()) return;
+
     textColor.value =
         color;
 
@@ -10681,6 +10667,7 @@ function applyMobileCustomColor(color) {
         color;
 
     updateMobileTextColor();
+    syncSelectedTextFromLegacyState();
 }
 
 
@@ -10805,6 +10792,176 @@ textColor.addEventListener(
     }
 );
 
+
+/* =========================================
+   COMANDI DEL TESTO SELEZIONATO SU MOBILE
+   ========================================= */
+
+function hasMobileSelectedText() {
+    return window.innerWidth <= 600 &&
+        selectedElementType === "text" && !!getSelectedTextState();
+}
+
+function runMobileTextCommand(command) {
+    if (!hasMobileSelectedText()) return;
+    command();
+    // I comandi desktop operano sui campi legacy del testo selezionato.
+    syncSelectedTextFromLegacyState();
+    renderLayersPanel();
+}
+
+function closeMobileTextMenus() {
+    document.querySelectorAll(
+        ".mobile-text-context-menu, #mobileTextFormatMenu, #mobileTextColorMenu, #mobileCustomColorMenu"
+    ).forEach(function (menu) { menu.classList.remove("open"); });
+    document.body.classList.remove("mobile-format-open", "mobile-color-open");
+}
+
+function toggleMobileTextMenu(menu) {
+    if (!hasMobileSelectedText()) return;
+    const wasOpen = menu.classList.contains("open");
+    closeMobileTextMenus();
+    if (wasOpen) return;
+    menu.classList.add("open");
+    document.body.classList.toggle("mobile-format-open", menu.id === "mobileTextFormatMenu");
+    document.body.classList.toggle("mobile-color-open", menu.id === "mobileTextColorMenu");
+}
+
+function closeMobileTextMenusOutside(event) {
+    if (event.target.closest(
+        ".mobile-text-context-menu, #mobileTextSelectionBar, #mobileTextFormatMenu, #mobileTextColorMenu, #mobileCustomColorMenu"
+    )) return;
+    closeMobileTextMenus();
+}
+
+// pointerdown funziona anche quando il drag del testo impedisce il click.
+document.addEventListener("pointerdown", closeMobileTextMenusOutside, true);
+document.addEventListener("click", closeMobileTextMenusOutside);
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closeMobileTextMenus();
+});
+
+// Un solo snapshot per ogni modifica continua di colore o spessore.
+function bindMobileTextHistory(input) {
+    let editing = false;
+    input.addEventListener("input", function () {
+        if (!hasMobileSelectedText()) return;
+        if (!editing) saveHistoryState();
+        editing = true;
+    }, true);
+    ["change", "blur"].forEach(function (eventName) {
+        input.addEventListener(eventName, function () { editing = false; });
+    });
+}
+
+const mobileTextFontMenu = document.getElementById("mobileTextFontMenu");
+Array.from(fontSelect.options).forEach(function (option) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = option.textContent;
+    button.dataset.font = option.value;
+    button.style.fontFamily = option.value;
+    button.addEventListener("click", function () {
+        runMobileTextCommand(function () {
+            fontSelect.value = option.value;
+            fontSelect.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        closeMobileTextMenus();
+    });
+    mobileTextFontMenu.appendChild(button);
+});
+
+document.getElementById("mobileSelectedTextFont").addEventListener("click", function () {
+    if (!hasMobileSelectedText()) return;
+    mobileTextFontMenu.querySelectorAll("button").forEach(function (button) {
+        const active = button.dataset.font === getCurrentState().fontFamily;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+    });
+    toggleMobileTextMenu(mobileTextFontMenu);
+});
+
+const mobileTextAlignMenu = document.getElementById("mobileTextAlignMenu");
+const mobileTextAlignCommands = {
+    left: textAlignLeft, center: textAlignCenter, right: textAlignRight
+};
+function updateMobileTextAlignment() {
+    mobileTextAlignMenu.querySelectorAll("button").forEach(function (button) {
+        const active = button.dataset.textAlign === (getCurrentState().textAlign || "center");
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+    });
+}
+mobileTextAlignMenu.querySelectorAll("button").forEach(function (button) {
+    button.addEventListener("click", function () {
+        runMobileTextCommand(function () {
+            mobileTextAlignCommands[button.dataset.textAlign].click();
+        });
+        updateMobileTextAlignment();
+    });
+});
+document.getElementById("mobileSelectedTextAlign").addEventListener("click", function () {
+    if (!hasMobileSelectedText()) return;
+    updateMobileTextAlignment();
+    toggleMobileTextMenu(mobileTextAlignMenu);
+});
+
+const mobileTextOutlineMenu = document.getElementById("mobileTextOutlineMenu");
+const mobileTextOutlineEnabled = document.getElementById("mobileTextOutlineEnabled");
+const mobileTextOutlineColor = document.getElementById("mobileTextOutlineColor");
+const mobileTextOutlineWidth = document.getElementById("mobileTextOutlineWidth");
+const mobileTextOutlineWidthValue = document.getElementById("mobileTextOutlineWidthValue");
+["min", "max", "step"].forEach(function (attribute) {
+    mobileTextOutlineWidth.setAttribute(attribute, textOutlineWidth.getAttribute(attribute));
+});
+document.getElementById("mobileSelectedTextOutline").addEventListener("click", function () {
+    if (!hasMobileSelectedText()) return;
+    const state = getCurrentState();
+    mobileTextOutlineEnabled.checked = state.textOutlineEnabled;
+    mobileTextOutlineColor.value = state.textOutlineColor;
+    mobileTextOutlineWidth.value = state.textOutlineWidth;
+    mobileTextOutlineWidthValue.textContent = `${state.textOutlineWidth} px`;
+    toggleMobileTextMenu(mobileTextOutlineMenu);
+});
+mobileTextOutlineEnabled.addEventListener("change", function () {
+    runMobileTextCommand(function () {
+        textOutlineEnabled.checked = mobileTextOutlineEnabled.checked;
+        textOutlineEnabled.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+});
+[
+    [mobileTextOutlineColor, textOutlineColor],
+    [mobileTextOutlineWidth, textOutlineWidth]
+].forEach(function ([mobileInput, desktopInput]) {
+    bindMobileTextHistory(mobileInput);
+    mobileInput.addEventListener("input", function () {
+        runMobileTextCommand(function () {
+            desktopInput.value = mobileInput.value;
+            desktopInput.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+        mobileTextOutlineWidthValue.textContent = `${getCurrentState().textOutlineWidth} px`;
+    });
+});
+[mobileHueRange, mobileLightRange, mobileHexColor].forEach(bindMobileTextHistory);
+
+document.getElementById("mobileSelectedTextDuplicate").addEventListener("click", function () {
+    if (!hasMobileSelectedText()) return;
+    closeMobileTextMenus();
+    syncSelectedTextFromLegacyState();
+    renderLayersPanel();
+    const selectedId = getCurrentState().selectedTextId;
+    const row = Array.from(layersList.children).find(function (item) {
+        return item.dataset.textId === selectedId;
+    });
+    // Riutilizza integralmente duplicazione, nuovo ID, offset e undo dei Livelli.
+    if (row) row.querySelector(".layer-duplicate-button").click();
+});
+document.getElementById("mobileSelectedTextDelete").addEventListener("click", function () {
+    if (!hasMobileSelectedText()) return;
+    closeMobileTextMenus();
+    directDeleteButton.click();
+    updateMobileTextSelectionBar();
+});
 
 /* =========================================
    ZOOM VISIVO T-SHIRT MOBILE
