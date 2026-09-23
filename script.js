@@ -9861,6 +9861,11 @@ mobileMoreOverlay.addEventListener(
     closeMobileMore
 );
 
+document.getElementById("mobileResetAction").addEventListener("click", function () {
+    resetButton.click();
+    closeMobileMore();
+});
+
 /* =========================================
    MOBILE - FRONTE / RETRO
    ========================================= */

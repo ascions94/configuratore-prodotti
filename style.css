@@ -4487,212 +4487,112 @@ nav a {
 
 }
 
-/* =========================================
-   MOBILE - MENU FORMATO TESTO
-   ========================================= */
-
-.mobile-text-format-menu {
+/* Colore e Formato: barre secondarie della toolbar testo mobile. */
+.mobile-text-format-menu,
+.mobile-text-color-menu {
     display: none;
 }
 
 @media (max-width: 600px) {
-
-    .mobile-text-format-menu {
-        position: fixed;
-
-        top: 132px;
-        left: 50%;
-
-        transform: translateX(-50%);
-
-        z-index: 1250;
-
-        width: 210px;
-
-        padding: 6px;
-
+    .mobile-text-format-menu,
+    .mobile-text-color-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1260;
+        width: 100%;
+        padding: 3px 8px;
+        border-top: 1px solid #eeeeee;
+        border-bottom: 1px solid #dddddd;
+        border-radius: 0;
         background: #ffffff;
-
-        border-radius: 14px;
-
-        box-shadow:
-            0 5px 18px
-            rgba(0, 0, 0, 0.16);
+        box-shadow: none;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 4px;
+        overflow-x: auto;
+        touch-action: pan-x;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
     }
 
-    .mobile-text-format-menu.open {
+    .mobile-text-format-menu.open,
+    .mobile-text-color-menu.open {
         display: flex;
-        flex-direction: column;
+    }
+
+    .mobile-text-format-menu::-webkit-scrollbar,
+    .mobile-text-color-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-text-format-menu {
+        justify-content: center;
+        padding-block: 2px;
     }
 
     .mobile-format-option {
-        width: 100%;
-
+        flex: 0 0 auto;
         min-height: 44px;
-
-        padding: 8px 12px;
-
+        padding: 6px 12px;
         border: none;
-        border-radius: 9px;
-
+        border-radius: 4px;
         background: #ffffff;
-
         display: flex;
         align-items: center;
-
-        gap: 12px;
-
+        justify-content: center;
+        gap: 8px;
         font-size: 14px;
-        text-align: left;
-
+        white-space: nowrap;
         cursor: pointer;
     }
 
     .mobile-format-option strong,
     .mobile-format-option em {
-        width: 25px;
-
+        width: 20px;
         font-size: 19px;
         text-align: center;
     }
 
     .mobile-format-option.active {
         background: #eaf7f9;
-        color: #3199aa;
+        color: #247f8e;
+        box-shadow: inset 0 0 0 1px #58b6c5;
     }
 
     .mobile-format-option:active {
         background: #eeeeee;
     }
 
-}
-
-/* =========================================
-   MOBILE - SPAZIO MENU FORMATO APERTO
-   ========================================= */
-
-@media (max-width: 600px) {
-
-    body.mobile-format-open
-.preview-panel {
-    padding-top: 62px !important;
-}
-
-    .mobile-text-format-menu {
-        top: 132px !important;
-
-        width: auto !important;
-
-        min-width: 230px;
-
-        padding: 5px !important;
-
-        border-radius: 12px !important;
-    }
-
-    .mobile-text-format-menu.open {
-        display: flex !important;
-        flex-direction: row !important;
-        gap: 4px;
-    }
-
-    .mobile-format-option {
-        min-height: 38px !important;
-        padding: 6px 10px !important;
-
-        justify-content: center;
-
-        white-space: nowrap;
-    }
-
-}
-
-/* =========================================
-   MOBILE - PALETTE COLORE TESTO
-   ========================================= */
-
-.mobile-text-color-menu {
-    display: none;
-}
-
-@media (max-width: 600px) {
-
-    .mobile-text-color-menu {
-        position: fixed;
-        top: 132px;
-        left: 50%;
-        transform: translateX(-50%);
-
-        z-index: 1250;
-
-        padding: 7px 9px;
-
-        background: #ffffff;
-        border-radius: 24px;
-
-        box-shadow:
-            0 5px 18px
-            rgba(0, 0, 0, 0.16);
-
-        align-items: center;
-        gap: 7px;
-    }
-
-    .mobile-text-color-menu.open {
-        display: flex;
-    }
-
-    .mobile-color-swatch {
-        width: 27px;
-        height: 27px;
-
-        flex: 0 0 27px;
-
+    .mobile-color-swatch,
+    .mobile-custom-color-button {
+        flex: 0 0 40px;
+        width: 40px;
+        height: 40px;
         padding: 0;
-        border: 2px solid #ffffff;
+        border: 4px solid #ffffff;
         border-radius: 50%;
-
-        box-shadow:
-            0 0 0 1px #d5d5d5;
-
         cursor: pointer;
     }
 
     .mobile-color-swatch.active {
-        box-shadow:
-            0 0 0 3px #58b6c5;
+        box-shadow: inset 0 0 0 3px #58b6c5;
+        outline: 2px solid #58b6c5;
+        outline-offset: -3px;
     }
 
     .mobile-white-swatch {
-        border-color: #eeeeee;
+        box-shadow: inset 0 0 0 1px #cccccc;
     }
 
     .mobile-custom-color-button {
-        width: 29px;
-        height: 29px;
-
-        flex: 0 0 29px;
-
-        padding: 0;
-
-        border: 1px solid #cccccc;
-        border-radius: 50%;
-
         background: #f5f5f5;
-
         font-size: 22px;
         line-height: 1;
-
         display: flex;
         align-items: center;
         justify-content: center;
-
-        cursor: pointer;
-    }
-
-    body.mobile-color-open
-    .preview-panel {
-        padding-top: 62px !important;
     }
 }
 
@@ -5081,7 +4981,7 @@ nav a {
     }
 
     /* Nasconde solo gli strumenti visuali, senza perdere la selezione. */
-    body:has(#mobileTextFontMenu.open, #mobileTextAlignMenu.open, #mobileTextOutlineMenu.open)
+    body:has(#mobileTextFontMenu.open, #mobileTextAlignMenu.open, #mobileTextOutlineMenu.open, #mobileTextColorMenu.open, #mobileTextFormatMenu.open, #mobileCustomColorMenu.open)
     #selectionControls {
         display: none !important;
     }

@@ -6,7 +6,7 @@
 
     <title>Personalizza il tuo prodotto</title>
 
-    <link rel="stylesheet" href="style.css?v=bd26551a99d3">
+    <link rel="stylesheet" href="style.css?v=40a2c2808d8f">
 </head>
 
 <body>
@@ -203,24 +203,6 @@
         •••
     </button>
 
-<!-- MOBILE - STRUMENTI DEL TESTO SELEZIONATO -->
-<div id="mobileTextFontMenu" class="mobile-text-context-menu" role="group" aria-label="Font del testo"></div>
-
-<div id="mobileTextAlignMenu" class="mobile-text-context-menu" role="group" aria-label="Allineamento del testo">
-    <button type="button" data-text-align="left">Sinistra</button>
-    <button type="button" data-text-align="center">Centro</button>
-    <button type="button" data-text-align="right">Destra</button>
-</div>
-
-<div id="mobileTextOutlineMenu" class="mobile-text-context-menu" role="group" aria-label="Contorno del testo">
-    <label><input type="checkbox" id="mobileTextOutlineEnabled"> Attiva contorno</label>
-    <label>Colore <input type="color" id="mobileTextOutlineColor"></label>
-    <label for="mobileTextOutlineWidth">Spessore: <output id="mobileTextOutlineWidthValue"></output></label>
-    <input type="range" id="mobileTextOutlineWidth">
-</div>
-
-</div>
-
 <!-- MOBILE - MENU FORMATO TESTO -->
 <div
     class="mobile-text-format-menu"
@@ -244,6 +226,52 @@
         <span>Corsivo</span>
     </button>
 </div>    
+
+<div
+    class="mobile-text-color-menu"
+    id="mobileTextColorMenu"
+>
+    <button type="button" class="mobile-color-swatch" data-text-color="#000000" style="background:#000000;" aria-label="Nero"></button>
+
+    <button type="button" class="mobile-color-swatch mobile-white-swatch" data-text-color="#ffffff" style="background:#ffffff;" aria-label="Bianco"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#e53935" style="background:#e53935;" aria-label="Rosso"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#1976d2" style="background:#1976d2;" aria-label="Blu"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#43a047" style="background:#43a047;" aria-label="Verde"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#fdd835" style="background:#fdd835;" aria-label="Giallo"></button>
+
+    <button type="button" class="mobile-color-swatch" data-text-color="#ec407a" style="background:#ec407a;" aria-label="Rosa"></button>
+
+    <button
+        type="button"
+        class="mobile-custom-color-button"
+        id="mobileCustomColorButton"
+        aria-label="Altro colore"
+    >
+        +
+    </button>
+</div>
+
+<!-- MOBILE - STRUMENTI DEL TESTO SELEZIONATO -->
+<div id="mobileTextFontMenu" class="mobile-text-context-menu" role="group" aria-label="Font del testo"></div>
+
+<div id="mobileTextAlignMenu" class="mobile-text-context-menu" role="group" aria-label="Allineamento del testo">
+    <button type="button" data-text-align="left">Sinistra</button>
+    <button type="button" data-text-align="center">Centro</button>
+    <button type="button" data-text-align="right">Destra</button>
+</div>
+
+<div id="mobileTextOutlineMenu" class="mobile-text-context-menu" role="group" aria-label="Contorno del testo">
+    <label><input type="checkbox" id="mobileTextOutlineEnabled"> Attiva contorno</label>
+    <label>Colore <input type="color" id="mobileTextOutlineColor"></label>
+    <label for="mobileTextOutlineWidth">Spessore: <output id="mobileTextOutlineWidthValue"></output></label>
+    <input type="range" id="mobileTextOutlineWidth">
+</div>
+
+</div>
 
 <header class="site-header">
 
@@ -1785,34 +1813,6 @@
 
 </div>
 
-<div
-    class="mobile-text-color-menu"
-    id="mobileTextColorMenu"
->
-    <button type="button" class="mobile-color-swatch" data-text-color="#000000" style="background:#000000;" aria-label="Nero"></button>
-
-    <button type="button" class="mobile-color-swatch mobile-white-swatch" data-text-color="#ffffff" style="background:#ffffff;" aria-label="Bianco"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#e53935" style="background:#e53935;" aria-label="Rosso"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#1976d2" style="background:#1976d2;" aria-label="Blu"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#43a047" style="background:#43a047;" aria-label="Verde"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#fdd835" style="background:#fdd835;" aria-label="Giallo"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#ec407a" style="background:#ec407a;" aria-label="Rosa"></button>
-
-    <button
-        type="button"
-        class="mobile-custom-color-button"
-        id="mobileCustomColorButton"
-        aria-label="Altro colore"
-    >
-        +
-    </button>
-</div>
-
 <!-- MOBILE - COLORE PERSONALIZZATO -->
 <div
     class="mobile-custom-color-menu"
@@ -1978,7 +1978,7 @@
     src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
 </script>
 
-<script src="script.js?v=7ccf989326e9"></script>
+<script src="script.js?v=9f6afd533e2b"></script>
 
 </body>
 </html>
