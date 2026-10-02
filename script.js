@@ -10989,3 +10989,86 @@ mobileTshirtZoomIn.addEventListener("click", function () {
 mobileTshirtZoomOut.addEventListener("click", function () {
     applyMobileTshirtZoom(-10);
 });
+
+
+/* =========================================
+   RESTYLING - MENU DESKTOP E TRASCINA FOTO
+   ========================================= */
+
+/*
+   Le voci del menu in alto (Cuscini, T-Shirt, Portachiavi)
+   cambiano prodotto usando il selettore originale,
+   come già fa il menu mobile.
+*/
+const desktopNavProductLinks =
+    document.querySelectorAll("[data-nav-product]");
+
+function updateDesktopNavActive() {
+    desktopNavProductLinks.forEach(function (link) {
+        link.classList.toggle(
+            "active",
+            link.dataset.navProduct === productSelect.value
+        );
+    });
+}
+
+desktopNavProductLinks.forEach(function (link) {
+    link.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        if (productSelect.value !== link.dataset.navProduct) {
+            productSelect.value = link.dataset.navProduct;
+            productSelect.dispatchEvent(
+                new Event("change", { bubbles: true })
+            );
+        }
+
+        updateDesktopNavActive();
+    });
+});
+
+productSelect.addEventListener("change", updateDesktopNavActive);
+updateDesktopNavActive();
+
+
+/*
+   Trascina e rilascia una foto sul riquadro "Carica una foto".
+   Il file viene passato all'input originale, così il resto
+   del caricamento (controlli, livelli, undo) resta identico.
+*/
+const imageUploadDropzone =
+    document.getElementById("imageUploadDropzone");
+
+if (imageUploadDropzone) {
+
+    ["dragenter", "dragover"].forEach(function (type) {
+        imageUploadDropzone.addEventListener(type, function (event) {
+            event.preventDefault();
+            imageUploadDropzone.classList.add("is-dragover");
+        });
+    });
+
+    ["dragleave", "dragend", "drop"].forEach(function (type) {
+        imageUploadDropzone.addEventListener(type, function () {
+            imageUploadDropzone.classList.remove("is-dragover");
+        });
+    });
+
+    imageUploadDropzone.addEventListener("drop", function (event) {
+        event.preventDefault();
+
+        const files = event.dataTransfer && event.dataTransfer.files;
+
+        if (!files || !files.length) {
+            return;
+        }
+
+        const transfer = new DataTransfer();
+        transfer.items.add(files[0]);
+        imageUpload.files = transfer.files;
+
+        imageUpload.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+    });
+}

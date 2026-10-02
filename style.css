@@ -5010,3 +5010,969 @@ nav a {
         font-weight: 700;
     }
 }
+
+
+/* =====================================================================
+   RESTYLING GRAFICO 2026
+   ---------------------------------------------------------------------
+   Blocco aggiunto in fondo per rinnovare l'aspetto senza toccare le
+   regole esistenti. Contiene solo colori, tipografia, bordi e spaziature
+   dei pannelli: NON modifica dimensioni o posizione di mockup, area
+   stampabile, immagini e testi (#productPreview, #printArea, layer).
+   La maggior parte delle regole vale solo da 601px in su (desktop/tablet),
+   così la versione mobile calibrata a mano resta com'è.
+   ===================================================================== */
+
+:root {
+    /* Colori del marchio SubliMaMi (presi dal logo) */
+    --brand: #00b0c0;            /* turchese logo: decorazioni, bordi attivi */
+    --brand-strong: #00808e;     /* turchese scuro: testo e pulsanti (contrasto AA) */
+    --brand-stronger: #006d78;   /* hover pulsanti */
+    --brand-soft: #e6f7f9;       /* sfondi tenui */
+    --brand-softer: #f2fbfc;
+
+    --accent: #f8858c;           /* rosa logo: decorazioni */
+    --accent-strong: #c2415a;    /* rosa scuro: testo (contrasto AA) */
+    --accent-soft: #fff1f2;
+
+    --ink: #1f2328;              /* testo principale */
+    --muted: #5f6670;            /* testo secondario */
+    --line: #e3e7eb;             /* bordi */
+    --line-strong: #cfd5db;
+    --surface: #ffffff;
+    --page: #f5f7f8;
+    --danger: #c62f3b;
+
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-sm: 9px;
+
+    --shadow-panel: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.06);
+    --shadow-button: 0 6px 16px rgba(0, 128, 142, 0.25);
+
+    --font-ui: "Nunito", "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    font-family: var(--font-ui);
+    color: var(--ink);
+}
+
+/* I campi del form usano lo stesso font dell'interfaccia */
+button,
+select,
+input,
+textarea {
+    font-family: inherit;
+}
+
+
+@media (min-width: 601px) {
+
+    body {
+        background: var(--page);
+    }
+
+    /* ------------------------------ HEADER ------------------------------ */
+
+    .site-header {
+        padding: 14px 40px;
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02);
+    }
+
+    .site-logo {
+        width: 180px;
+    }
+
+    .site-header nav {
+        gap: 6px;
+    }
+
+    .site-header nav a {
+        padding: 8px 14px;
+        border-radius: 999px;
+        color: var(--ink);
+        font-weight: 700;
+        font-size: 15px;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .site-header nav a:hover {
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+    }
+
+    .site-header nav a.active {
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+    }
+
+    .cart-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 16px 11px 14px;
+        border-radius: 999px;
+        background: var(--ink);
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .cart-button:hover {
+        background: #000;
+        transform: translateY(-1px);
+    }
+
+    .cart-button-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    #cartCount {
+        min-width: 22px;
+        margin-left: 2px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: var(--accent);
+        color: #2a0a0e;
+        font-size: 13px;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    /* --------------------------- LAYOUT PANNELLI --------------------------- */
+
+    .customizer {
+        grid-template-columns: 300px minmax(0, 1fr) 300px;
+        gap: 24px;
+        margin: 24px auto;
+    }
+
+    .tools-panel,
+    .preview-panel,
+    .product-panel {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-panel);
+    }
+
+    .tools-panel h2,
+    .product-panel h2 {
+        margin: 0 0 4px;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+    }
+
+    .product-panel h2 {
+        margin-bottom: 16px;
+    }
+
+    .tools-panel-intro {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .tools-panel::-webkit-scrollbar-thumb {
+        background: #d5dade;
+    }
+
+    /* ----------------------- GRUPPI APRI/CHIUDI ----------------------- */
+
+    .panel-group {
+        border-top: 1px solid var(--line);
+    }
+
+    .panel-group:last-of-type {
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 18px;
+    }
+
+    .panel-group-summary {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 2px;
+        cursor: pointer;
+        list-style: none;
+        user-select: none;
+    }
+
+    .panel-group-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .panel-group-summary:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+        border-radius: var(--radius-sm);
+    }
+
+    .panel-group-icon {
+        flex: 0 0 36px;
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 11px;
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+    }
+
+    .panel-group-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .panel-group[data-group="text"] .panel-group-icon,
+    .panel-group[data-group="bg"] .panel-group-icon {
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+    }
+
+    .panel-group-title {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        font-size: 16px;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .panel-group-title small {
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .panel-group-chevron {
+        width: 9px;
+        height: 9px;
+        margin-right: 6px;
+        border-right: 2px solid var(--muted);
+        border-bottom: 2px solid var(--muted);
+        transform: rotate(45deg) translateY(-3px);
+        transition: transform 0.2s ease;
+    }
+
+    .panel-group[open] .panel-group-chevron {
+        transform: rotate(-135deg) translateY(-1px);
+    }
+
+    .panel-group-summary:hover .panel-group-title {
+        color: var(--brand-strong);
+    }
+
+    .panel-group-body {
+        padding: 2px 0 8px;
+    }
+
+    .panel-group-body .tool-section {
+        margin-bottom: 18px;
+    }
+
+    /* I cursori di misura/rotazione restano nascosti come prima
+       (si usano i controlli diretti sull'anteprima) */
+    .tools-panel label[for="zoomRange"],
+    .tools-panel label[for="rotationRange"],
+    .tools-panel label[for="textSizeRange"],
+    .tools-panel label[for="textRotationRange"] {
+        display: none;
+    }
+
+    /* Il gruppo Livelli compare solo quando c'è almeno un elemento */
+    .panel-group[data-group="layers"]:not(:has(.layers-section[style*="block"])) {
+        display: none;
+    }
+
+    /* ---------------------------- ETICHETTE ---------------------------- */
+
+    .tool-section label,
+    .product-panel label,
+    #printFormatOptions > label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    /* ------------------------- CAMPI DI TESTO ------------------------- */
+
+    .tools-panel select,
+    .tools-panel textarea,
+    .product-panel input[type="number"] {
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius-sm);
+        background-color: var(--surface);
+        color: var(--ink);
+        font-size: 15px;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .tools-panel select {
+        appearance: none;
+        padding-right: 40px;
+        background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235f6670' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 18px;
+        cursor: pointer;
+    }
+
+    .tools-panel select:hover,
+    .tools-panel textarea:hover,
+    .product-panel input[type="number"]:hover {
+        border-color: #b3bcc4;
+    }
+
+    .tools-panel select:focus,
+    .tools-panel textarea:focus,
+    .product-panel input[type="number"]:focus {
+        outline: none;
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px rgba(0, 176, 192, 0.18);
+    }
+
+    input[type="checkbox"],
+    input[type="range"] {
+        accent-color: var(--brand-strong);
+    }
+
+    /* Selettore colore a forma di "campione" */
+    .tools-panel input[type="color"] {
+        width: 52px;
+        height: 38px;
+        padding: 4px;
+        border: 1px solid var(--line-strong);
+        border-radius: 10px;
+        background: var(--surface);
+        cursor: pointer;
+    }
+
+    .tools-panel input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    .tools-panel input[type="color"]::-webkit-color-swatch {
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 6px;
+    }
+
+    .tools-panel input[type="color"]::-moz-color-swatch {
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 6px;
+    }
+
+    /* ---------------- PULSANTI A SCELTA (colore, taglia, lato…) ---------------- */
+
+    .tools-panel .color-button,
+    .tools-panel .side-button,
+    .tools-panel .size-button,
+    .tools-panel .print-format-button,
+    .tools-panel .text-style-button,
+    .tools-panel .text-align-button {
+        border: 1px solid var(--line-strong);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .tools-panel .color-button:hover,
+    .tools-panel .side-button:hover,
+    .tools-panel .size-button:hover,
+    .tools-panel .print-format-button:hover,
+    .tools-panel .text-style-button:hover,
+    .tools-panel .text-align-button:hover {
+        border-color: var(--brand);
+        background: var(--brand-softer);
+        transform: none;
+    }
+
+    .tools-panel .color-button.active,
+    .tools-panel .side-button.active,
+    .tools-panel .size-button.active,
+    .tools-panel .print-format-button.active,
+    .tools-panel .text-style-button.active,
+    .tools-panel .text-align-button.active {
+        border-color: var(--brand-strong);
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+        outline: none;
+        box-shadow: inset 0 0 0 1px var(--brand-strong);
+    }
+
+    .tools-panel .side-button,
+    .tools-panel .print-format-button {
+        padding: 10px 8px;
+    }
+
+    /* Bianca / Nera: pulsante chiaro con pallino del colore */
+    .tools-panel .color-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .tools-panel .color-button::before {
+        content: "";
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .tools-panel .color-button.white::before {
+        background: #ffffff;
+    }
+
+    .tools-panel .color-button.black::before {
+        background: #111111;
+    }
+
+    .tools-panel .color-buttons,
+    .tools-panel .side-buttons,
+    .tools-panel .size-buttons {
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    #printFormatOptions .side-buttons {
+        margin-bottom: 18px;
+    }
+
+    /* ---------------------------- PULSANTI ---------------------------- */
+
+    .tools-panel .secondary-button {
+        padding: 12px 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .tools-panel .secondary-button:hover {
+        border-color: var(--brand);
+        background: var(--brand-softer);
+        color: var(--brand-strong);
+        transform: none;
+    }
+
+    .tools-panel .add-text-button {
+        border: 1px dashed var(--brand);
+        background: var(--brand-softer);
+        color: var(--brand-strong);
+    }
+
+    .tools-panel .add-text-button:hover {
+        background: var(--brand-soft);
+    }
+
+    .tools-panel #heartLogoButton {
+        border: 1px solid #f6c7cc;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+    }
+
+    .tools-panel #heartLogoButton:hover {
+        border-color: var(--accent);
+        background: #ffe4e7;
+        color: var(--accent-strong);
+    }
+
+    .tools-panel #resetButton {
+        border-color: transparent;
+        background: transparent;
+        color: var(--danger);
+        font-size: 14px;
+    }
+
+    .tools-panel #resetButton:hover {
+        border-color: #f1c3c7;
+        background: #fdf1f2;
+        color: var(--danger);
+    }
+
+    .tools-panel #clearPrintBgButton {
+        margin-top: 10px;
+    }
+
+    .tools-panel .text-align-button {
+        display: grid;
+        place-items: center;
+    }
+
+    .text-align-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .tools-panel .text-style-button {
+        width: 46px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .tools-panel .center-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .tools-panel .center-buttons .secondary-button {
+        padding: 10px 8px;
+        font-size: 13.5px;
+    }
+
+    /* ------------------------- CARICAMENTO FOTO ------------------------- */
+
+    .upload-section {
+        position: relative;
+    }
+
+    .tool-section input.upload-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .tool-section .upload-dropzone {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 0;
+        padding: 16px;
+        border: 2px dashed #9fdbe2;
+        border-radius: var(--radius-md);
+        background: linear-gradient(135deg, var(--brand-softer), #fff7f8);
+        cursor: pointer;
+        transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+    }
+
+    .tool-section .upload-dropzone:hover,
+    .tool-section .upload-dropzone.is-dragover {
+        border-color: var(--brand);
+        background: linear-gradient(135deg, var(--brand-soft), #ffeef0);
+    }
+
+    .tool-section .upload-dropzone.is-dragover {
+        transform: scale(1.01);
+    }
+
+    .upload-input:focus-visible + .upload-dropzone,
+    .upload-section:focus-within .upload-dropzone {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+    }
+
+    .upload-dropzone-icon {
+        flex: 0 0 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--surface);
+        color: var(--brand-strong);
+        box-shadow: 0 2px 8px rgba(0, 128, 142, 0.15);
+    }
+
+    .upload-dropzone-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .upload-dropzone-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .upload-dropzone-text strong {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--ink);
+    }
+
+    .upload-dropzone-text span {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    /* ------------------------ INFO E CURSORI ------------------------ */
+
+    .tools-panel .image-size-info {
+        padding: 9px 12px;
+        border: 1px solid #cdeef2;
+        border-radius: var(--radius-sm);
+        background: var(--brand-softer);
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .tools-panel .image-size-info strong {
+        color: var(--brand-strong);
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .tools-panel .rotation-marks span {
+        color: #8a929b;
+    }
+
+    .tools-panel .text-outline-toggle {
+        border-color: var(--line-strong);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+        color: var(--ink);
+        font-weight: 700;
+    }
+
+    .tools-panel .text-outline-toggle:hover {
+        border-color: var(--brand);
+        background: var(--brand-softer);
+    }
+
+    .tools-panel #textOutlineOptions {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        background: #fafbfc;
+    }
+
+    /* ------------------------------ LIVELLI ------------------------------ */
+
+    /* Il titolo "Livelli" è già nell'intestazione del gruppo */
+    .panel-group .layers-header strong {
+        display: none;
+    }
+
+    .tools-panel .layers-header span {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .tools-panel .layer-item {
+        border-color: var(--line);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+    }
+
+    .tools-panel .layer-item:hover {
+        border-color: var(--brand);
+        background: var(--brand-softer);
+    }
+
+    .tools-panel .layer-item.active {
+        border-color: var(--brand-strong);
+        background: var(--brand-soft);
+        box-shadow: inset 0 0 0 1px var(--brand-strong);
+    }
+
+    .tools-panel .layer-thumb {
+        border-color: var(--line);
+        border-radius: 8px;
+    }
+
+    .tools-panel .layer-action-button {
+        border-color: var(--line-strong);
+        border-radius: 7px;
+        color: #3d444c;
+    }
+
+    .tools-panel .layer-action-button:hover {
+        border-color: var(--brand-strong);
+        background: var(--brand-strong);
+        color: #fff;
+    }
+
+    .tools-panel .layer-delete-button:hover {
+        border-color: var(--danger);
+        background: var(--danger);
+    }
+
+    .tools-panel .layer-duplicate-button:hover {
+        border-color: var(--accent-strong);
+        background: var(--accent-strong);
+    }
+
+    /* --------------------------- ANTEPRIMA --------------------------- */
+
+    .preview-header h1 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.015em;
+        margin-bottom: 8px;
+    }
+
+    .preview-header p#printAreaInfo {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0 0 16px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .preview-header p#printAreaInfo::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border: 1.5px dashed currentColor;
+        border-radius: 2px;
+    }
+
+    /* Solo sfondo: dimensioni e padding dell'area restano quelli originali */
+    .preview-area {
+        background-color: #f1f4f6;
+        background-image: radial-gradient(#dde3e8 1.1px, transparent 1.1px);
+        background-size: 18px 18px;
+        border: 1px solid var(--line);
+    }
+
+    .preview-toolbar {
+        /* sopra la T-shirt ingrandita, che può sbordare dall'anteprima */
+        position: relative;
+        z-index: 100;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .preview-toolbar .preview-zoom-controls,
+    .preview-toolbar .history-controls {
+        margin-top: 0;
+        padding: 5px;
+        gap: 6px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--surface);
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    }
+
+    .preview-toolbar .preview-zoom-controls input[type="range"] {
+        width: 150px;
+    }
+
+    .preview-zoom-button {
+        width: 34px;
+        height: 34px;
+        border: none;
+        background: #f1f4f6;
+        color: var(--ink);
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .preview-zoom-button:hover {
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+    }
+
+    #previewZoomValue {
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .preview-zoom-reset,
+    .history-button {
+        height: 34px;
+        padding: 0 14px;
+        border: none;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .preview-zoom-reset:hover,
+    .history-button:hover:not(:disabled) {
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+    }
+
+    /* -------------------------- PANNELLO DESTRO -------------------------- */
+
+    .product-panel {
+        position: sticky;
+        top: 20px;
+        align-self: start;
+    }
+
+    .product-summary {
+        margin-bottom: 18px;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: #fafbfc;
+    }
+
+    .product-summary p {
+        position: relative;
+        margin: 6px 0;
+        padding-left: 22px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .product-summary p::before {
+        content: "";
+        position: absolute;
+        left: 2px;
+        top: 4px;
+        width: 10px;
+        height: 6px;
+        border-left: 2px solid var(--brand-strong);
+        border-bottom: 2px solid var(--brand-strong);
+        transform: rotate(-45deg);
+    }
+
+    .product-summary p#productName {
+        padding-left: 0;
+        margin-bottom: 10px;
+        color: var(--ink);
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .product-summary p#productName::before {
+        display: none;
+    }
+
+    .price {
+        display: flex;
+        flex-direction: column;
+        margin: 4px 0 18px;
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+    }
+
+    .price::before {
+        content: "Prezzo";
+        margin-bottom: 2px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0;
+    }
+
+    .product-panel input[type="number"] {
+        padding: 11px 12px;
+        font-weight: 700;
+    }
+
+    .primary-button {
+        padding: 15px;
+        border-radius: var(--radius-md);
+        background: var(--brand-strong);
+        font-family: inherit;
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        box-shadow: var(--shadow-button);
+        transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .primary-button:hover {
+        background: var(--brand-stronger);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(0, 128, 142, 0.3);
+    }
+
+    .primary-button:active {
+        transform: translateY(0);
+    }
+
+    .status-message {
+        color: var(--muted);
+        font-size: 13.5px;
+    }
+
+    /* ------------------------------ CARRELLO ------------------------------ */
+
+    .cart-drawer {
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    }
+
+    .cart-drawer-header h2 {
+        font-weight: 800;
+    }
+}
+
+
+/* Carrello chiuso: niente ombra che "sporca" il bordo destro */
+.cart-drawer:not(.open) {
+    box-shadow: none;
+}
+
+
+/* Tablet (601–1000px): i pannelli tornano in colonna come prima */
+@media (min-width: 601px) and (max-width: 1000px) {
+
+    .site-header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 20px;
+        padding: 12px 24px;
+    }
+
+    .site-header nav {
+        order: 3;
+        width: 100%;
+        margin-left: -14px;
+    }
+
+    .customizer {
+        grid-template-columns: 1fr;
+    }
+
+    .product-panel {
+        position: static;
+    }
+}
+
+
+/* Mobile: il carrello chiuso sbordava di qualche pixel a destra */
+@media (max-width: 600px) {
+
+    .cart-drawer {
+        transform: translateX(calc(100% + 24px));
+    }
+
+    .preview-toolbar {
+        display: contents;
+    }
+}

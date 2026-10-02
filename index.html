@@ -6,7 +6,11 @@
 
     <title>Personalizza il tuo prodotto</title>
 
-    <link rel="stylesheet" href="style.css?v=40a2c2808d8f">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
+
+    <link rel="stylesheet" href="style.css?v=restyle-1">
 </head>
 
 <body>
@@ -285,9 +289,9 @@
 
     <nav>
             <a href="#">Home</a>
-            <a href="#">Cuscini</a>
-            <a href="#">T-Shirt</a>
-            <a href="#">Portachiavi</a>
+            <a href="#" data-nav-product="cushion">Cuscini</a>
+            <a href="#" data-nav-product="tshirt">T-Shirt</a>
+            <a href="#" data-nav-product="keychain">Portachiavi</a>
         </nav>
 
         <button
@@ -295,6 +299,7 @@
     id="cartButton"
     class="cart-button"
 >
+    <svg class="cart-button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>
     Carrello
     <span id="cartCount">0</span>
 </button>
@@ -307,7 +312,21 @@
         <aside class="tools-panel">
 
             <h2>Personalizza</h2>
+            <p class="tools-panel-intro">Crea il tuo design in pochi passaggi.</p>
 
+            <details class="panel-group" data-group="product" open>
+                <summary class="panel-group-summary">
+                    <span class="panel-group-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 3.5 6.5l2.2 3.8L8 9.2V21h8V9.2l2.3 1.1 2.2-3.8L16 3c-.6 1.6-2.1 2.6-4 2.6S8.6 4.6 8 3Z"/></svg>
+                    </span>
+                    <span class="panel-group-title">
+                        Prodotto
+                        <small>Modello, colore e taglia</small>
+                    </span>
+                    <span class="panel-group-chevron" aria-hidden="true"></span>
+                </summary>
+
+                <div class="panel-group-body">
             <div class="tool-section">
                 <label for="productSelect">Prodotto</label>
 
@@ -325,7 +344,6 @@
                     </option>
                 </select>
             </div>
-
 
             <!-- OPZIONI T-SHIRT -->
             <div class="tool-section" id="tshirtOptions">
@@ -448,43 +466,111 @@
     </div>
 
 </div>
+                </div>
+            </details>
 
 
+            <details class="panel-group" data-group="image" open>
+                <summary class="panel-group-summary">
+                    <span class="panel-group-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>
+                    </span>
+                    <span class="panel-group-title">
+                        Immagini
+                        <small>Carica le tue foto</small>
+                    </span>
+                    <span class="panel-group-chevron" aria-hidden="true"></span>
+                </summary>
+
+                <div class="panel-group-body">
             <!-- CARICAMENTO FOTO -->
-            <div class="tool-section">
+            <div class="tool-section upload-section">
 
-                <label for="imageUpload">
-                    Carica una foto
+                <label for="imageUpload" class="upload-dropzone" id="imageUploadDropzone">
+                    <span class="upload-dropzone-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></svg>
+                    </span>
+                    <span class="upload-dropzone-text">
+                        <strong>Carica una foto</strong>
+                        <span>Clicca o trascina qui un'immagine</span>
+                    </span>
                 </label>
 
                 <input
                     type="file"
                     id="imageUpload"
+                    class="upload-input"
                     accept="image/*"
                 >
 
             </div>
 
-            <div class="tool-section layers-section">
+            <!-- ZOOM -->
+            <div class="tool-section">
 
-    <div class="layers-header">
+                <label for="zoomRange">
+                    Dimensione immagine
+                </label>
 
-        <strong>Livelli</strong>
+                <input
+    type="range"
+    id="zoomRange"
+    min="0.1"
+    max="3"
+    value="1"
+    step="0.02"
+>
 
-        <span>
-            Clicca per selezionare
-        </span>
-
-    </div>
-
-    <div
-        id="layersList"
-        class="layers-list"
-    ></div>
-
+<div id="imageSizeInfo" class="image-size-info">
+    Dimensione stampa:
+    <strong id="imageSizeValue">—</strong>
 </div>
 
+            </div>
 
+            <!-- ROTAZIONE -->
+            <div class="tool-section">
+    <label for="rotationRange">
+        Rotazione immagine:
+        <span id="rotationValue">0°</span>
+    </label>
+
+    <input
+        type="range"
+        id="rotationRange"
+        min="-180"
+        max="180"
+        value="0"
+        step="1"
+    >
+
+    <div class="rotation-marks">
+        <span>-180°</span>
+        <span>-90°</span>
+        <span>-45°</span>
+        <span>0°</span>
+        <span>45°</span>
+        <span>90°</span>
+        <span>180°</span>
+    </div>
+</div>
+                </div>
+            </details>
+
+
+            <details class="panel-group" data-group="text" open>
+                <summary class="panel-group-summary">
+                    <span class="panel-group-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V4.5h14V7M12 4.5v15M9 19.5h6"/></svg>
+                    </span>
+                    <span class="panel-group-title">
+                        Testo
+                        <small>Scritte, font e colori</small>
+                    </span>
+                    <span class="panel-group-chevron" aria-hidden="true"></span>
+                </summary>
+
+                <div class="panel-group-body">
             <!-- TESTO -->
             <div class="tool-section">
 
@@ -597,28 +683,6 @@
 
 <div class="tool-section">
 
-    <label for="printBgColor">
-        Colore sfondo
-    </label>
-
-    <input
-        type="color"
-        id="printBgColor"
-        value="#ffffff"
-    >
-
-    <button
-        type="button"
-        id="clearPrintBgButton"
-        class="secondary-button"
-    >
-        Nessuno sfondo
-    </button>
-
-</div>
-
-<div class="tool-section">
-
     <label>Allineamento testo</label>
 
     <div class="text-align-buttons">
@@ -629,7 +693,7 @@
             class="text-align-button"
             title="Allinea a sinistra"
         >
-            ≡
+            <svg class="text-align-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 10h10M4 14h16M4 18h10"/></svg>
         </button>
 
         <button
@@ -638,7 +702,7 @@
             class="text-align-button active"
             title="Allinea al centro"
         >
-            ≡
+            <svg class="text-align-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 10h10M4 14h16M7 18h10"/></svg>
         </button>
 
         <button
@@ -647,7 +711,7 @@
             class="text-align-button"
             title="Allinea a destra"
         >
-            ≡
+            <svg class="text-align-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M10 10h10M4 14h16M10 18h10"/></svg>
         </button>
 
     </div>
@@ -704,6 +768,41 @@
         <span>180°</span>
     </div>
 </div>
+                </div>
+            </details>
+
+
+            <details class="panel-group" data-group="layers" open>
+                <summary class="panel-group-summary">
+                    <span class="panel-group-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+                    </span>
+                    <span class="panel-group-title">
+                        Livelli
+                        <small>Ordine degli elementi</small>
+                    </span>
+                    <span class="panel-group-chevron" aria-hidden="true"></span>
+                </summary>
+
+                <div class="panel-group-body">
+            <div class="tool-section layers-section">
+
+    <div class="layers-header">
+
+        <strong>Livelli</strong>
+
+        <span>
+            Clicca per selezionare
+        </span>
+
+    </div>
+
+    <div
+        id="layersList"
+        class="layers-list"
+    ></div>
+
+</div>
 
 <div class="tool-section">
 
@@ -730,58 +829,46 @@
     </div>
 
 </div>
+                </div>
+            </details>
 
 
-            <!-- ZOOM -->
-            <div class="tool-section">
+            <details class="panel-group" data-group="bg">
+                <summary class="panel-group-summary">
+                    <span class="panel-group-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5s6 6.4 6 10.8a6 6 0 0 1-12 0c0-4.4 6-10.8 6-10.8Z"/></svg>
+                    </span>
+                    <span class="panel-group-title">
+                        Sfondo
+                        <small>Colore di fondo della stampa</small>
+                    </span>
+                    <span class="panel-group-chevron" aria-hidden="true"></span>
+                </summary>
 
-                <label for="zoomRange">
-                    Dimensione immagine
-                </label>
+                <div class="panel-group-body">
+<div class="tool-section">
 
-                <input
-    type="range"
-    id="zoomRange"
-    min="0.1"
-    max="3"
-    value="1"
-    step="0.02"
->
-
-<div id="imageSizeInfo" class="image-size-info">
-    Dimensione stampa:
-    <strong id="imageSizeValue">—</strong>
-</div>
-
-            </div>
-
-
-            <!-- ROTAZIONE -->
-            <div class="tool-section">
-    <label for="rotationRange">
-        Rotazione immagine:
-        <span id="rotationValue">0°</span>
+    <label for="printBgColor">
+        Colore sfondo
     </label>
 
     <input
-        type="range"
-        id="rotationRange"
-        min="-180"
-        max="180"
-        value="0"
-        step="1"
+        type="color"
+        id="printBgColor"
+        value="#ffffff"
     >
 
-    <div class="rotation-marks">
-        <span>-180°</span>
-        <span>-90°</span>
-        <span>-45°</span>
-        <span>0°</span>
-        <span>45°</span>
-        <span>90°</span>
-        <span>180°</span>
-    </div>
+    <button
+        type="button"
+        id="clearPrintBgButton"
+        class="secondary-button"
+    >
+        Nessuno sfondo
+    </button>
+
 </div>
+                </div>
+            </details>
 
 
             <button
@@ -932,6 +1019,8 @@
 
             </div>
 
+            <div class="preview-toolbar">
+
             <div class="preview-zoom-controls">
 
                 <button
@@ -996,6 +1085,8 @@
     </button>
 
 </div>
+
+            </div>
 
         </section>
 
@@ -1978,7 +2069,7 @@
     src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
 </script>
 
-<script src="script.js?v=9f6afd533e2b"></script>
+<script src="script.js?v=restyle-1"></script>
 
 </body>
 </html>
