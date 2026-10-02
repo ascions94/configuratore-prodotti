@@ -11072,3 +11072,43 @@ if (imageUploadDropzone) {
         );
     });
 }
+
+
+
+/* =========================================
+   APERTURA DIRETTA DI UN PRODOTTO DALLA HOME
+   es. personalizza.html?prodotto=tshirt
+   ========================================= */
+
+(function openProductFromUrl() {
+
+    const requestedProduct =
+        new URLSearchParams(window.location.search).get("prodotto");
+
+    const exists = [...productSelect.options].some(function (option) {
+        return option.value === requestedProduct;
+    });
+
+    if (!requestedProduct || !exists) {
+        return;
+    }
+
+    if (productSelect.value !== requestedProduct) {
+        productSelect.value = requestedProduct;
+        productSelect.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+    }
+
+    updateDesktopNavActive();
+})();
+
+
+/* Apertura diretta del carrello: personalizza.html?carrello=1 */
+if (new URLSearchParams(window.location.search).get("carrello") === "1") {
+    if (window.innerWidth <= 600) {
+        mobileCartButton.click();
+    } else {
+        cartButton.click();
+    }
+}

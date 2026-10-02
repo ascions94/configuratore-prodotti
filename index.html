@@ -4,2072 +4,496 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Personalizza il tuo prodotto</title>
+    <title>SubliMaMi | Regali personalizzati con le tue foto</title>
+    <meta name="description" content="Cuscini, T-shirt e portachiavi personalizzati con le tue foto e le tue frasi. Crei tutto online e vedi subito il risultato.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=restyle-1">
+    <link rel="stylesheet" href="home.css?v=home-1">
 </head>
 
 <body>
 
     <!-- =========================================
-     HEADER MOBILE
-     ========================================= -->
-
-<header class="mobile-site-header">
-
-    <div class="mobile-site-logo">
-        <img
-            src="assets/sublimami-logo.png"
-            alt="SubliMaMi"
-        >
+         BARRA ANNUNCI
+         ========================================= -->
+    <div class="announcement-bar">
+        Crea il tuo regalo personalizzato online, con anteprima in tempo reale
     </div>
 
-
-    <div class="mobile-site-actions">
-
-        <button
-            type="button"
-            class="mobile-header-button"
-            id="mobileCartButton"
-            aria-label="Carrello"
-        >
-            <span class="mobile-cart-icon">🛒</span>
-
-            <span
-                class="mobile-cart-count"
-                id="mobileCartCount"
-            >
-                0
-            </span>
-        </button>
-
-
-        <button
-            type="button"
-            class="mobile-header-button mobile-menu-button"
-            id="mobileMenuButton"
-            aria-label="Menu"
-        >
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-        <div
-    class="mobile-navigation-menu"
-    id="mobileNavigationMenu"
->
-    <button
-        type="button"
-        data-mobile-product="cushion"
-    >
-        Cuscini
-    </button>
-
-    <button
-        type="button"
-        data-mobile-product="tshirt"
-    >
-        T-Shirt
-    </button>
-
-    <button
-        type="button"
-        data-mobile-product="keychain"
-    >
-        Portachiavi
-    </button>
-</div>
-
-    </div>
-
-</header>
 
     <!-- =========================================
-     BARRA SUPERIORE MOBILE CONFIGURATORE
-     ========================================= -->
+         HEADER
+         ========================================= -->
+    <header class="home-header" id="homeHeader">
+        <div class="container home-header-inner">
 
-<div class="mobile-editor-topbar">
+            <a href="index.html" class="home-logo" aria-label="SubliMaMi - Home">
+                <img src="assets/sublimami-logo.png" alt="SubliMaMi">
+            </a>
 
-    <!-- ANNULLA / RIPRISTINA -->
-    <div class="mobile-history-buttons">
+            <nav class="home-nav" id="homeNav" aria-label="Menu principale">
+                <a href="personalizza.html?prodotto=cushion">Cuscini</a>
+                <a href="personalizza.html?prodotto=tshirt">T-Shirt</a>
+                <a href="personalizza.html?prodotto=keychain">Portachiavi</a>
+                <a href="#idee-regalo">Idee regalo</a>
+                <a href="#come-funziona">Come funziona</a>
+                <a href="#prossimamente">Prossimamente</a>
+            </nav>
 
-        <button
-            type="button"
-            class="mobile-top-button"
-            id="mobileUndoButton"
-            aria-label="Annulla"
-        >
-            ↶
-        </button>
+            <div class="home-header-actions">
+                <a href="personalizza.html" class="btn btn-primary btn-small header-cta">
+                    Personalizza
+                </a>
 
-        <button
-            type="button"
-            class="mobile-top-button"
-            id="mobileRedoButton"
-            aria-label="Ripristina"
-        >
-            ↷
-        </button>
+                <a href="personalizza.html?carrello=1" class="header-cart" aria-label="Carrello">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>
+                    <span class="header-cart-count" id="homeCartCount">0</span>
+                </a>
 
-    </div>
+                <button type="button" class="menu-toggle" id="menuToggle" aria-label="Apri menu" aria-expanded="false" aria-controls="homeNav">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
 
-
-    <!-- =====================================
-         BARRA CONTESTUALE TESTO
-         compare solo con testo selezionato
-         ===================================== -->
-
-    <div
-        class="mobile-text-selection-bar"
-        id="mobileTextSelectionBar"
-    >
-
-        <button
-            type="button"
-            class="mobile-selection-tool"
-            id="mobileSelectedTextColor"
-        >
-            <span class="mobile-selection-color"></span>
-            <span>Colore</span>
-        </button>
-
-        <button
-            type="button"
-            class="mobile-selection-tool"
-            id="mobileSelectedTextFont"
-        >
-            <span class="mobile-selection-icon">Aa</span>
-            <span>Font</span>
-        </button>
-
-        <button
-            type="button"
-            class="mobile-selection-tool"
-            id="mobileSelectedTextFormat"
-        >
-            <span class="mobile-selection-icon">
-                B<i>I</i>
-            </span>
-            <span>Formato</span>
-        </button>
-
-        <button
-            type="button"
-            class="mobile-selection-tool"
-            id="mobileSelectedTextAlign"
-        >
-            <span class="mobile-selection-icon">☰</span>
-            <span>Allinea</span>
-        </button>
-
-        <button
-            type="button"
-            class="mobile-selection-tool"
-            id="mobileSelectedTextOutline"
-        >
-            <span class="mobile-selection-icon">T</span>
-            <span>Contorno</span>
-        </button>
-
-        <button
-            type="button"
-            class="mobile-selection-tool"
-            id="mobileSelectedTextDuplicate"
-        >
-            <span class="mobile-selection-icon">▣</span>
-            <span>Duplica</span>
-        </button>
-
-        <button
-            type="button"
-            class="mobile-selection-tool mobile-selection-delete"
-            id="mobileSelectedTextDelete"
-        >
-            <span class="mobile-selection-icon">🗑</span>
-            <span>Elimina</span>
-        </button>
-
-    </div>
-
-
-    <!-- ALTRE AZIONI -->
-    <button
-        type="button"
-        class="mobile-top-button mobile-more-fixed"
-        id="mobileMoreButton"
-        aria-label="Altre opzioni"
-    >
-        •••
-    </button>
-
-<!-- MOBILE - MENU FORMATO TESTO -->
-<div
-    class="mobile-text-format-menu"
-    id="mobileTextFormatMenu"
->
-    <button
-        type="button"
-        class="mobile-format-option"
-        id="mobileTextBoldOption"
-    >
-        <strong>B</strong>
-        <span>Grassetto</span>
-    </button>
-
-    <button
-        type="button"
-        class="mobile-format-option"
-        id="mobileTextItalicOption"
-    >
-        <em>I</em>
-        <span>Corsivo</span>
-    </button>
-</div>    
-
-<div
-    class="mobile-text-color-menu"
-    id="mobileTextColorMenu"
->
-    <button type="button" class="mobile-color-swatch" data-text-color="#000000" style="background:#000000;" aria-label="Nero"></button>
-
-    <button type="button" class="mobile-color-swatch mobile-white-swatch" data-text-color="#ffffff" style="background:#ffffff;" aria-label="Bianco"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#e53935" style="background:#e53935;" aria-label="Rosso"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#1976d2" style="background:#1976d2;" aria-label="Blu"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#43a047" style="background:#43a047;" aria-label="Verde"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#fdd835" style="background:#fdd835;" aria-label="Giallo"></button>
-
-    <button type="button" class="mobile-color-swatch" data-text-color="#ec407a" style="background:#ec407a;" aria-label="Rosa"></button>
-
-    <button
-        type="button"
-        class="mobile-custom-color-button"
-        id="mobileCustomColorButton"
-        aria-label="Altro colore"
-    >
-        +
-    </button>
-</div>
-
-<!-- MOBILE - STRUMENTI DEL TESTO SELEZIONATO -->
-<div id="mobileTextFontMenu" class="mobile-text-context-menu" role="group" aria-label="Font del testo"></div>
-
-<div id="mobileTextAlignMenu" class="mobile-text-context-menu" role="group" aria-label="Allineamento del testo">
-    <button type="button" data-text-align="left">Sinistra</button>
-    <button type="button" data-text-align="center">Centro</button>
-    <button type="button" data-text-align="right">Destra</button>
-</div>
-
-<div id="mobileTextOutlineMenu" class="mobile-text-context-menu" role="group" aria-label="Contorno del testo">
-    <label><input type="checkbox" id="mobileTextOutlineEnabled"> Attiva contorno</label>
-    <label>Colore <input type="color" id="mobileTextOutlineColor"></label>
-    <label for="mobileTextOutlineWidth">Spessore: <output id="mobileTextOutlineWidthValue"></output></label>
-    <input type="range" id="mobileTextOutlineWidth">
-</div>
-
-</div>
-
-<header class="site-header">
-
-    <div class="logo">
-        <img
-            src="assets/sublimami-logo.png"
-            alt="SubliMaMi"
-            class="site-logo"
-        >
-    </div>
-
-    <nav>
-            <a href="#">Home</a>
-            <a href="#" data-nav-product="cushion">Cuscini</a>
-            <a href="#" data-nav-product="tshirt">T-Shirt</a>
-            <a href="#" data-nav-product="keychain">Portachiavi</a>
-        </nav>
-
-        <button
-    type="button"
-    id="cartButton"
-    class="cart-button"
->
-    <svg class="cart-button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>
-    Carrello
-    <span id="cartCount">0</span>
-</button>
+        </div>
     </header>
 
 
-    <main class="customizer">
-
-        <!-- PANNELLO SINISTRO -->
-        <aside class="tools-panel">
-
-            <h2>Personalizza</h2>
-            <p class="tools-panel-intro">Crea il tuo design in pochi passaggi.</p>
-
-            <details class="panel-group" data-group="product" open>
-                <summary class="panel-group-summary">
-                    <span class="panel-group-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 3.5 6.5l2.2 3.8L8 9.2V21h8V9.2l2.3 1.1 2.2-3.8L16 3c-.6 1.6-2.1 2.6-4 2.6S8.6 4.6 8 3Z"/></svg>
-                    </span>
-                    <span class="panel-group-title">
-                        Prodotto
-                        <small>Modello, colore e taglia</small>
-                    </span>
-                    <span class="panel-group-chevron" aria-hidden="true"></span>
-                </summary>
-
-                <div class="panel-group-body">
-            <div class="tool-section">
-                <label for="productSelect">Prodotto</label>
-
-                <select id="productSelect">
-                    <option value="cushion">
-                        Cuscino 40x40 cm
-                    </option>
-
-                    <option value="tshirt">
-                        T-Shirt
-                    </option>
-
-                    <option value="keychain">
-                        Portachiavi 4,5x4,5 cm
-                    </option>
-                </select>
-            </div>
-
-            <!-- OPZIONI T-SHIRT -->
-            <div class="tool-section" id="tshirtOptions">
-
-                <label>Colore T-Shirt</label>
-
-                <div class="color-buttons">
-                    <button
-                        class="color-button white active"
-                        data-color="white"
-                    >
-                        Bianca
-                    </button>
-
-                    <button
-                        class="color-button black"
-                        data-color="black"
-                    >
-                        Nera
-                    </button>
-                </div>
-
-                <label>Taglia</label>
-
-<div class="size-buttons">
-
-    <button
-        type="button"
-        class="size-button"
-        data-size="S"
-    >
-        S
-    </button>
-
-    <button
-        type="button"
-        class="size-button active"
-        data-size="M"
-    >
-        M
-    </button>
-
-    <button
-        type="button"
-        class="size-button"
-        data-size="L"
-    >
-        L
-    </button>
-
-    <button
-        type="button"
-        class="size-button"
-        data-size="XL"
-    >
-        XL
-    </button>
-
-    <button
-        type="button"
-        class="size-button"
-        data-size="XXL"
-    >
-        XXL
-    </button>
-
-</div>
-
-
-                <label>Lato da stampare</label>
-
-                <div class="side-buttons">
-                    <button
-                        class="side-button active"
-                        data-side="front"
-                    >
-                        Fronte
-                    </button>
-
-                    <button
-                        class="side-button"
-                        data-side="back"
-                    >
-                        Retro
-                    </button>
-                </div>
-
-                <div class="heart-logo-preset">
-
-    <button
-        type="button"
-        id="heartLogoButton"
-        class="secondary-button"
-    >
-        ♡ Logo lato cuore
-    </button>
-
-</div>
-
-            </div>
-
-            <div id="printFormatOptions">
-
-    <label>Formato stampa foto</label>
-
-    <div class="side-buttons">
-        <button
-            class="print-format-button active"
-            data-format="vertical"
-        >
-            Verticale 20x30
-        </button>
-
-        <button
-            class="print-format-button"
-            data-format="horizontal"
-        >
-            Orizzontale 30x20
-        </button>
-    </div>
-
-</div>
-                </div>
-            </details>
-
-
-            <details class="panel-group" data-group="image" open>
-                <summary class="panel-group-summary">
-                    <span class="panel-group-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>
-                    </span>
-                    <span class="panel-group-title">
-                        Immagini
-                        <small>Carica le tue foto</small>
-                    </span>
-                    <span class="panel-group-chevron" aria-hidden="true"></span>
-                </summary>
-
-                <div class="panel-group-body">
-            <!-- CARICAMENTO FOTO -->
-            <div class="tool-section upload-section">
-
-                <label for="imageUpload" class="upload-dropzone" id="imageUploadDropzone">
-                    <span class="upload-dropzone-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></svg>
-                    </span>
-                    <span class="upload-dropzone-text">
-                        <strong>Carica una foto</strong>
-                        <span>Clicca o trascina qui un'immagine</span>
-                    </span>
-                </label>
-
-                <input
-                    type="file"
-                    id="imageUpload"
-                    class="upload-input"
-                    accept="image/*"
-                >
-
-            </div>
-
-            <!-- ZOOM -->
-            <div class="tool-section">
-
-                <label for="zoomRange">
-                    Dimensione immagine
-                </label>
-
-                <input
-    type="range"
-    id="zoomRange"
-    min="0.1"
-    max="3"
-    value="1"
-    step="0.02"
->
-
-<div id="imageSizeInfo" class="image-size-info">
-    Dimensione stampa:
-    <strong id="imageSizeValue">—</strong>
-</div>
-
-            </div>
-
-            <!-- ROTAZIONE -->
-            <div class="tool-section">
-    <label for="rotationRange">
-        Rotazione immagine:
-        <span id="rotationValue">0°</span>
-    </label>
-
-    <input
-        type="range"
-        id="rotationRange"
-        min="-180"
-        max="180"
-        value="0"
-        step="1"
-    >
-
-    <div class="rotation-marks">
-        <span>-180°</span>
-        <span>-90°</span>
-        <span>-45°</span>
-        <span>0°</span>
-        <span>45°</span>
-        <span>90°</span>
-        <span>180°</span>
-    </div>
-</div>
-                </div>
-            </details>
-
-
-            <details class="panel-group" data-group="text" open>
-                <summary class="panel-group-summary">
-                    <span class="panel-group-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V4.5h14V7M12 4.5v15M9 19.5h6"/></svg>
-                    </span>
-                    <span class="panel-group-title">
-                        Testo
-                        <small>Scritte, font e colori</small>
-                    </span>
-                    <span class="panel-group-chevron" aria-hidden="true"></span>
-                </summary>
-
-                <div class="panel-group-body">
-            <!-- TESTO -->
-            <div class="tool-section">
-
-                <label for="textInput">
-                    Aggiungi testo
-                </label>
-
-                <textarea
-    id="textInput"
-    rows="3"
-    maxlength="120"
-    placeholder="Scrivi qualcosa...&#10;Premi Invio per andare a capo"
-></textarea>
-
-<button
-    type="button"
-    id="addTextButton"
-    class="secondary-button add-text-button"
->
-    ＋ Nuova scritta
-</button>
-
-            </div>
-
-            <div class="tool-section">
-    <label for="fontSelect">Font</label>
-
-    <select id="fontSelect">
-        <option value="Arial">Arial</option>
-        <option value="Verdana">Verdana</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Times New Roman">Times New Roman</option>
-        <option value="Trebuchet MS">Trebuchet MS</option>
-        <option value="Courier New">Courier New</option>
-    </select>
-</div>
-
-<div class="tool-section">
-    <label>Stile testo</label>
-
-    <div class="text-style-buttons">
-        <button
-            type="button"
-            id="boldButton"
-            class="text-style-button"
-            title="Grassetto"
-        >
-            <strong>B</strong>
-        </button>
-
-        <button
-            type="button"
-            id="italicButton"
-            class="text-style-button"
-            title="Corsivo"
-        >
-            <em>I</em>
-        </button>
-    </div>
-</div>
-
-<div class="tool-section">
-    <label for="textColor">Colore testo</label>
-    <input type="color" id="textColor" value="#000000">
-</div>
-
-<div class="tool-section">
-
-    <label>Contorno testo</label>
-
-    <label class="text-outline-toggle">
-        <input
-            type="checkbox"
-            id="textOutlineEnabled"
-        >
-        Attiva contorno
-    </label>
-
-    <div id="textOutlineOptions">
-
-        <label for="textOutlineColor">
-            Colore contorno
-        </label>
-
-        <input
-            type="color"
-            id="textOutlineColor"
-            value="#ffffff"
-        >
-
-        <label for="textOutlineWidth">
-            Spessore:
-            <span id="textOutlineWidthValue">
-                1 px
-            </span>
-        </label>
-
-        <input
-            type="range"
-            id="textOutlineWidth"
-            min="0.5"
-            max="6"
-            value="1"
-            step="0.5"
-        >
-
-    </div>
-
-</div>
-
-<div class="tool-section">
-
-    <label>Allineamento testo</label>
-
-    <div class="text-align-buttons">
-
-        <button
-            type="button"
-            id="textAlignLeft"
-            class="text-align-button"
-            title="Allinea a sinistra"
-        >
-            <svg class="text-align-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 10h10M4 14h16M4 18h10"/></svg>
-        </button>
-
-        <button
-            type="button"
-            id="textAlignCenter"
-            class="text-align-button active"
-            title="Allinea al centro"
-        >
-            <svg class="text-align-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 10h10M4 14h16M7 18h10"/></svg>
-        </button>
-
-        <button
-            type="button"
-            id="textAlignRight"
-            class="text-align-button"
-            title="Allinea a destra"
-        >
-            <svg class="text-align-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M10 10h10M4 14h16M10 18h10"/></svg>
-        </button>
-
-    </div>
-
-</div>
-
-            <div class="tool-section">
-
-    <label for="textSizeRange">
-        Dimensione testo
-    </label>
-
-    <input
-        type="range"
-        id="textSizeRange"
-        min="10"
-        max="300"
-        value="26"
-        step="1"
-    >
-
-    <div
-    id="textSizeInfo"
-    class="image-size-info"
->
-    Dimensione stampa testo:
-    <strong id="textSizeValue">—</strong>
-</div>
-
-</div>
-
-<div class="tool-section">
-    <label for="textRotationRange">
-        Rotazione testo:
-        <span id="textRotationValue">0°</span>
-    </label>
-
-    <input
-        type="range"
-        id="textRotationRange"
-        min="-180"
-        max="180"
-        value="0"
-        step="1"
-    >
-
-    <div class="rotation-marks">
-        <span>-180°</span>
-        <span>-90°</span>
-        <span>-45°</span>
-        <span>0°</span>
-        <span>45°</span>
-        <span>90°</span>
-        <span>180°</span>
-    </div>
-</div>
-                </div>
-            </details>
-
-
-            <details class="panel-group" data-group="layers" open>
-                <summary class="panel-group-summary">
-                    <span class="panel-group-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
-                    </span>
-                    <span class="panel-group-title">
-                        Livelli
-                        <small>Ordine degli elementi</small>
-                    </span>
-                    <span class="panel-group-chevron" aria-hidden="true"></span>
-                </summary>
-
-                <div class="panel-group-body">
-            <div class="tool-section layers-section">
-
-    <div class="layers-header">
-
-        <strong>Livelli</strong>
-
-        <span>
-            Clicca per selezionare
-        </span>
-
-    </div>
-
-    <div
-        id="layersList"
-        class="layers-list"
-    ></div>
-
-</div>
-
-<div class="tool-section">
-
-    <label>Allineamento</label>
-
-    <div class="center-buttons">
-
-        <button
-            type="button"
-            id="centerImageButton"
-            class="secondary-button"
-        >
-            Centra immagine
-        </button>
-
-        <button
-            type="button"
-            id="centerTextButton"
-            class="secondary-button"
-        >
-            Centra nell'area
-        </button>
-
-    </div>
-
-</div>
-                </div>
-            </details>
-
-
-            <details class="panel-group" data-group="bg">
-                <summary class="panel-group-summary">
-                    <span class="panel-group-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5s6 6.4 6 10.8a6 6 0 0 1-12 0c0-4.4 6-10.8 6-10.8Z"/></svg>
-                    </span>
-                    <span class="panel-group-title">
-                        Sfondo
-                        <small>Colore di fondo della stampa</small>
-                    </span>
-                    <span class="panel-group-chevron" aria-hidden="true"></span>
-                </summary>
-
-                <div class="panel-group-body">
-<div class="tool-section">
-
-    <label for="printBgColor">
-        Colore sfondo
-    </label>
-
-    <input
-        type="color"
-        id="printBgColor"
-        value="#ffffff"
-    >
-
-    <button
-        type="button"
-        id="clearPrintBgButton"
-        class="secondary-button"
-    >
-        Nessuno sfondo
-    </button>
-
-</div>
-                </div>
-            </details>
-
-
-            <button
-                id="resetButton"
-                class="secondary-button"
-            >
-                Azzera personalizzazione
-            </button>
-
-        </aside>
-
-
-        <!-- ANTEPRIMA CENTRALE -->
-        <section class="preview-panel">
-
-            <div class="preview-header">
-
-                <div>
-                    <h1 id="productTitle">
-                        Cuscino 40x40 cm
-                    </h1>
-
-                    <p id="printAreaInfo">
-                        Area stampabile 30x30 cm
+    <main>
+
+        <!-- =========================================
+             HERO
+             ========================================= -->
+        <section class="hero">
+            <div class="container hero-inner">
+
+                <div class="hero-text">
+                    <span class="eyebrow">Idee che prendono forma</span>
+
+                    <h1>Trasforma le tue foto in <span class="highlight">regali unici</span></h1>
+
+                    <p class="hero-lead">
+                        Cuscini, T-shirt e portachiavi personalizzati con le tue foto
+                        e le tue frasi. Crei tutto online e vedi subito il risultato.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="personalizza.html" class="btn btn-primary btn-large">
+                            Crea il tuo design
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                        </a>
+                        <a href="#prodotti" class="btn btn-ghost btn-large">Scopri i prodotti</a>
+                    </div>
+
+                    <p class="hero-prices">
+                        Cuscini e T-shirt da <strong>€19,90</strong> · Portachiavi da <strong>€14,90</strong>
                     </p>
                 </div>
 
-            </div>
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="hero-blob"></div>
 
-
-            <div class="preview-area">
-
-                <div
-                    id="productPreview"
-                    class="product-preview cushion-preview"
-                >
-
-                    <div
-                        id="printArea"
-                        class="print-area"
-                    >
-
-                    <div id="imagesLayer"></div>    
-                    <img
-    id="uploadedImage"
-    alt=""
->
-
-<div id="textsLayer"></div>
-
-<div id="customText"></div>
-
-<div
-    id="guideVertical"
-    class="center-guide vertical-guide"
-></div>
-
-<div
-    id="guideHorizontal"
-    class="center-guide horizontal-guide"
-></div>
-
-<div
-    id="rotationGuide"
-    class="rotation-guide"
-></div>
-
+                    <div class="hero-tshirt">
+                        <img src="assets/tshirt-white-front.png" alt="">
+                        <img src="assets/home/design-tshirt.svg" alt="" class="hero-tshirt-design">
                     </div>
 
-                    <div id="selectionControls" class="selection-controls">
+                    <img src="assets/home/cuscino.svg" alt="" class="hero-item hero-cushion">
+                    <img src="assets/home/portachiavi.svg" alt="" class="hero-item hero-keychain">
 
-    <button
-        type="button"
-        id="directRotateButton"
-        class="direct-control-button"
-        title="Ruota"
-    >
-        ↻
-    </button>
-
-    <button
-        type="button"
-        id="directMoveButton"
-        class="direct-control-button"
-        title="Sposta"
-    >
-        ✥
-    </button>
-
-    <button
-    type="button"
-    id="directFlipButton"
-    class="direct-control-button"
-    title="Capovolgi"
->
-    ⇋
-</button>
-
-<button
-    type="button"
-    id="bringForwardButton"
-    class="direct-control-button"
-    title="Porta davanti"
->
-    ↑
-</button>
-
-<button
-    type="button"
-    id="sendBackwardButton"
-    class="direct-control-button"
-    title="Porta dietro"
->
-    ↓
-</button>
-
-    <button
-        type="button"
-        id="directDeleteButton"
-        class="direct-control-button"
-        title="Elimina"
-    >
-        🗑
-    </button>
-
-    <div class="resize-handle resize-top-left"></div>
-<div class="resize-handle resize-top-right"></div>
-<div class="resize-handle resize-bottom-left"></div>
-<div class="resize-handle resize-bottom-right"></div>
-
-<div
-    id="selectionWidthCm"
-    class="selection-size-label selection-width-label"
->
-    —
-</div>
-
-<div
-    id="selectionHeightCm"
-    class="selection-size-label selection-height-label"
->
-    —
-</div>
-
-</div>
-
-                                </div>
+                    <span class="hero-chip hero-chip-1">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7V4.5h14V7M12 4.5v15M9 19.5h6"/></svg>
+                        Le tue frasi
+                    </span>
+                    <span class="hero-chip hero-chip-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>
+                        Le tue foto
+                    </span>
+                </div>
 
             </div>
-
-            <div class="preview-toolbar">
-
-            <div class="preview-zoom-controls">
-
-                <button
-                    type="button"
-                    id="zoomOutPreviewButton"
-                    class="preview-zoom-button"
-                    title="Riduci anteprima"
-                >
-                    −
-                </button>
-
-                <input
-                    type="range"
-                    id="previewZoomRange"
-                    min="80"
-                    max="160"
-                    step="5"
-                    value="100"
-                >
-
-                <span id="previewZoomValue">100%</span>
-
-                <button
-                    type="button"
-                    id="zoomInPreviewButton"
-                    class="preview-zoom-button"
-                    title="Ingrandisci anteprima"
-                >
-                    +
-                </button>
-
-                <button
-                    type="button"
-                    id="resetPreviewZoomButton"
-                    class="preview-zoom-reset"
-                >
-                    Ripristina
-                </button>
-
-            </div>
-
-            <div class="history-controls">
-
-    <button
-        type="button"
-        id="undoButton"
-        class="history-button"
-        disabled
-        title="Annulla ultima modifica"
-    >
-        ↶ Annulla
-    </button>
-
-    <button
-        type="button"
-        id="redoButton"
-        class="history-button"
-        disabled
-        title="Ripristina ultima modifica"
-    >
-        ↷ Ripristina
-    </button>
-
-</div>
-
-            </div>
-
         </section>
 
 
-        <!-- PANNELLO DESTRO -->
-        <aside class="product-panel">
+        <!-- =========================================
+             PUNTI DI FORZA
+             ========================================= -->
+        <section class="features" aria-label="Perché sceglierci">
+            <div class="container features-grid">
 
-            <h2>Il tuo prodotto</h2>
+                <div class="feature">
+                    <span class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </span>
+                    <div>
+                        <strong>Anteprima in tempo reale</strong>
+                        <span>Vedi il risultato mentre crei</span>
+                    </div>
+                </div>
 
-            <div class="product-summary">
+                <div class="feature">
+                    <span class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21H3v-4Z"/><path d="m14 6 4 4M8 12l2 2M11 9l2 2"/></svg>
+                    </span>
+                    <div>
+                        <strong>Misure reali in cm</strong>
+                        <span>Sai già quanto sarà grande</span>
+                    </div>
+                </div>
 
-                <p id="productName">
-                    Cuscino personalizzato
-                </p>
+                <div class="feature">
+                    <span class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+                    </span>
+                    <div>
+                        <strong>Foto e scritte multiple</strong>
+                        <span>Combina tutto come preferisci</span>
+                    </div>
+                </div>
 
-                <p id="productDimensions">
-                    Dimensione: 40x40 cm
-                </p>
-
-                <p id="printDimensions">
-                    Area di stampa: 30x30 cm
-                </p>
+                <div class="feature">
+                    <span class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 3.5 6.5l2.2 3.8L8 9.2V21h8V9.2l2.3 1.1 2.2-3.8L16 3c-.6 1.6-2.1 2.6-4 2.6S8.6 4.6 8 3Z"/></svg>
+                    </span>
+                    <div>
+                        <strong>Fronte e retro</strong>
+                        <span>Sulle T-shirt bianche e nere</span>
+                    </div>
+                </div>
 
             </div>
+        </section>
 
 
-            <div
-    id="productPrice"
-    class="price"
->
-    €19,90
-</div>
+        <!-- =========================================
+             CATEGORIE
+             ========================================= -->
+        <section class="section categories-section" aria-labelledby="categorie-titolo">
+            <div class="container">
+                <h2 class="section-title" id="categorie-titolo">Cosa vuoi creare?</h2>
+
+                <div class="categories">
+                    <a href="personalizza.html?prodotto=cushion" class="category">
+                        <span class="category-image"><img src="assets/home/cuscino.svg" alt=""></span>
+                        Cuscini
+                    </a>
+                    <a href="personalizza.html?prodotto=tshirt" class="category">
+                        <span class="category-image"><img src="assets/tshirt-white-front.png" alt="" class="category-tshirt"></span>
+                        T-Shirt
+                    </a>
+                    <a href="personalizza.html?prodotto=keychain" class="category">
+                        <span class="category-image"><img src="assets/home/portachiavi.svg" alt=""></span>
+                        Portachiavi
+                    </a>
+                    <a href="#prossimamente" class="category category-soon">
+                        <span class="category-image"><img src="assets/home/cuscino-cuore.svg" alt=""></span>
+                        Cuscini a cuore
+                    </a>
+                    <a href="#prossimamente" class="category category-soon">
+                        <span class="category-image"><img src="assets/home/mattonella.svg" alt=""></span>
+                        Mattonelle
+                    </a>
+                    <a href="#prossimamente" class="category category-soon">
+                        <span class="category-image"><img src="assets/home/tela.svg" alt=""></span>
+                        Tele
+                    </a>
+                    <a href="#prossimamente" class="category category-soon">
+                        <span class="category-image"><img src="assets/home/tappetino.svg" alt=""></span>
+                        Tappetini mouse
+                    </a>
+                </div>
+            </div>
+        </section>
 
 
-            <label for="quantity">
-                Quantità
-            </label>
+        <!-- =========================================
+             PRODOTTI PERSONALIZZABILI
+             ========================================= -->
+        <section class="section" id="prodotti" aria-labelledby="prodotti-titolo">
+            <div class="container">
 
-            <input
-                type="number"
-                id="quantity"
-                min="1"
-                value="1"
-            >
+                <div class="section-head">
+                    <div>
+                        <span class="eyebrow">Personalizzabili subito</span>
+                        <h2 class="section-title" id="prodotti-titolo">I nostri prodotti</h2>
+                    </div>
+                    <a href="personalizza.html" class="link-arrow">Apri il configuratore</a>
+                </div>
+
+                <div class="products-grid">
+
+                    <article class="product-card">
+                        <a href="personalizza.html?prodotto=cushion" class="product-card-image tint-teal">
+                            <img src="assets/home/cuscino.svg" alt="Cuscino personalizzato 40x40 cm">
+                        </a>
+                        <div class="product-card-body">
+                            <h3>Cuscino 40×40 cm</h3>
+                            <p>Area di stampa 30×30 cm per le tue foto più belle.</p>
+                            <div class="product-card-footer">
+                                <span class="price"><small>da</small> €19,90</span>
+                                <a href="personalizza.html?prodotto=cushion" class="btn btn-primary btn-small">Personalizza</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="product-card">
+                        <a href="personalizza.html?prodotto=tshirt" class="product-card-image tint-pink">
+                            <span class="product-tshirt">
+                                <img src="assets/tshirt-white-front.png" alt="T-shirt personalizzata">
+                                <img src="assets/home/design-tshirt.svg" alt="" class="product-tshirt-design">
+                            </span>
+                        </a>
+                        <div class="product-card-body">
+                            <h3>T-Shirt</h3>
+                            <p>Bianca o nera, taglie dalla S alla XXL, stampa fronte e retro.</p>
+                            <div class="color-dots" aria-label="Colori disponibili">
+                                <span class="color-dot dot-white" title="Bianca"></span>
+                                <span class="color-dot dot-black" title="Nera"></span>
+                            </div>
+                            <div class="product-card-footer">
+                                <span class="price"><small>da</small> €19,90</span>
+                                <a href="personalizza.html?prodotto=tshirt" class="btn btn-primary btn-small">Personalizza</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="product-card">
+                        <a href="personalizza.html?prodotto=keychain" class="product-card-image tint-sun">
+                            <img src="assets/home/portachiavi.svg" alt="Portachiavi personalizzato 4,5x4,5 cm">
+                        </a>
+                        <div class="product-card-body">
+                            <h3>Portachiavi 4,5×4,5 cm</h3>
+                            <p>Un ricordo piccolo da portare sempre con te.</p>
+                            <div class="product-card-footer">
+                                <span class="price"><small>da</small> €14,90</span>
+                                <a href="personalizza.html?prodotto=keychain" class="btn btn-primary btn-small">Personalizza</a>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
 
 
-            <button
-                id="addToCartButton"
-                class="primary-button"
-            >
-                Aggiungi al carrello
-            </button>
+        <!-- =========================================
+             CONFIGURATORE IN EVIDENZA
+             ========================================= -->
+        <section class="section showcase">
+            <div class="container showcase-inner">
+
+                <div class="showcase-visual">
+                    <div class="browser-frame">
+                        <div class="browser-bar"><span></span><span></span><span></span></div>
+                        <img src="assets/home/configuratore.jpg" alt="Il configuratore SubliMaMi con una T-shirt personalizzata" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="showcase-text">
+                    <span class="eyebrow">Il nostro configuratore</span>
+                    <h2 class="section-title">Il tuo design, esattamente come lo vuoi</h2>
+                    <p>
+                        Carica le tue foto, scrivi le tue frasi e sistema tutto
+                        direttamente sull'anteprima del prodotto.
+                    </p>
+
+                    <ul class="check-list">
+                        <li>Più foto e più scritte nello stesso design</li>
+                        <li>Font, colori e contorno per ogni testo</li>
+                        <li>Sposta, ingrandisci, ruota e capovolgi con le dita o il mouse</li>
+                        <li>Livelli, annulla e ripristina</li>
+                        <li>Dimensioni di stampa sempre visibili in centimetri</li>
+                    </ul>
+
+                    <a href="personalizza.html" class="btn btn-primary btn-large">Prova il configuratore</a>
+                </div>
+
+            </div>
+        </section>
 
 
-            <p
-                id="statusMessage"
-                class="status-message"
-            ></p>
+        <!-- =========================================
+             COME FUNZIONA
+             ========================================= -->
+        <section class="section how" id="come-funziona" aria-labelledby="come-titolo">
+            <div class="container">
+                <div class="section-head section-head-center">
+                    <span class="eyebrow">Semplice e veloce</span>
+                    <h2 class="section-title" id="come-titolo">Come funziona</h2>
+                </div>
 
-        </aside>
+                <ol class="steps">
+                    <li class="step">
+                        <span class="step-number">1</span>
+                        <h3>Scegli il prodotto</h3>
+                        <p>Cuscino, T-shirt o portachiavi: per la T-shirt scegli anche colore e taglia.</p>
+                    </li>
+                    <li class="step">
+                        <span class="step-number">2</span>
+                        <h3>Personalizzalo</h3>
+                        <p>Aggiungi foto e scritte e guarda subito come verrà il tuo regalo.</p>
+                    </li>
+                    <li class="step">
+                        <span class="step-number">3</span>
+                        <h3>Aggiungilo al carrello</h3>
+                        <p>Il tuo design viene salvato nel carrello insieme a tutte le scelte fatte.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             IDEE REGALO
+             ========================================= -->
+        <section class="section" id="idee-regalo" aria-labelledby="idee-titolo">
+            <div class="container">
+                <div class="section-head">
+                    <div>
+                        <span class="eyebrow">Per ogni occasione</span>
+                        <h2 class="section-title" id="idee-titolo">Idee regalo</h2>
+                    </div>
+                </div>
+
+                <div class="occasions">
+                    <a href="personalizza.html?prodotto=cushion" class="occasion occasion-pink">
+                        <span class="occasion-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg></span>
+                        <strong>Per la mamma</strong>
+                        <span>Un cuscino con le foto più belle insieme</span>
+                    </a>
+                    <a href="personalizza.html?prodotto=tshirt" class="occasion occasion-teal">
+                        <span class="occasion-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v9H4zM12 11v9M3 7h18v4H3z"/><path d="M12 7c-1.5-3-5-3-5-1s3 1 5 1c2 0 5 1 5-1s-3.5-2-5 1"/></svg></span>
+                        <strong>Compleanni</strong>
+                        <span>Una T-shirt con la frase giusta</span>
+                    </a>
+                    <a href="personalizza.html?prodotto=keychain" class="occasion occasion-sun">
+                        <span class="occasion-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="5"/><circle cx="16" cy="15" r="5"/><path d="M8 10 10 4h4l2 6"/></svg></span>
+                        <strong>Anniversari</strong>
+                        <span>Un portachiavi per ricordare quel giorno</span>
+                    </a>
+                    <a href="personalizza.html?prodotto=cushion" class="occasion occasion-mint">
+                        <span class="occasion-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 4 6h-2.5l3.5 5h-3l3 5H7l3-5H7l3.5-5H8l4-6Z"/><path d="M12 19v2"/></svg></span>
+                        <strong>Natale</strong>
+                        <span>Regali fatti a mano con i vostri ricordi</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             PROSSIMAMENTE
+             ========================================= -->
+        <section class="section soon" id="prossimamente" aria-labelledby="presto-titolo">
+            <div class="container">
+                <div class="section-head">
+                    <div>
+                        <span class="eyebrow">In arrivo</span>
+                        <h2 class="section-title" id="presto-titolo">Presto disponibili</h2>
+                    </div>
+                </div>
+
+                <div class="soon-grid">
+                    <article class="soon-card">
+                        <span class="soon-badge">Presto</span>
+                        <img src="assets/home/cuscino-cuore.svg" alt="Cuscino a cuore personalizzato" loading="lazy">
+                        <h3>Cuscino a cuore</h3>
+                        <p>Piccolo e grande</p>
+                    </article>
+                    <article class="soon-card">
+                        <span class="soon-badge">Presto</span>
+                        <img src="assets/home/mattonella.svg" alt="Mattonella personalizzata" loading="lazy">
+                        <h3>Mattonelle</h3>
+                        <p>20×20 e 15×20 cm</p>
+                    </article>
+                    <article class="soon-card">
+                        <span class="soon-badge">Presto</span>
+                        <img src="assets/home/tela.svg" alt="Tela personalizzata" loading="lazy">
+                        <h3>Tele</h3>
+                        <p>Piccola, media e grande</p>
+                    </article>
+                    <article class="soon-card">
+                        <span class="soon-badge">Presto</span>
+                        <img src="assets/home/tappetino.svg" alt="Tappetino mouse personalizzato" loading="lazy">
+                        <h3>Tappetino mouse</h3>
+                        <p>Per la scrivania di casa o in ufficio</p>
+                    </article>
+                    <article class="soon-card">
+                        <span class="soon-badge">Presto</span>
+                        <img src="assets/home/portachiavi-mdf.svg" alt="Portachiavi in legno MDF" loading="lazy">
+                        <h3>Portachiavi in legno</h3>
+                        <p>Tondo, cuore, quadrato e rettangolare</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             INVITO FINALE
+             ========================================= -->
+        <section class="section">
+            <div class="container">
+                <div class="cta-band">
+                    <div>
+                        <h2>Pronto a creare il tuo regalo?</h2>
+                        <p>Bastano pochi minuti: scegli il prodotto e inizia a personalizzarlo.</p>
+                    </div>
+                    <a href="personalizza.html" class="btn btn-white btn-large">Inizia ora</a>
+                </div>
+            </div>
+        </section>
 
     </main>
 
+
     <!-- =========================================
-     PANNELLO INFERIORE MOBILE
-     ========================================= -->
-
-<!-- =========================================
-     MOBILE - CONTROLLI RAPIDI T-SHIRT
-     ========================================= -->
-
-
-
-     <div class="mobile-editor-bottom">
-
-<!-- ZOOM T-SHIRT MOBILE -->
-<div class="mobile-tshirt-zoom" id="mobileTshirtZoom">
-    <button
-        type="button"
-        class="mobile-tshirt-zoom-button"
-        id="mobileTshirtZoomOut"
-        aria-label="Riduci T-shirt"
-    >
-        −
-    </button>
-
-    <span class="mobile-tshirt-zoom-value" id="mobileTshirtZoomValue">
-        100%
-    </span>
-
-    <button
-        type="button"
-        class="mobile-tshirt-zoom-button"
-        id="mobileTshirtZoomIn"
-        aria-label="Ingrandisci T-shirt"
-    >
-        +
-    </button>
-</div>
-
-
-
-    <div class="mobile-design-card">
-
-        <h2 class="mobile-design-title">
-            Progetta ora!
-        </h2>
-
-        <div
-    class="mobile-tshirt-quick-controls"
-    id="mobileTshirtQuickControls"
->
-
-    <div class="mobile-quick-group">
-
-        <button
-            type="button"
-            class="mobile-quick-button"
-            data-mobile-quick-side="front"
-        >
-            Fronte
-        </button>
-
-        <button
-            type="button"
-            class="mobile-quick-button"
-            data-mobile-quick-side="back"
-        >
-            Retro
-        </button>
-
-    </div>
-
-
-    <div class="mobile-quick-group">
-
-        <button
-            type="button"
-            class="mobile-quick-button"
-            data-mobile-quick-format="vertical"
-        >
-            Verticale
-        </button>
-
-        <button
-            type="button"
-            class="mobile-quick-button"
-            data-mobile-quick-format="horizontal"
-        >
-            Orizzontale
-        </button>
-
-    </div>
-
-</div>
-
-
-        <!-- MENU DESIGN:
-             inizialmente nascosto -->
-        <div
-            class="mobile-design-tools"
-            id="mobileDesignTools"
-        >
-
-            <button
-                type="button"
-                class="mobile-design-tool"
-                id="mobileImagesButton"
-            >
-                <span class="mobile-design-icon">▧</span>
-                <span>Immagini</span>
-            </button>
-
-            <button
-                type="button"
-                class="mobile-design-tool"
-                id="mobileTextButton"
-            >
-                <span class="mobile-design-icon">T</span>
-                <span>Testo</span>
-            </button>
-
-            <button
-                type="button"
-                class="mobile-design-tool"
-                id="mobileUploadButton"
-            >
-                <span class="mobile-design-icon">↥</span>
-                <span>Caricamenti</span>
-            </button>
-
-            <button
-                type="button"
-                class="mobile-design-tool"
-                id="mobileLayersButton"
-            >
-                <span class="mobile-design-icon">▱</span>
-                <span>Livelli</span>
-            </button>
-
-        </div>
-
-
-        <!-- AZIONI PRINCIPALI -->
-        <div class="mobile-design-main-actions">
-
-            <button
-                type="button"
-                class="mobile-design-main-button"
-                id="mobileProductsButton"
-            >
-                <span class="mobile-main-icon">◇</span>
-                <span>Prodotti</span>
-            </button>
-
-
-            <button
-                type="button"
-                class="mobile-design-main-button mobile-add-design-button"
-                id="mobileAddDesignButton"
-            >
-                <span class="mobile-main-icon">＋</span>
-                <span>Aggiungi design</span>
-            </button>
-
-            <button
-    type="button"
-    class="mobile-design-main-button mobile-cart-add-button"
-    id="mobileAddToCartButton"
->
-    <span class="mobile-main-icon">🛒</span>
-    <span>Aggiungi al carrello</span>
-</button>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- =========================================
-     PANNELLO MOBILE - PRODOTTI
-     ========================================= -->
-
-<div
-    class="mobile-sheet-overlay"
-    id="mobileProductsOverlay"
-></div>
-
-<div
-    class="mobile-bottom-sheet"
-    id="mobileProductsSheet"
->
-
-    <div class="mobile-sheet-header">
-
-        <h2>Prodotti</h2>
-
-        <button
-            type="button"
-            class="mobile-sheet-close"
-            id="mobileProductsClose"
-            aria-label="Chiudi"
-        >
-            ×
-        </button>
-
-    </div>
-
-
-    <p class="mobile-sheet-subtitle">
-        Scegli il prodotto da personalizzare
-    </p>
-
-
-    <div class="mobile-product-options">
-
-        <button
-            type="button"
-            class="mobile-product-option"
-            data-mobile-product-choice="cushion"
-        >
-            <span class="mobile-product-option-icon">▢</span>
-
-            <span class="mobile-product-option-text">
-                <strong>Cuscino</strong>
-                <small>40 × 40 cm</small>
-            </span>
-
-            <span class="mobile-product-arrow">›</span>
-        </button>
-
-
-        <button
-            type="button"
-            class="mobile-product-option"
-            data-mobile-product-choice="tshirt"
-        >
-            <span class="mobile-product-option-icon">👕</span>
-
-            <span class="mobile-product-option-text">
-                <strong>T-Shirt</strong>
-                <small>Personalizza fronte e retro</small>
-            </span>
-
-            <span class="mobile-product-arrow">›</span>
-        </button>
-
-
-        <button
-            type="button"
-            class="mobile-product-option"
-            data-mobile-product-choice="keychain"
-        >
-            <span class="mobile-product-option-icon">◇</span>
-
-            <span class="mobile-product-option-text">
-                <strong>Portachiavi</strong>
-                <small>4,5 × 4,5 cm</small>
-            </span>
-
-            <span class="mobile-product-arrow">›</span>
-        </button>
-
-    </div>
-
-</div>
-
-<!-- =========================================
-     PANNELLO MOBILE - SCEGLI T-SHIRT
-     ========================================= -->
-
-<div
-    class="mobile-sheet-overlay"
-    id="mobileTshirtOverlay"
-></div>
-
-<div
-    class="mobile-bottom-sheet"
-    id="mobileTshirtSheet"
->
-
-    <div class="mobile-sheet-header">
-
-        <button
-            type="button"
-            class="mobile-sheet-back"
-            id="mobileTshirtBack"
-            aria-label="Torna ai prodotti"
-        >
-            ‹
-        </button>
-
-        <h2>Scegli la T-Shirt</h2>
-
-        <button
-            type="button"
-            class="mobile-sheet-close"
-            id="mobileTshirtClose"
-            aria-label="Chiudi"
-        >
-            ×
-        </button>
-
-    </div>
-
-
-    <p class="mobile-sheet-subtitle">
-        Scegli il modello da personalizzare
-    </p>
-
-
-    <div class="mobile-tshirt-models">
-
-        <button
-            type="button"
-            class="mobile-tshirt-model"
-            id="mobileClassicTshirt"
-        >
-
-            <div class="mobile-tshirt-model-preview">
-
-                <img
-                    src="assets/tshirt-white-front.png"
-                    alt="T-Shirt Cotone 100%"
-                >
-
+         FOOTER
+         ========================================= -->
+    <footer class="home-footer">
+        <div class="container footer-grid">
+
+            <div class="footer-brand">
+                <img src="assets/sublimami-logo.png" alt="SubliMaMi" class="footer-logo">
+                <p>Idee che prendono forma. Regali personalizzati con le tue foto e le tue frasi.</p>
             </div>
 
-
-            <div class="mobile-tshirt-model-info">
-
-                <strong>
-    T-Shirt Cotone 100%
-</strong>
-
-                <span>
-                    Personalizzabile fronte e retro
-                </span>
-
-                <b>
-                    €19,90
-                </b>
-
+            <div class="footer-col">
+                <h3>Prodotti</h3>
+                <a href="personalizza.html?prodotto=cushion">Cuscini</a>
+                <a href="personalizza.html?prodotto=tshirt">T-Shirt</a>
+                <a href="personalizza.html?prodotto=keychain">Portachiavi</a>
+                <a href="#prossimamente">Prossimamente</a>
             </div>
 
-
-            <span class="mobile-product-arrow">
-                ›
-            </span>
-
-        </button>
-
-
-        <div class="mobile-tshirt-model coming-soon">
-
-            <div class="mobile-tshirt-model-preview">
-
-                <span class="mobile-coming-icon">
-                    👕
-                </span>
-
+            <div class="footer-col">
+                <h3>Assistenza</h3>
+                <a href="#come-funziona">Come funziona</a>
+                <!-- DA COMPLETARE: collegare le pagine quando saranno pronte -->
+                <span>Spedizioni <em class="todo">da completare</em></span>
+                <span>Pagamenti <em class="todo">da completare</em></span>
+                <span>Contatti <em class="todo">da completare</em></span>
             </div>
 
-
-            <div class="mobile-tshirt-model-info">
-
-                <strong>
-                    Altri modelli
-                </strong>
-
-                <span>
-                    Nuove T-Shirt in arrivo
-                </span>
-
-                <b>
-                    Prossimamente
-                </b>
-
+            <div class="footer-col">
+                <h3>Seguici</h3>
+                <!-- DA COMPLETARE: inserire i link ai profili social -->
+                <span>Instagram <em class="todo">da completare</em></span>
+                <span>TikTok <em class="todo">da completare</em></span>
             </div>
 
         </div>
 
-    </div>
-
-</div>
-
-<!-- =========================================
-     PANNELLO MOBILE - COLORE T-SHIRT
-     ========================================= -->
-
-<div
-    class="mobile-sheet-overlay"
-    id="mobileTshirtColorOverlay"
-></div>
-
-<div
-    class="mobile-bottom-sheet"
-    id="mobileTshirtColorSheet"
->
-
-    <div class="mobile-sheet-header">
-
-        <button
-            type="button"
-            class="mobile-sheet-back"
-            id="mobileTshirtColorBack"
-            aria-label="Torna ai modelli"
-        >
-            ‹
-        </button>
-
-        <h2>Scegli il colore</h2>
-
-        <button
-            type="button"
-            class="mobile-sheet-close"
-            id="mobileTshirtColorClose"
-            aria-label="Chiudi"
-        >
-            ×
-        </button>
-
-    </div>
-
-    <p class="mobile-sheet-subtitle">
-        T-Shirt Cotone 100%
-    </p>
-
-
-    <div class="mobile-tshirt-color-options">
-
-        <button
-            type="button"
-            class="mobile-tshirt-color-card"
-            data-tshirt-mobile-color="white"
-        >
-
-            <div class="mobile-tshirt-color-preview">
-                <img
-                    src="assets/tshirt-white-front.png"
-                    alt="T-Shirt bianca"
-                >
-            </div>
-
-            <div class="mobile-tshirt-color-name">
-                <span class="mobile-color-dot white"></span>
-                <strong>Bianca</strong>
-            </div>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="mobile-tshirt-color-card"
-            data-tshirt-mobile-color="black"
-        >
-
-            <div class="mobile-tshirt-color-preview">
-                <img
-                    src="assets/tshirt-black-front.png"
-                    alt="T-Shirt nera"
-                >
-            </div>
-
-            <div class="mobile-tshirt-color-name">
-                <span class="mobile-color-dot black"></span>
-                <strong>Nera</strong>
-            </div>
-
-        </button>
-
-    </div>
-
-</div>
-
-<!-- =========================================
-     MOBILE - ALTRE AZIONI
-     ========================================= -->
-
-<div
-    class="mobile-sheet-overlay"
-    id="mobileMoreOverlay"
-></div>
-
-<div
-    class="mobile-bottom-sheet mobile-more-sheet"
-    id="mobileMoreSheet"
->
-
-    <div class="mobile-sheet-header">
-
-        <h2>Altre azioni</h2>
-
-        <button
-            type="button"
-            class="mobile-sheet-close"
-            id="mobileMoreClose"
-            aria-label="Chiudi"
-        >
-            ×
-        </button>
-
-    </div>
-
-
-    <div class="mobile-more-actions">
-
-        <!-- TUTTI I PRODOTTI -->
-
-        <button
-            type="button"
-            class="mobile-more-action"
-            id="mobileProductDetailsAction"
-        >
-            <span class="mobile-more-icon">ⓘ</span>
-
-            <span class="mobile-more-text">
-                <strong>Dettagli prodotto</strong>
-                <small>Informazioni sul prodotto selezionato</small>
-            </span>
-
-            <span class="mobile-product-arrow">›</span>
-        </button>
-
-
-        <button
-            type="button"
-            class="mobile-more-action mobile-more-danger"
-            id="mobileResetAction"
-        >
-            <span class="mobile-more-icon">↻</span>
-
-            <span class="mobile-more-text">
-                <strong>Azzera personalizzazione</strong>
-                <small>Rimuovi il design dal prodotto</small>
-            </span>
-
-            <span class="mobile-product-arrow">›</span>
-        </button>
-
-    </div>
-
-</div>
-
-<!-- =========================================
-     MOBILE - FRONTE / RETRO
-     ========================================= -->
-
-<div
-    class="mobile-sheet-overlay"
-    id="mobileSideOverlay"
-></div>
-
-<div
-    class="mobile-bottom-sheet"
-    id="mobileSideSheet"
->
-
-    <div class="mobile-sheet-header">
-
-        <button
-            type="button"
-            class="mobile-sheet-back"
-            id="mobileSideBack"
-            aria-label="Torna alle altre azioni"
-        >
-            ‹
-        </button>
-
-        <h2>Fronte / Retro</h2>
-
-        <button
-            type="button"
-            class="mobile-sheet-close"
-            id="mobileSideClose"
-            aria-label="Chiudi"
-        >
-            ×
-        </button>
-
-    </div>
-
-
-    <p class="mobile-sheet-subtitle">
-        Scegli il lato della T-Shirt da personalizzare
-    </p>
-
-
-    <div class="mobile-side-options">
-
-        <button
-            type="button"
-            class="mobile-side-card"
-            data-mobile-side="front"
-        >
-
-            <div class="mobile-side-preview">
-
-                <img
-                    id="mobileFrontPreview"
-                    src="assets/tshirt-white-front.png"
-                    alt="Fronte T-Shirt"
-                >
-
-            </div>
-
-            <div class="mobile-side-label">
-                <strong>Fronte</strong>
-
-                <span class="mobile-side-check">
-                    ✓
-                </span>
-            </div>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="mobile-side-card"
-            data-mobile-side="back"
-        >
-
-            <div class="mobile-side-preview">
-
-                <img
-                    id="mobileBackPreview"
-                    src="assets/tshirt-white-back.png"
-                    alt="Retro T-Shirt"
-                >
-
-            </div>
-
-            <div class="mobile-side-label">
-                <strong>Retro</strong>
-
-                <span class="mobile-side-check">
-                    ✓
-                </span>
-            </div>
-
-        </button>
-
-    </div>
-
-</div>
-
-<!-- =========================================
-     MOBILE - FORMATO STAMPA
-     ========================================= -->
-
-<div
-    class="mobile-sheet-overlay"
-    id="mobileFormatOverlay"
-></div>
-
-<div
-    class="mobile-bottom-sheet"
-    id="mobileFormatSheet"
->
-
-    <div class="mobile-sheet-header">
-
-        <button
-            type="button"
-            class="mobile-sheet-back"
-            id="mobileFormatBack"
-            aria-label="Torna alle altre azioni"
-        >
-            ‹
-        </button>
-
-        <h2>Formato stampa</h2>
-
-        <button
-            type="button"
-            class="mobile-sheet-close"
-            id="mobileFormatClose"
-            aria-label="Chiudi"
-        >
-            ×
-        </button>
-
-    </div>
-
-    <p class="mobile-sheet-subtitle">
-        Scegli l'orientamento dell'area di stampa
-    </p>
-
-
-    <div class="mobile-format-options">
-
-        <button
-            type="button"
-            class="mobile-format-card"
-            data-mobile-format="vertical"
-        >
-
-            <div class="mobile-format-preview">
-
-                <div class="mobile-format-shape vertical">
-                    <span>20 × 30</span>
-                </div>
-
-            </div>
-
-            <div class="mobile-format-label">
-
-                <div>
-                    <strong>Verticale</strong>
-                    <small>20 × 30 cm</small>
-                </div>
-
-                <span class="mobile-format-check">
-                    ✓
-                </span>
-
-            </div>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="mobile-format-card"
-            data-mobile-format="horizontal"
-        >
-
-            <div class="mobile-format-preview">
-
-                <div class="mobile-format-shape horizontal">
-                    <span>30 × 20</span>
-                </div>
-
-            </div>
-
-            <div class="mobile-format-label">
-
-                <div>
-                    <strong>Orizzontale</strong>
-                    <small>30 × 20 cm</small>
-                </div>
-
-                <span class="mobile-format-check">
-                    ✓
-                </span>
-
-            </div>
-
-        </button>
-
-    </div>
-
-</div>
-
-<!-- MOBILE - COLORE PERSONALIZZATO -->
-<div
-    class="mobile-custom-color-menu"
-    id="mobileCustomColorMenu"
->
-    <button
-        type="button"
-        class="mobile-custom-color-back"
-        id="mobileCustomColorBack"
-        aria-label="Indietro"
-    >
-        ‹
-    </button>
-
-    <div class="mobile-color-sliders">
-
-    <input
-        type="range"
-        id="mobileHueRange"
-        class="mobile-hue-range"
-        min="0"
-        max="360"
-        value="0"
-        aria-label="Tonalità"
-    >
-
-    <input
-        type="range"
-        id="mobileLightRange"
-        class="mobile-light-range"
-        min="15"
-        max="85"
-        value="50"
-        aria-label="Chiaro o scuro"
-    >
-
-</div>
-
-    <span
-        class="mobile-custom-color-preview"
-        id="mobileCustomColorPreview"
-    ></span>
-
-    <input
-        type="text"
-        id="mobileHexColor"
-        class="mobile-hex-color"
-        value="#000000"
-        maxlength="7"
-        aria-label="Codice colore HEX"
-    >
-</div>
-
-<!-- =========================================
-     MOBILE - EDITOR TESTO
-     ========================================= -->
-
-<div
-    class="mobile-sheet-overlay"
-    id="mobileTextOverlay"
-></div>
-
-<div
-    class="mobile-text-editor-sheet"
-    id="mobileTextEditorSheet"
->
-    <div class="mobile-text-editor-header">
-
-        <h2>Testo</h2>
-
-        <button
-            type="button"
-            class="mobile-text-editor-close"
-            id="mobileTextEditorClose"
-            aria-label="Chiudi editor testo"
-        >
-            ×
-        </button>
-
-    </div>
-
-    <div class="mobile-text-editor-content">
-
-        <label
-            class="mobile-text-label"
-            for="mobileTextInput"
-        >
-            Il tuo testo
-        </label>
-
-        <textarea
-            id="mobileTextInput"
-            class="mobile-text-input"
-            rows="2"
-            placeholder="Scrivi il tuo testo..."
-        ></textarea>
-
-
-        <button
-            type="button"
-            class="mobile-text-done-button"
-            id="mobileTextDoneButton"
-        >
-            Fatto
-        </button>
-
-    </div>
-</div>
-
-    <!-- SFONDO CARRELLO -->
-<div id="cartOverlay" class="cart-overlay"></div>
-
-
-<!-- PANNELLO CARRELLO -->
-<aside id="cartDrawer" class="cart-drawer">
-
-    <div class="cart-drawer-header">
-
-        <h2>Il tuo carrello</h2>
-
-        <button
-            type="button"
-            id="closeCartButton"
-            class="close-cart-button"
-            aria-label="Chiudi carrello"
-        >
-            ×
-        </button>
-
-    </div>
-
-    <div id="cartItems" class="cart-items"></div>
-
-    <div id="emptyCartMessage" class="empty-cart-message">
-        Il carrello è vuoto.
-    </div>
-
-    <div id="cartFooter" class="cart-footer">
-
-    <div class="cart-total-row">
-
-        <span>Totale</span>
-
-        <strong id="cartTotal">
-            €0,00
-        </strong>
-
-    </div>
-
-    <button
-        type="button"
-        id="checkoutButton"
-        class="primary-button"
-    >
-        Vai al checkout
-    </button>
-
-</div>
-
-</aside>
-
-    <script
-    src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
-</script>
-
-<script src="script.js?v=restyle-1"></script>
-
+        <div class="container footer-bottom">
+            <span>© <span id="currentYear">2026</span> SubliMaMi</span>
+            <!-- DA COMPLETARE: Privacy e Cookie policy -->
+            <span>Privacy · Cookie <em class="todo">da completare</em></span>
+        </div>
+    </footer>
+
+    <script src="home.js?v=home-1"></script>
 </body>
 </html>

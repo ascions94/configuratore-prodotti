@@ -5976,3 +5976,35 @@ textarea {
         display: contents;
     }
 }
+
+
+/* =========================================
+   LINK ALLA HOME (logo e menu mobile)
+   ========================================= */
+
+a.logo,
+a.mobile-site-logo {
+    text-decoration: none;
+}
+
+a.logo {
+    display: block;
+}
+
+@media (max-width: 600px) {
+
+    .mobile-navigation-menu .mobile-navigation-home {
+        display: block;
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 9px;
+        color: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .mobile-navigation-menu .mobile-navigation-home:active {
+        background: #f1f1f1;
+    }
+}
