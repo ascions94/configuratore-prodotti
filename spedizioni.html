@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Spedizioni | SubliMaMi</title>
+    <meta name="description" content="Spedizioni in tutta Italia: costi, tempi e domande frequenti sugli ordini SubliMaMi.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+
+    <link rel="stylesheet" href="home.css?v=pages-1">
+</head>
+
+<body>
+
+    <!-- =========================================
+         BARRA ANNUNCI
+         ========================================= -->
+    <div class="announcement-bar">
+        Crea il tuo regalo personalizzato online, con anteprima in tempo reale
+    </div>
+
+
+    <!-- =========================================
+         HEADER
+         ========================================= -->
+    <header class="home-header" id="homeHeader">
+        <div class="container home-header-inner">
+
+            <a href="index.html" class="home-logo" aria-label="SubliMaMi - Home">
+                <img src="assets/sublimami-logo.png" alt="SubliMaMi">
+            </a>
+
+            <nav class="home-nav" id="homeNav" aria-label="Menu principale">
+                <a href="personalizza.html?prodotto=cushion">Cuscini</a>
+                <a href="personalizza.html?prodotto=tshirt">T-Shirt</a>
+                <a href="personalizza.html?prodotto=keychain">Portachiavi</a>
+                <a href="index.html#idee-regalo">Idee regalo</a>
+                <a href="chi-siamo.html">Chi siamo</a>
+                <a href="contatti.html">Contatti</a>
+            </nav>
+
+            <div class="home-header-actions">
+                <a href="personalizza.html" class="btn btn-primary btn-small header-cta">
+                    Personalizza
+                </a>
+
+                <a href="personalizza.html?carrello=1" class="header-cart" aria-label="Carrello">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>
+                    <span class="header-cart-count" id="homeCartCount">0</span>
+                </a>
+
+                <button type="button" class="menu-toggle" id="menuToggle" aria-label="Apri menu" aria-expanded="false" aria-controls="homeNav">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+
+    <main>
+
+        <!-- =========================================
+             INTESTAZIONE PAGINA
+             ========================================= -->
+        <section class="page-hero page-hero-teal">
+            <div class="container">
+                <nav class="breadcrumb" aria-label="Percorso">
+                    <a href="index.html">Home</a>
+                    <span aria-hidden="true">/</span>
+                    <span>Spedizioni</span>
+                </nav>
+                <span class="eyebrow">Assistenza</span>
+                <h1>Spedizioni</h1>
+                <p class="page-lead">Spediamo in tutta Italia con InPost: ritiri il tuo pacco nel Locker o InPost Point più comodo per te. Qui trovi costi, tempi e cosa succede dopo il tuo ordine.</p>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             COSTI E TEMPI
+             ========================================= -->
+        <section class="section section-tight">
+            <div class="container">
+                <h2 class="section-title">Costi e tempi</h2>
+                <p class="section-intro">Le informazioni principali sulla spedizione, sempre aggiornate.</p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 6.5A6.5 6.5 0 1 0 17 17.5"/><path d="M4 10.5h9M4 13.5h9"/></svg></span>
+                        <span class="info-label">Costo di spedizione</span>
+                        <strong class="info-value" data-ship="costo"><em class="todo">da completare</em></strong>
+
+                    </div>
+                    <div class="info-card info-card-highlight" data-ship-optional="gratisDa">
+                        <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11h16v9H4zM12 11v9M3 7h18v4H3z"/><path d="M12 7c-1.5-3-5-3-5-1s3 1 5 1c2 0 5 1 5-1s-3.5-2-5 1"/></svg></span>
+                        <span class="info-label">Spedizione gratuita per ordini sopra</span>
+                        <strong class="info-value" data-ship="gratisDa"><em class="todo">da completare</em></strong>
+
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4l6 6-8.5 8.5a3 3 0 0 1-2.1.9H6v-3.4a3 3 0 0 1 .9-2.1L14 4Z"/><path d="m12 6 6 6"/></svg></span>
+                        <span class="info-label">Tempi di preparazione</span>
+                        <strong class="info-value" data-ship="tempiProduzione"><em class="todo">da completare</em></strong>
+                        <span class="info-note">Il tempo per stampare e preparare il tuo prodotto</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+                        <span class="info-label">Tempi di consegna</span>
+                        <strong class="info-value" data-ship="tempiConsegna"><em class="todo">da completare</em></strong>
+                        <span class="info-note">Nord e Centro 1-2 giorni, Sud e Isole 2-3 giorni (dal lunedì al venerdì)</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></span>
+                        <span class="info-label">Corriere</span>
+                        <strong class="info-value" data-ship="corriere"><em class="todo">da completare</em></strong>
+                        <span class="info-note">In tutta Italia, con ritiro nel Locker o InPost Point che scegli tu</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg></span>
+                        <span class="info-label">Tempo per il ritiro</span>
+                        <strong class="info-value">72 ore</strong>
+                        <span class="info-note">Dall'avviso di InPost che il pacco è arrivato</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             IL PERCORSO DEL TUO ORDINE
+             ========================================= -->
+        <section class="section showcase">
+            <div class="container">
+                <div class="section-head section-head-center">
+                    <span class="eyebrow">Dal configuratore al tuo punto di ritiro</span>
+                    <h2 class="section-title">Il percorso del tuo ordine</h2>
+                </div>
+
+                <ol class="timeline">
+                    <li class="timeline-step">
+                        <span class="timeline-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4l6 6-8.5 8.5a3 3 0 0 1-2.1.9H6v-3.4a3 3 0 0 1 .9-2.1L14 4Z"/><path d="m12 6 6 6"/></svg></span>
+                        <h3>Crei il tuo design</h3>
+                        <p>Personalizzi il prodotto nel configuratore e lo aggiungi al carrello.</p>
+                    </li>
+                    <li class="timeline-step">
+                        <span class="timeline-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg></span>
+                        <h3>Lo prepariamo</h3>
+                        <p>Stampiamo il tuo prodotto e lo imballiamo per il viaggio.</p>
+                    </li>
+                    <li class="timeline-step">
+                        <span class="timeline-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></span>
+                        <h3>Lo spediamo</h3>
+                        <p>Il pacco parte con InPost verso il Locker o InPost Point che hai scelto.</p>
+                    </li>
+                    <li class="timeline-step">
+                        <span class="timeline-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg></span>
+                        <h3>Lo ritiri vicino a te</h3>
+                        <p>Ritiri il pacco quando ti è più comodo, pronto da regalare o da tenere.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             DOMANDE FREQUENTI
+             ========================================= -->
+        <section class="section" id="domande">
+            <div class="container faq-layout">
+                <div>
+                    <span class="eyebrow">Hai dubbi?</span>
+                    <h2 class="section-title">Domande frequenti</h2>
+                    <p class="section-intro">Non trovi la risposta? <a href="contatti.html" class="text-link">Scrivici</a>, ti rispondiamo noi.</p>
+                </div>
+
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary>Come funziona il ritiro in Locker o InPost Point?</summary>
+                        <div class="faq-answer"><p>Quando ordini scegli il Locker o InPost Point più comodo per te, per esempio vicino a casa o al lavoro. Quando il pacco è arrivato, InPost ti avvisa e hai <strong>72 ore</strong> per ritirarlo: dopo, il pacco torna indietro al mittente.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Spedite in tutta Italia?</summary>
+                        <div class="faq-answer"><p>Sì, spediamo in tutta Italia con InPost, con ritiro in uno dei Locker o InPost Point presenti sul territorio.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Quanto tempo ci vuole per ricevere il mio ordine?</summary>
+                        <div class="faq-answer"><p>Ci servono 2-3 giorni lavorativi per preparare il tuo prodotto. Poi InPost lo consegna di solito in 1-2 giorni lavorativi al Nord e al Centro e in 2-3 giorni lavorativi al Sud e nelle Isole. Le consegne avvengono dal lunedì al venerdì.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Posso cambiare il punto di ritiro dopo aver ordinato?</summary>
+                        <div class="faq-answer"><p>Scrivici il prima possibile dalla pagina Contatti, indicando il tuo nome e il prodotto ordinato: vediamo insieme cosa si può fare.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Il pacco è arrivato danneggiato: cosa faccio?</summary>
+                        <div class="faq-answer"><p>Contattaci subito e, se puoi, mandaci una foto del pacco e del prodotto. Così possiamo capire cosa è successo.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Posso regalare il prodotto spedendolo direttamente a un’altra persona?</summary>
+                        <div class="faq-answer"><p>Certo: basta scegliere un Locker o InPost Point vicino alla persona a cui vuoi fare il regalo e indicare i suoi dati, così sarà lei a ricevere l’avviso per il ritiro.</p></div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="cta-band">
+                    <div>
+                        <h2>Hai altre domande?</h2>
+                        <p>Siamo raggiungibili su WhatsApp, email e social.</p>
+                    </div>
+                    <a href="contatti.html" class="btn btn-white btn-large">Contattaci</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         FOOTER
+         ========================================= -->
+    <footer class="home-footer">
+        <div class="container footer-grid">
+
+            <div class="footer-brand">
+                <img src="assets/sublimami-logo.png" alt="SubliMaMi" class="footer-logo">
+                <p>Idee che prendono forma. Regali personalizzati con le tue foto e le tue frasi.</p>
+            </div>
+
+            <div class="footer-col">
+                <h3>Prodotti</h3>
+                <a href="personalizza.html?prodotto=cushion">Cuscini</a>
+                <a href="personalizza.html?prodotto=tshirt">T-Shirt</a>
+                <a href="personalizza.html?prodotto=keychain">Portachiavi</a>
+                <a href="index.html#prossimamente">Prossimamente</a>
+            </div>
+
+            <div class="footer-col">
+                <h3>Assistenza</h3>
+                <a href="index.html#come-funziona">Come funziona</a>
+                <a href="spedizioni.html">Spedizioni</a>
+                <a href="spedizioni.html#domande">Domande frequenti</a>
+                <a href="contatti.html">Contatti</a>
+                <a href="chi-siamo.html">Chi siamo</a>
+            </div>
+
+            <div class="footer-col">
+                <h3>Seguici</h3>
+                <!-- I link si compilano da soli con i dati di site-config.js -->
+                <a data-contact="instagram">Instagram</a>
+                <a data-contact="tiktok">TikTok</a>
+                <a data-contact="whatsapp">WhatsApp</a>
+            </div>
+
+        </div>
+
+        <div class="container footer-bottom">
+            <span>© <span id="currentYear">2026</span> SubliMaMi</span>
+            <!-- DA COMPLETARE: Privacy e Cookie policy -->
+            <span>Privacy · Cookie <em class="todo">da completare</em></span>
+        </div>
+    </footer>
+
+    <script src="site-config.js?v=pages-1"></script>
+    <script src="home.js?v=pages-1"></script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contatti | SubliMaMi</title>
+    <meta name="description" content="Contatta SubliMaMi su WhatsApp, email, Instagram e TikTok.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+
+    <link rel="stylesheet" href="home.css?v=pages-1">
+</head>
+
+<body>
+
+    <!-- =========================================
+         BARRA ANNUNCI
+         ========================================= -->
+    <div class="announcement-bar">
+        Crea il tuo regalo personalizzato online, con anteprima in tempo reale
+    </div>
+
+
+    <!-- =========================================
+         HEADER
+         ========================================= -->
+    <header class="home-header" id="homeHeader">
+        <div class="container home-header-inner">
+
+            <a href="index.html" class="home-logo" aria-label="SubliMaMi - Home">
+                <img src="assets/sublimami-logo.png" alt="SubliMaMi">
+            </a>
+
+            <nav class="home-nav" id="homeNav" aria-label="Menu principale">
+                <a href="personalizza.html?prodotto=cushion">Cuscini</a>
+                <a href="personalizza.html?prodotto=tshirt">T-Shirt</a>
+                <a href="personalizza.html?prodotto=keychain">Portachiavi</a>
+                <a href="index.html#idee-regalo">Idee regalo</a>
+                <a href="chi-siamo.html">Chi siamo</a>
+                <a href="contatti.html" aria-current="page">Contatti</a>
+            </nav>
+
+            <div class="home-header-actions">
+                <a href="personalizza.html" class="btn btn-primary btn-small header-cta">
+                    Personalizza
+                </a>
+
+                <a href="personalizza.html?carrello=1" class="header-cart" aria-label="Carrello">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>
+                    <span class="header-cart-count" id="homeCartCount">0</span>
+                </a>
+
+                <button type="button" class="menu-toggle" id="menuToggle" aria-label="Apri menu" aria-expanded="false" aria-controls="homeNav">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+
+    <main>
+
+        <!-- =========================================
+             INTESTAZIONE PAGINA
+             ========================================= -->
+        <section class="page-hero page-hero-pink">
+            <div class="container">
+                <nav class="breadcrumb" aria-label="Percorso">
+                    <a href="index.html">Home</a>
+                    <span aria-hidden="true">/</span>
+                    <span>Contatti</span>
+                </nav>
+                <span class="eyebrow">Siamo qui per te</span>
+                <h1>Contatti</h1>
+                <p class="page-lead">Hai una domanda su un prodotto, un'idea regalo o un ordine? Scrivici dove preferisci.</p>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             CANALI DI CONTATTO
+             ========================================= -->
+        <section class="section section-tight">
+            <div class="container">
+                <div class="contact-grid">
+                    <article class="contact-card contact-green">
+                        <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1.2-1.4-2-1-1 .8a4 4 0 0 1-2-2l.8-1-1-2L9 9.5Z"/></svg></span>
+                        <h3>WhatsApp</h3>
+                        <p>Il modo più veloce per una domanda o un consiglio.</p>
+                        <span class="contact-value" data-contact-value="whatsapp"><em class="todo">da completare</em></span>
+                        <a class="btn btn-primary btn-small" data-contact="whatsapp">Scrivici su WhatsApp</a>
+                    </article>
+                    <article class="contact-card contact-teal">
+                        <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span>
+                        <h3>Email</h3>
+                        <p>Per richieste dettagliate, ordini o allegati.</p>
+                        <span class="contact-value" data-contact-value="email"><em class="todo">da completare</em></span>
+                        <a class="btn btn-primary btn-small" data-contact="email">Mandaci una email</a>
+                    </article>
+                    <article class="contact-card contact-pink">
+                        <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor"/></svg></span>
+                        <h3>Instagram</h3>
+                        <p>Guarda i nostri lavori e scrivici in privato.</p>
+                        <span class="contact-value" data-contact-value="instagram"><em class="todo">da completare</em></span>
+                        <a class="btn btn-primary btn-small" data-contact="instagram">Seguici su Instagram</a>
+                    </article>
+                    <article class="contact-card contact-dark">
+                        <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.6 2.2 4.4 5 4.6"/></svg></span>
+                        <h3>TikTok</h3>
+                        <p>Video, idee regalo e dietro le quinte.</p>
+                        <span class="contact-value" data-contact-value="tiktok"><em class="todo">da completare</em></span>
+                        <a class="btn btn-primary btn-small" data-contact="tiktok">Seguici su TikTok</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             CONSIGLI PER SCRIVERCI
+             ========================================= -->
+        <section class="section showcase">
+            <div class="container tips-layout">
+                <div>
+                    <span class="eyebrow">Per una risposta più rapida</span>
+                    <h2 class="section-title">Prima di scriverci</h2>
+                    <p class="section-intro">Qualche informazione in più ci aiuta a risponderti subito.</p>
+                </div>
+
+                <ul class="tips-list">
+                    <li>
+                        <span class="tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg></span>
+                        <div>
+                            <strong>Per un ordine</strong>
+                            <span>Indica il tuo nome e il prodotto che hai ordinato.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4l6 6-8.5 8.5a3 3 0 0 1-2.1.9H6v-3.4a3 3 0 0 1 .9-2.1L14 4Z"/><path d="m12 6 6 6"/></svg></span>
+                        <div>
+                            <strong>Per un'idea su misura</strong>
+                            <span>Raccontaci a chi è destinato il regalo e, se vuoi, allega la foto che vorresti usare.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></span>
+                        <div>
+                            <strong>Per la spedizione</strong>
+                            <span>Dai prima un'occhiata alle <a href="spedizioni.html#domande" class="text-link">domande frequenti</a>: forse la risposta è già lì.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="cta-band">
+                    <div>
+                        <h2>Hai già un'idea in mente?</h2>
+                        <p>Prova a crearla subito nel configuratore: vedi il risultato in tempo reale.</p>
+                    </div>
+                    <a href="personalizza.html" class="btn btn-white btn-large">Apri il configuratore</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         FOOTER
+         ========================================= -->
+    <footer class="home-footer">
+        <div class="container footer-grid">
+
+            <div class="footer-brand">
+                <img src="assets/sublimami-logo.png" alt="SubliMaMi" class="footer-logo">
+                <p>Idee che prendono forma. Regali personalizzati con le tue foto e le tue frasi.</p>
+            </div>
+
+            <div class="footer-col">
+                <h3>Prodotti</h3>
+                <a href="personalizza.html?prodotto=cushion">Cuscini</a>
+                <a href="personalizza.html?prodotto=tshirt">T-Shirt</a>
+                <a href="personalizza.html?prodotto=keychain">Portachiavi</a>
+                <a href="index.html#prossimamente">Prossimamente</a>
+            </div>
+
+            <div class="footer-col">
+                <h3>Assistenza</h3>
+                <a href="index.html#come-funziona">Come funziona</a>
+                <a href="spedizioni.html">Spedizioni</a>
+                <a href="spedizioni.html#domande">Domande frequenti</a>
+                <a href="contatti.html">Contatti</a>
+                <a href="chi-siamo.html">Chi siamo</a>
+            </div>
+
+            <div class="footer-col">
+                <h3>Seguici</h3>
+                <!-- I link si compilano da soli con i dati di site-config.js -->
+                <a data-contact="instagram">Instagram</a>
+                <a data-contact="tiktok">TikTok</a>
+                <a data-contact="whatsapp">WhatsApp</a>
+            </div>
+
+        </div>
+
+        <div class="container footer-bottom">
+            <span>© <span id="currentYear">2026</span> SubliMaMi</span>
+            <!-- DA COMPLETARE: Privacy e Cookie policy -->
+            <span>Privacy · Cookie <em class="todo">da completare</em></span>
+        </div>
+    </footer>
+
+    <script src="site-config.js?v=pages-1"></script>
+    <script src="home.js?v=pages-1"></script>
+</body>
+</html>

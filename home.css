@@ -1340,3 +1340,585 @@ button:focus-visible {
         gap: 6px;
     }
 }
+
+
+/* =====================================================================
+   PAGINE INTERNE (Spedizioni, Contatti, Chi siamo)
+   ===================================================================== */
+
+/* Voce del menu della pagina aperta */
+.home-nav a[aria-current="page"] {
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+}
+
+/* Link nel testo */
+.text-link {
+    color: var(--brand-strong);
+    font-weight: 800;
+}
+
+/* Link non ancora compilati (manca il dato in site-config.js) */
+a.is-missing {
+    cursor: default;
+}
+
+.footer-col a.is-missing:hover {
+    color: var(--muted);
+}
+
+.btn.is-missing,
+.btn.is-missing:hover {
+    background: #eef1f3;
+    color: var(--muted);
+    box-shadow: none;
+    transform: none;
+}
+
+.btn.is-missing .todo {
+    display: none;
+}
+
+
+/* ----------------------------- INTESTAZIONE ----------------------------- */
+
+.page-hero {
+    padding: 44px 0 52px;
+}
+
+.page-hero-teal {
+    background:
+        radial-gradient(700px 300px at 90% 0%, var(--brand-soft), transparent 70%),
+        radial-gradient(500px 260px at 0% 100%, var(--accent-soft), transparent 70%);
+}
+
+.page-hero-pink {
+    background:
+        radial-gradient(700px 300px at 90% 0%, var(--accent-soft), transparent 70%),
+        radial-gradient(500px 260px at 0% 100%, var(--brand-soft), transparent 70%);
+}
+
+.breadcrumb {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    color: var(--muted);
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+.breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: var(--brand-strong);
+}
+
+.page-hero h1 {
+    font-size: clamp(34px, 4.6vw, 52px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.page-lead {
+    max-width: 620px;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 18px;
+}
+
+.section-tight {
+    padding-top: 40px;
+}
+
+.section-intro {
+    max-width: 560px;
+    margin-top: 10px;
+    margin-bottom: 28px;
+    color: var(--muted);
+    font-size: 16.5px;
+}
+
+
+/* ------------------------------ SPEDIZIONI ------------------------------ */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.info-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+}
+
+.info-card-highlight {
+    border-color: #bfe8ed;
+    background: var(--brand-softer);
+}
+
+.info-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+}
+
+.info-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.info-label {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.info-value {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+}
+
+.info-value .todo {
+    margin-left: 0;
+    font-size: 12px;
+}
+
+.info-note {
+    color: var(--muted);
+    font-size: 13.5px;
+}
+
+.timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+}
+
+.timeline-step {
+    position: relative;
+    padding: 26px 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    counter-increment: step;
+}
+
+.timeline-step::before {
+    content: counter(step);
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    color: #d5dbe0;
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.timeline-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    border-radius: 50%;
+    background: var(--brand-strong);
+    color: #fff;
+}
+
+.timeline-step:nth-child(2) .timeline-icon { background: var(--accent-strong); }
+.timeline-step:nth-child(3) .timeline-icon { background: var(--ink); }
+.timeline-step:nth-child(4) .timeline-icon { background: #d9771f; }
+
+.timeline-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.timeline-step h3 {
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.timeline-step p {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.faq-layout,
+.tips-layout {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 48px;
+    align-items: start;
+}
+
+.faq-list {
+    display: grid;
+    gap: 12px;
+}
+
+.faq-item {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.faq-item[open] {
+    border-color: #bfe8ed;
+    box-shadow: var(--shadow-card);
+}
+
+.faq-item summary {
+    position: relative;
+    padding: 18px 56px 18px 20px;
+    font-size: 16.5px;
+    font-weight: 800;
+    list-style: none;
+    cursor: pointer;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary::after {
+    content: "+";
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease;
+}
+
+.faq-item[open] summary::after {
+    content: "−";
+}
+
+.faq-item summary:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+}
+
+.faq-answer {
+    padding: 0 20px 18px;
+    color: var(--muted);
+}
+
+
+/* ------------------------------- CONTATTI ------------------------------- */
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.contact-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 24px 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card);
+}
+
+.contact-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+}
+
+.contact-icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+.contact-green .contact-icon { background: #e7f8ee; color: #1f8a4c; }
+.contact-teal .contact-icon  { background: var(--brand-soft); color: var(--brand-strong); }
+.contact-pink .contact-icon  { background: var(--accent-soft); color: var(--accent-strong); }
+.contact-dark .contact-icon  { background: #eceef0; color: var(--ink); }
+
+.contact-card h3 {
+    font-size: 19px;
+    font-weight: 900;
+}
+
+.contact-card p {
+    color: var(--muted);
+    font-size: 14.5px;
+}
+
+.contact-value {
+    margin: 6px 0 14px;
+    font-weight: 800;
+    word-break: break-all;
+}
+
+.contact-value .todo {
+    margin-left: 0;
+}
+
+.contact-card .btn {
+    margin-top: auto;
+    white-space: normal;
+    text-align: center;
+}
+
+.tips-list {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tips-list li {
+    display: flex;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+}
+
+.tip-icon {
+    flex: 0 0 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+}
+
+.tip-icon svg {
+    width: 21px;
+    height: 21px;
+}
+
+.tips-list strong {
+    display: block;
+    font-weight: 900;
+}
+
+.tips-list span {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+
+/* ------------------------------- CHI SIAMO ------------------------------- */
+
+.story {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items: center;
+}
+
+.placeholder-box {
+    margin-top: 22px;
+    padding: 22px 24px;
+    border: 2px dashed #e3a1a9;
+    border-radius: var(--radius-lg);
+    background: var(--accent-soft);
+}
+
+.placeholder-box strong {
+    color: var(--accent-strong);
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.placeholder-box p {
+    margin-top: 6px;
+    color: var(--muted);
+}
+
+.story-visual {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 440px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.story-blob {
+    position: absolute;
+    inset: 6%;
+    border-radius: 50% 46% 54% 48% / 48% 54% 46% 52%;
+    background: linear-gradient(140deg, #bdeef3, #ffe0e2);
+}
+
+.story-item {
+    position: absolute;
+    filter: drop-shadow(0 14px 24px rgba(0, 52, 58, 0.16));
+}
+
+.story-item-1 { left: 4%;  top: 10%;  width: 52%; }
+.story-item-2 { right: 2%; top: 30%;  width: 46%; }
+.story-item-3 { left: 24%; bottom: 0; width: 34%; }
+
+.values {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.value-card {
+    padding: 28px 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+}
+
+.value-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 16px;
+    border-radius: 16px;
+}
+
+.value-icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+.value-teal { background: var(--brand-soft); color: var(--brand-strong); }
+.value-pink { background: var(--accent-soft); color: var(--accent-strong); }
+.value-sun  { background: var(--sun-soft); color: #b5651d; }
+
+.value-card h3 {
+    font-size: 19px;
+    font-weight: 900;
+}
+
+.value-card p {
+    margin-top: 8px;
+    color: var(--muted);
+}
+
+
+/* ------------------------------ RESPONSIVE ------------------------------ */
+
+@media (max-width: 1080px) {
+
+    .contact-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .timeline {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+
+    .info-grid,
+    .values {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .faq-layout,
+    .tips-layout,
+    .story {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .story-visual {
+        max-width: 340px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .page-hero {
+        padding: 28px 0 36px;
+    }
+
+    .page-lead {
+        font-size: 16.5px;
+    }
+
+    .info-grid,
+    .values,
+    .contact-grid,
+    .timeline {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        gap: 12px;
+    }
+
+    .info-card {
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        column-gap: 14px;
+        align-items: center;
+        padding: 16px;
+    }
+
+    .info-icon {
+        grid-row: span 3;
+        margin-bottom: 0;
+    }
+
+    .info-value {
+        font-size: 18px;
+    }
+
+    .faq-item summary {
+        font-size: 15.5px;
+    }
+}
+
+/* Le schede nascoste da home.js restano davvero nascoste */
+.info-card[hidden] {
+    display: none;
+}
