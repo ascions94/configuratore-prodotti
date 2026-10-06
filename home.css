@@ -1922,3 +1922,43 @@ a.is-missing {
 .info-card[hidden] {
     display: none;
 }
+
+/* Chi siamo: testo della storia e missione */
+.story-body {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 17px;
+}
+
+.story-body strong {
+    color: var(--ink);
+}
+
+.mission {
+    position: relative;
+    margin: 28px 0 0;
+    padding: 22px 24px 22px 28px;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    background: var(--accent-soft);
+}
+
+.mission-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--accent-strong);
+    font-size: 12.5px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.mission p {
+    margin: 0;
+    color: var(--ink);
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.35;
+}
