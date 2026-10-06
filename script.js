@@ -30,6 +30,8 @@ const tshirtOptions = document.getElementById("tshirtOptions");
 const variantOptions = document.getElementById("variantOptions");
 const variantButtons = document.getElementById("variantButtons");
 const printShapeMask = document.getElementById("printShapeMask");
+const orientationOptions = document.getElementById("orientationOptions");
+const mobileOrientationToggle = document.getElementById("mobileOrientationToggle");
 const printFormatOptions =
     document.getElementById("printFormatOptions");
 
@@ -1305,7 +1307,7 @@ let tshirtPrintFormat = {
 const products = {
 
     cushion: {
-        title: "Cuscino 40x40 cm",
+        title: "Cuscino grande",
         name: "Cuscino personalizzato",
         dimensions: "Dimensione: 40x40 cm",
         print: "Area di stampa: 30x30 cm",
@@ -1389,6 +1391,9 @@ Object.assign(products, {
         print: "Area di stampa: 18x24 cm + 0,5 cm di margine per lato",
         printInfo: "Area stampabile 18x24 cm (con margine)",
         printCm: { width: 19, height: 25 },
+        nominal: { width: 18, height: 24 },
+        orientable: true,
+        marginNote: "canvas",
         layout: "canvas",
         price: null // DA DEFINIRE
     },
@@ -1400,6 +1405,9 @@ Object.assign(products, {
         print: "Area di stampa: 20x30 cm + 0,5 cm di margine per lato",
         printInfo: "Area stampabile 20x30 cm (con margine)",
         printCm: { width: 21, height: 31 },
+        nominal: { width: 20, height: 30 },
+        orientable: true,
+        marginNote: "canvas",
         layout: "canvas",
         price: null // DA DEFINIRE
     },
@@ -1411,6 +1419,9 @@ Object.assign(products, {
         print: "Area di stampa: 30x40 cm + 0,5 cm di margine per lato",
         printInfo: "Area stampabile 30x40 cm (con margine)",
         printCm: { width: 31, height: 41 },
+        nominal: { width: 30, height: 40 },
+        orientable: true,
+        marginNote: "canvas",
         layout: "canvas",
         price: null // DA DEFINIRE
     },
@@ -1433,6 +1444,9 @@ Object.assign(products, {
         print: "Area di stampa: 15x20 cm + margine di taglio",
         printInfo: "Area stampabile 15x20 cm (con margine)",
         printCm: { width: 20.5, height: 15.5 },
+        nominal: { width: 20, height: 15 },
+        orientable: true,
+        marginNote: "tile",
         layout: "tile",
         price: null // DA DEFINIRE
     },
@@ -1455,7 +1469,7 @@ Object.assign(products, {
    (servono per i pulsanti "Formato" nel pannello).
 */
 const productVariants = {
-    cushion:         { group: "cuscini",  label: "Quadrato 40×40" },
+    cushion:         { group: "cuscini",  label: "Quadrato grande" },
     "cushion-small": { group: "cuscini",  label: "Quadrato piccolo" },
     "heart-small":   { group: "cuscini",  label: "Cuore piccolo" },
     "heart-large":   { group: "cuscini",  label: "Cuore grande" },
@@ -1484,6 +1498,104 @@ function formatProductPrice(price) {
     }
 
     return `€${price.toFixed(2).replace(".", ",")}`;
+}
+
+
+/* =========================================
+   ORIENTAMENTO (tele e mattonella 15x20)
+   -----------------------------------------
+   L'orientamento scelto è salvato nello stato
+   del prodotto (state.orientation), così resta
+   anche dopo il ricaricamento e con annulla/ripristina.
+   ========================================= */
+
+function getBaseOrientation(product) {
+    return product.printCm.height >= product.printCm.width
+        ? "vertical"
+        : "horizontal";
+}
+
+function getProductOrientation(productKey) {
+
+    const product = products[productKey];
+
+    if (!product || !product.orientable) {
+        return null;
+    }
+
+    const state =
+        productStates[productKey] &&
+        productStates[productKey].front;
+
+    if (
+        state &&
+        (state.orientation === "vertical" ||
+            state.orientation === "horizontal")
+    ) {
+        return state.orientation;
+    }
+
+    return getBaseOrientation(product);
+}
+
+/* Misure orientate: se serve scambia larghezza e altezza */
+function orientSize(size, product, orientation) {
+
+    if (
+        !orientation ||
+        orientation === getBaseOrientation(product)
+    ) {
+        return { width: size.width, height: size.height };
+    }
+
+    return { width: size.height, height: size.width };
+}
+
+function getOrientedPrintCm(productKey) {
+
+    const product = products[productKey];
+
+    return orientSize(
+        product.printCm,
+        product,
+        getProductOrientation(productKey)
+    );
+}
+
+function formatCm(value) {
+    return String(value).replace(".", ",");
+}
+
+/* Testi dell'area di stampa aggiornati con l'orientamento */
+function getOrientedPrintTexts(productKey) {
+
+    const product = products[productKey];
+
+    if (!product.orientable || !product.nominal) {
+        return {
+            print: product.print,
+            printInfo: product.printInfo
+        };
+    }
+
+    const size = orientSize(
+        product.nominal,
+        product,
+        getProductOrientation(productKey)
+    );
+
+    const label =
+        `${formatCm(size.width)}x${formatCm(size.height)} cm`;
+
+    const margin =
+        product.marginNote === "canvas"
+            ? " + 0,5 cm di margine per lato"
+            : " + margine di taglio";
+
+    return {
+        print: `Area di stampa: ${label}${margin}`,
+        printInfo: `Area stampabile ${label} (con margine)`
+    };
 }
 
 
@@ -4049,10 +4161,7 @@ function getCurrentPrintAreaCm() {
         products[currentProduct] &&
         products[currentProduct].printCm
     ) {
-        return {
-            width: products[currentProduct].printCm.width,
-            height: products[currentProduct].printCm.height
-        };
+        return getOrientedPrintCm(currentProduct);
     }
 
     if (currentProduct === "cushion") {
@@ -4287,6 +4396,7 @@ function updateImageSizeInfo() {
     ) {
 
         imageSizeValue.textContent = "—";
+        updateImageCropNote(false);
         return;
     }
 
@@ -4332,16 +4442,111 @@ function updateImageSizeInfo() {
         state.scale;
 
 
-    const widthCm =
-        imageWidthPx / pixelsPerCmX;
-
-    const heightCm =
-        imageHeightPx / pixelsPerCmY;
-
+    /*
+        Mostriamo solo la parte della foto che cade
+        dentro l'area di stampa: è quella che verrà
+        stampata davvero.
+    */
+    const visible =
+        getVisibleImageSizeCm(
+            state,
+            imageWidthPx,
+            imageHeightPx,
+            pixelsPerCmX,
+            pixelsPerCmY
+        );
 
     imageSizeValue.textContent =
-        `${widthCm.toFixed(1)} × ` +
-        `${heightCm.toFixed(1)} cm`;
+        `${visible.width.toFixed(1)} × ` +
+        `${visible.height.toFixed(1)} cm`;
+
+    updateImageCropNote(visible.cropped);
+}
+
+
+/*
+   Parte visibile (stampata) di una foto dentro l'area di stampa.
+   La foto è centrata nell'area e spostata di state.x / state.y;
+   se è ruotata si usa il rettangolo che la contiene.
+*/
+function getVisibleImageSizeCm(
+    state,
+    imageWidthPx,
+    imageHeightPx,
+    pixelsPerCmX,
+    pixelsPerCmY
+) {
+
+    const areaWidth = printArea.clientWidth;
+    const areaHeight = printArea.clientHeight;
+
+    const angle =
+        ((Number(state.rotation) || 0) * Math.PI) / 180;
+
+    const boxWidth =
+        Math.abs(imageWidthPx * Math.cos(angle)) +
+        Math.abs(imageHeightPx * Math.sin(angle));
+
+    const boxHeight =
+        Math.abs(imageWidthPx * Math.sin(angle)) +
+        Math.abs(imageHeightPx * Math.cos(angle));
+
+    const centerX = areaWidth / 2 + (Number(state.x) || 0);
+    const centerY = areaHeight / 2 + (Number(state.y) || 0);
+
+    const visibleWidthPx = Math.max(
+        0,
+        Math.min(areaWidth, centerX + boxWidth / 2) -
+        Math.max(0, centerX - boxWidth / 2)
+    );
+
+    const visibleHeightPx = Math.max(
+        0,
+        Math.min(areaHeight, centerY + boxHeight / 2) -
+        Math.max(0, centerY - boxHeight / 2)
+    );
+
+    /* Senza rotazione il risultato è esatto; con rotazione è un'approssimazione */
+    const isRotated = Math.abs(Math.sin(angle)) > 0.001;
+
+    const fullWidthCm = imageWidthPx / pixelsPerCmX;
+    const fullHeightCm = imageHeightPx / pixelsPerCmY;
+
+    const visibleWidthCm = isRotated
+        ? Math.min(fullWidthCm, visibleWidthPx / pixelsPerCmX)
+        : visibleWidthPx / pixelsPerCmX;
+
+    const visibleHeightCm = isRotated
+        ? Math.min(fullHeightCm, visibleHeightPx / pixelsPerCmY)
+        : visibleHeightPx / pixelsPerCmY;
+
+    return {
+        width: visibleWidthCm,
+        height: visibleHeightCm,
+        cropped:
+            visibleWidthPx + 1 < boxWidth ||
+            visibleHeightPx + 1 < boxHeight
+    };
+}
+
+
+/* Nota sotto "Dimensione stampa" quando la foto esce dall'area */
+function updateImageCropNote(isCropped) {
+
+    let note = document.getElementById("imageCropNote");
+
+    if (!note && imageSizeValue.parentElement) {
+        note = document.createElement("small");
+        note.id = "imageCropNote";
+        note.className = "image-crop-note";
+        note.textContent =
+            "La foto esce dall'area: la parte esterna non verrà stampata.";
+        imageSizeValue.parentElement.appendChild(note);
+    }
+
+    if (note) {
+        note.hidden = !isCropped;
+    }
 }
 
 function getTextSizeCm() {
@@ -4449,19 +4654,17 @@ function updateSelectionSizeLabels() {
             printSize.height;
 
 
-        widthCm =
-            (
-                uploadedImage.offsetWidth *
-                state.scale
-            ) /
-            pixelsPerCmX;
+        const visible =
+            getVisibleImageSizeCm(
+                state,
+                uploadedImage.offsetWidth * state.scale,
+                uploadedImage.offsetHeight * state.scale,
+                pixelsPerCmX,
+                pixelsPerCmY
+            );
 
-        heightCm =
-            (
-                uploadedImage.offsetHeight *
-                state.scale
-            ) /
-            pixelsPerCmY;
+        widthCm = visible.width;
+        heightCm = visible.height;
 
     } else if (
         selectedElementType === "text"
@@ -5259,9 +5462,11 @@ function updateProductPreview() {
     );
 
     productDimensions.textContent = product.dimensions;
-    printDimensions.textContent = product.print;
+    const printTexts = getOrientedPrintTexts(currentProduct);
 
-    printAreaInfo.textContent = product.printInfo;
+    printDimensions.textContent = printTexts.print;
+
+    printAreaInfo.textContent = printTexts.printInfo;
 
 
     productPreview.className = "product-preview";
@@ -5329,8 +5534,90 @@ printArea.style.transform = "";
     }
 
     updateVariantButtons();
+    updateOrientationButtons();
 
     renderCurrentState();
+}
+
+
+/* =========================================
+   PULSANTI ORIENTAMENTO
+   ========================================= */
+
+function updateOrientationButtons() {
+
+    const orientation =
+        getProductOrientation(currentProduct);
+
+    document.body.classList.toggle(
+        "product-orientable",
+        Boolean(orientation)
+    );
+
+    if (orientationOptions) {
+        orientationOptions.style.display =
+            orientation ? "block" : "none";
+    }
+
+    document
+        .querySelectorAll("[data-orientation]")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.orientation === orientation
+            );
+        });
+
+    if (mobileOrientationToggle && orientation) {
+        mobileOrientationToggle.querySelector(
+            ".mobile-orientation-label"
+        ).textContent =
+            orientation === "vertical"
+                ? "Verticale"
+                : "Orizzontale";
+    }
+}
+
+function setProductOrientation(orientation) {
+
+    if (
+        !getProductOrientation(currentProduct) ||
+        getProductOrientation(currentProduct) === orientation
+    ) {
+        return;
+    }
+
+    saveHistoryState();
+
+    productStates[currentProduct].front.orientation =
+        orientation;
+
+    selectionControls.style.display = "none";
+
+    updateProductPreview();
+
+    statusMessage.textContent =
+        orientation === "vertical"
+            ? "Area di stampa in verticale."
+            : "Area di stampa in orizzontale.";
+}
+
+document
+    .querySelectorAll("[data-orientation]")
+    .forEach(function (button) {
+        button.addEventListener("click", function () {
+            setProductOrientation(button.dataset.orientation);
+        });
+    });
+
+if (mobileOrientationToggle) {
+    mobileOrientationToggle.addEventListener("click", function () {
+        setProductOrientation(
+            getProductOrientation(currentProduct) === "vertical"
+                ? "horizontal"
+                : "vertical"
+        );
+    });
 }
 
 
@@ -5358,8 +5645,10 @@ function applyGenericProductPreview(product) {
     const paddingRatio =
         GENERIC_PREVIEW_PADDING[product.layout] || 0;
 
+    const printCm = getOrientedPrintCm(currentProduct);
+
     const ratio =
-        product.printCm.width / product.printCm.height;
+        printCm.width / printCm.height;
 
     const available = maxBox / (1 + paddingRatio * 2);
 
@@ -9075,6 +9364,14 @@ function renderCart() {
     /* Altri prodotti: mostriamo misura/formato per distinguerli
        (es. cuscino a cuore piccolo o grande) */
     details = product.dimensions;
+
+    if (item.orientation) {
+        details +=
+            "<br>Orientamento: " +
+            (item.orientation === "vertical"
+                ? "verticale"
+                : "orizzontale");
+    }
 }
 
 
@@ -9283,6 +9580,9 @@ if (currentProduct === "tshirt") {
         : null,
 
 
+    orientation:
+        getProductOrientation(currentProduct),
+
     printFormat:
         currentProduct === "tshirt"
             ? {
@@ -9329,6 +9629,9 @@ item.tshirtSize ===
 
 JSON.stringify(item.printFormat) ===
                 JSON.stringify(cartItem.printFormat) &&
+
+            (item.orientation || null) ===
+                (cartItem.orientation || null) &&
 
             JSON.stringify(item.customization) ===
                 JSON.stringify(cartItem.customization)

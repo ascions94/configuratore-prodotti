@@ -334,7 +334,7 @@
 
                 <select id="productSelect">
                     <optgroup label="Cuscini">
-                        <option value="cushion">Cuscino 40x40 cm</option>
+                        <option value="cushion">Cuscino grande</option>
                         <option value="cushion-small">Cuscino quadrato piccolo</option>
                         <option value="heart-small">Cuscino a cuore piccolo</option>
                         <option value="heart-large">Cuscino a cuore grande</option>
@@ -363,6 +363,21 @@
             <div class="tool-section" id="variantOptions">
                 <label>Formato</label>
                 <div class="variant-buttons" id="variantButtons"></div>
+            </div>
+
+            <!-- ORIENTAMENTO: tele e mattonella rettangolare -->
+            <div class="tool-section" id="orientationOptions">
+                <label>Orientamento</label>
+                <div class="variant-buttons">
+                    <button type="button" class="variant-button orientation-button" data-orientation="vertical">
+                        <span class="orientation-icon orientation-icon-vertical" aria-hidden="true"></span>
+                        Verticale
+                    </button>
+                    <button type="button" class="variant-button orientation-button" data-orientation="horizontal">
+                        <span class="orientation-icon orientation-icon-horizontal" aria-hidden="true"></span>
+                        Orizzontale
+                    </button>
+                </div>
             </div>
 
             <!-- OPZIONI T-SHIRT -->
@@ -908,7 +923,7 @@
 
                 <div>
                     <h1 id="productTitle">
-                        Cuscino 40x40 cm
+                        Cuscino grande
                     </h1>
 
                     <p id="printAreaInfo">
@@ -1185,6 +1200,17 @@
 
      <div class="mobile-editor-bottom">
 
+<!-- ORIENTAMENTO MOBILE (tele e mattonella rettangolare) -->
+<button
+    type="button"
+    class="mobile-orientation-toggle"
+    id="mobileOrientationToggle"
+    aria-label="Cambia orientamento"
+>
+    <span aria-hidden="true">↻</span>
+    <span class="mobile-orientation-label">Verticale</span>
+</button>
+
 <!-- ZOOM T-SHIRT MOBILE -->
 <div class="mobile-tshirt-zoom" id="mobileTshirtZoom">
     <button
@@ -1395,8 +1421,8 @@
             <span class="mobile-product-option-icon">▢</span>
 
             <span class="mobile-product-option-text">
-                <strong>Cuscino</strong>
-                <small>40 × 40 cm</small>
+                <strong>Cuscino grande</strong>
+                <small>Quadrato 40 × 40 cm</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>

@@ -6147,3 +6147,82 @@ a.logo {
 .preview-area:has(.generic-heart) {
     background-color: #f1f4f6;
 }
+
+/* Nota: la foto esce dall'area di stampa */
+.image-crop-note {
+    display: block;
+    margin-top: 6px;
+    color: #a3561b;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.image-crop-note[hidden] {
+    display: none;
+}
+
+
+/* ------------------------------ ORIENTAMENTO ------------------------------ */
+
+#orientationOptions {
+    display: none;
+}
+
+.orientation-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.orientation-icon {
+    display: inline-block;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+}
+
+.orientation-icon-vertical {
+    width: 12px;
+    height: 17px;
+}
+
+.orientation-icon-horizontal {
+    width: 17px;
+    height: 12px;
+}
+
+.mobile-orientation-toggle {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    .mobile-orientation-toggle {
+        position: absolute;
+        left: 4px;
+        bottom: calc(100% + 8px);
+        z-index: 1100;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 14px;
+        border: none;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+        color: #1f2328;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    body.product-orientable .mobile-orientation-toggle {
+        display: inline-flex;
+    }
+
+    /* Prima del design i controlli rapidi stanno sopra la card */
+    body:not(.mobile-customizing):not(.mobile-design-open) .mobile-orientation-toggle {
+        bottom: max(calc(100% + 8px), 160px);
+    }
+}
