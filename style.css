@@ -6261,3 +6261,48 @@ a.logo {
     background-position: center;
     background-size: 100% 100%;
 }
+
+
+/* =========================================
+   MOBILE - LISTA PRODOTTI SCORREVOLE
+   Con tanti prodotti la scheda non entra nello schermo:
+   l'intestazione resta ferma e la lista scorre.
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    #mobileProductsSheet.open {
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100svh - 16px - env(safe-area-inset-top));
+    }
+
+    #mobileProductsSheet .mobile-sheet-header,
+    #mobileProductsSheet .mobile-sheet-subtitle {
+        flex: 0 0 auto;
+    }
+
+    #mobileProductsSheet .mobile-product-options {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+        margin: 0 -4px;
+        padding: 0 4px 4px;
+    }
+
+    .mobile-product-group {
+        margin: 10px 2px 2px;
+        color: #5f6670;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .mobile-product-group:first-child {
+        margin-top: 0;
+    }
+}
