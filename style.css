@@ -6226,3 +6226,38 @@ a.logo {
         bottom: max(calc(100% + 8px), 160px);
     }
 }
+
+
+/* Portachiavi in legno MDF: corpo, foro, anello e tratteggio sono nelle immagini */
+.generic-keychain-mdf {
+    background-color: transparent;
+    overflow: visible;
+}
+
+.generic-print-keychain-mdf {
+    border: none;
+}
+
+.preview-area:has(.generic-keychain-mdf) {
+    background-color: #f1f4f6;
+}
+
+/* Su smartphone anche il fondo della pagina segue lo stesso colore */
+@media (max-width: 600px) {
+    body:has(.generic-heart, .generic-keychain-mdf) {
+        background-color: #f1f4f6;
+    }
+}
+
+/* Anello e fascetta del portachiavi: livello sopra il disegno */
+.generic-keychain-mdf::after {
+    content: "";
+    position: absolute;
+    inset: calc(var(--ring-offset, 0px) * -1);
+    z-index: 16;
+    pointer-events: none;
+    background-image: var(--ring-image, none);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+}

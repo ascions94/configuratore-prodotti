@@ -1460,6 +1460,61 @@ Object.assign(products, {
         printCm: { width: 22.5, height: 18.5 },
         layout: "mousepad",
         price: 10.00
+    },
+
+    /* PORTACHIAVI IN LEGNO MDF
+       printCm = area di stampa (bordo esterno del modello),
+       la linea tratteggiata è la linea di taglio (0,2 cm più interna). */
+
+    "keychain-round": {
+        title: "Portachiavi tondo",
+        name: "Portachiavi in legno personalizzato",
+        dimensions: "Formato: tondo, diametro 5 cm",
+        print: "Area di stampa: diametro 5,2 cm (0,2 cm di scarto oltre il tratteggio)",
+        printInfo: "Tratteggio = linea di taglio · stampa fino a 5,2 cm",
+        printCm: { width: 5.2, height: 5.2 },
+        layout: "keychain-mdf",
+        shape: "keychain-round",
+        price: 10.00
+    },
+
+    "keychain-square": {
+        title: "Portachiavi quadrato",
+        name: "Portachiavi in legno personalizzato",
+        dimensions: "Formato: quadrato 5x5 cm",
+        print: "Area di stampa: 5,2x5,2 cm (0,2 cm di scarto oltre il tratteggio)",
+        printInfo: "Tratteggio = linea di taglio · stampa fino a 5,2x5,2 cm",
+        printCm: { width: 5.2, height: 5.2 },
+        layout: "keychain-mdf",
+        shape: "keychain-square",
+        price: 10.00
+    },
+
+    "keychain-rect": {
+        title: "Portachiavi rettangolare",
+        name: "Portachiavi in legno personalizzato",
+        dimensions: "Formato: rettangolare 4x6 cm",
+        print: "Area di stampa: 4,2x6,2 cm (0,2 cm di scarto oltre il tratteggio)",
+        printInfo: "Tratteggio = linea di taglio · stampa fino a 4,2x6,2 cm",
+        printCm: { width: 4.2, height: 6.2 },
+        nominal: { width: 4, height: 6 },
+        orientable: true,
+        marginNote: "keychain",
+        layout: "keychain-mdf",
+        shape: "keychain-rect",
+        price: 10.00
+    },
+
+    "keychain-heart": {
+        title: "Portachiavi cuore",
+        name: "Portachiavi in legno personalizzato",
+        dimensions: "Formato: cuore, circa 5 cm",
+        print: "Area di stampa: circa 5,2 cm (0,2 cm di scarto oltre il tratteggio)",
+        printInfo: "Tratteggio = linea di taglio · stampa fino a 5,2 cm",
+        printCm: { width: 5.2, height: 4.84 },
+        layout: "keychain-mdf",
+        shape: "keychain-heart",
+        price: 10.00
     }
 });
 
@@ -1474,7 +1529,11 @@ const productVariants = {
     "heart-small":   { group: "cuscini",  label: "Cuore piccolo" },
     "heart-large":   { group: "cuscini",  label: "Cuore grande" },
     tshirt:          { group: "tshirt",   label: "T-Shirt" },
-    keychain:        { group: "keychain", label: "Quadrato 4,5×4,5" },
+    keychain:        { group: "keychain-old", label: "Quadrato 4,5×4,5" }, // non più in vendita
+    "keychain-round":  { group: "keychain", label: "Tondo" },
+    "keychain-square": { group: "keychain", label: "Quadrato" },
+    "keychain-rect":   { group: "keychain", label: "Rettangolo" },
+    "keychain-heart":  { group: "keychain", label: "Cuore" },
     "canvas-s":      { group: "tele",     label: "18×24" },
     "canvas-m":      { group: "tele",     label: "20×30" },
     "canvas-l":      { group: "tele",     label: "30×40" },
@@ -1586,6 +1645,19 @@ function getOrientedPrintTexts(productKey) {
 
     const label =
         `${formatCm(size.width)}x${formatCm(size.height)} cm`;
+
+    if (product.marginNote === "keychain") {
+
+        const printSize = getOrientedPrintCm(productKey);
+
+        const printLabel =
+            `${formatCm(printSize.width)}x${formatCm(printSize.height)} cm`;
+
+        return {
+            print: `Area di stampa: ${printLabel} (0,2 cm di scarto oltre il tratteggio)`,
+            printInfo: `Tratteggio = linea di taglio · stampa fino a ${printLabel}`
+        };
+    }
 
     const margin =
         product.marginNote === "canvas"
@@ -2155,6 +2227,11 @@ if (savedProductStates.tshirt) {
             if (savedConfigurator.currentProduct) {
         currentProduct =
             savedConfigurator.currentProduct;
+    }
+
+    /* Il portachiavi 4,5x4,5 non è più in vendita */
+    if (currentProduct === "keychain") {
+        currentProduct = "keychain-square";
     }
 
     if (savedConfigurator.tshirtColor) {
@@ -4764,7 +4841,8 @@ function getMinimumImageScale() {
 
 
     const minimumSizeCm =
-    currentProduct === "keychain"
+    (currentProduct === "keychain" ||
+        String(currentProduct).startsWith("keychain-"))
         ? MIN_KEYCHAIN_IMAGE_SIZE_CM
         : MIN_IMAGE_SIZE_CM;
 
@@ -5523,6 +5601,9 @@ printArea.style.transform = "";
     /* Nuovi prodotti */
     productPreview.style.width = "";
     productPreview.style.height = "";
+    productPreview.style.marginTop = "";
+    productPreview.style.removeProperty("--ring-image");
+    productPreview.style.removeProperty("--ring-offset");
     printShapeMask.style.display = "none";
     printShapeMask.style.backgroundImage = "";
 
@@ -5634,13 +5715,22 @@ const GENERIC_PREVIEW_PADDING = {
     heart: 0.06, // uguale al margine delle immagini assets/products/*-body.png
     canvas: 0,
     tile: 0.025,
-    mousepad: 0.02
+    mousepad: 0.02,
+    "keychain-mdf": 0.12 // uguale al margine delle immagini keychain-*-body.png
 };
+
+/* Margine dell'immagine dell'anello (keychain-*-ring.png) rispetto all'area di stampa */
+const KEYCHAIN_RING_PAD = 0.75;
 
 function applyGenericProductPreview(product) {
 
     const isMobile = window.innerWidth <= 600;
-    const maxBox = isMobile ? 290 : 430;
+
+    /* I portachiavi sono più piccoli per lasciare spazio all'anello */
+    const maxBox =
+        product.layout === "keychain-mdf"
+            ? (isMobile ? 220 : 320)
+            : (isMobile ? 290 : 430);
 
     const paddingRatio =
         GENERIC_PREVIEW_PADDING[product.layout] || 0;
@@ -5687,11 +5777,44 @@ function applyGenericProductPreview(product) {
     printArea.style.height = printHeight + "px";
 
     if (product.shape) {
+
+        /* Rettangolo in orizzontale: sagoma ruotata (file "-h") */
+        const shapeName =
+            product.orientable &&
+            getProductOrientation(currentProduct) !==
+                getBaseOrientation(product)
+                ? product.shape + "-h"
+                : product.shape;
+
         productPreview.style.backgroundImage =
-            `url("assets/products/${product.shape}-body.png")`;
+            `url("assets/products/${shapeName}-body.png")`;
 
         printShapeMask.style.backgroundImage =
-            `url("assets/products/${product.shape}-mask.png")`;
+            `url("assets/products/${shapeName}-mask.png")`;
+
+        /* Portachiavi: anello e fascetta in un livello sopra, più grande */
+        if (product.layout === "keychain-mdf") {
+
+            const longSide = Math.max(printWidth, printHeight);
+            const ringPad = Math.round(longSide * KEYCHAIN_RING_PAD);
+
+            productPreview.style.setProperty(
+                "--ring-image",
+                `url("assets/products/${shapeName}-ring.png")`
+            );
+
+            productPreview.style.setProperty(
+                "--ring-offset",
+                ringPad - padding + "px"
+            );
+
+            /* Abbassa un po' il portachiavi così si vede anche l'anello */
+            const pxPerCm =
+                longSide / Math.max(printCm.width, printCm.height);
+
+            productPreview.style.marginTop =
+                Math.round(pxPerCm * 1.6) + "px";
+        }
 
         printShapeMask.style.display = "block";
     }
@@ -11761,8 +11884,13 @@ if (imageUploadDropzone) {
 
 (function openProductFromUrl() {
 
-    const requestedProduct =
+    let requestedProduct =
         new URLSearchParams(window.location.search).get("prodotto");
+
+    /* Vecchi link al portachiavi 4,5x4,5 */
+    if (requestedProduct === "keychain") {
+        requestedProduct = "keychain-round";
+    }
 
     const exists = [...productSelect.options].some(function (option) {
         return option.value === requestedProduct;
