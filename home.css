@@ -1962,3 +1962,39 @@ a.is-missing {
     font-weight: 800;
     line-height: 1.35;
 }
+
+
+/* Quattro prodotti in evidenza e tre "presto disponibili" */
+.tint-mint { background: linear-gradient(160deg, var(--mint-soft), #fbfefc); }
+
+@media (min-width: 1081px) {
+
+    .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .product-card-image {
+        height: 230px;
+    }
+
+    .soon-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1080px) {
+
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.soon-card img {
+    max-width: 220px;
+    margin: 0 auto;
+}
+
+.product-card .price {
+    white-space: nowrap;
+}

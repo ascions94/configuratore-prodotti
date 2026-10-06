@@ -6008,3 +6008,142 @@ a.logo {
         background: #f1f1f1;
     }
 }
+
+
+/* =====================================================================
+   NUOVI PRODOTTI: cuscini piccoli e a cuore, tele, mattonelle, tappetino
+   ---------------------------------------------------------------------
+   Le dimensioni in pixel di anteprima e area di stampa sono calcolate
+   da script.js (applyGenericProductPreview) in base alle misure reali.
+   ===================================================================== */
+
+.generic-preview {
+    flex: 0 0 auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.generic-print-area {
+    flex: 0 0 auto;
+    width: auto;
+    height: auto;
+}
+
+/* Cuscino quadrato piccolo: come il cuscino grande */
+.generic-cushion {
+    background-color: #ffffff;
+    border-radius: 18%;
+    box-shadow:
+        inset 0 0 20px rgba(0, 0, 0, 0.08),
+        0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Cuscino a cuore: bordo e ombra sono disegnati nella sagoma */
+.generic-heart {
+    background-color: transparent;
+    overflow: visible;
+}
+
+.generic-print-heart {
+    border: none;
+}
+
+/* Sagoma che copre la parte fuori dalla forma (sopra foto e testi) */
+.print-shape-mask {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    display: none;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+/* Tela: spessore del telaio sui lati */
+.generic-canvas {
+    background: #ffffff;
+    box-shadow:
+        6px 6px 0 #d4dade,
+        12px 12px 0 #c3cacf,
+        16px 22px 30px rgba(0, 0, 0, 0.18);
+}
+
+/* Mattonella: bordo bianco lucido */
+.generic-tile {
+    background: linear-gradient(135deg, #ffffff, #eef1f3);
+    border-radius: 6px;
+    box-shadow:
+        0 1px 0 #ffffff inset,
+        0 10px 26px rgba(0, 0, 0, 0.16);
+}
+
+/* Tappetino mouse: bordo scuro arrotondato */
+.generic-mousepad {
+    background: #2b3137;
+    border-radius: 22px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.generic-print-mousepad {
+    border-radius: 16px;
+    border-color: rgba(255, 255, 255, 0.7);
+    background-color: #ffffff;
+}
+
+.generic-print-canvas,
+.generic-print-tile {
+    background-color: #ffffff;
+}
+
+
+/* --------------------------- PULSANTI FORMATO --------------------------- */
+
+#variantOptions {
+    display: none;
+}
+
+.variant-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+}
+
+/* Prezzo non ancora definito: testo più piccolo */
+.price.price-pending {
+    font-size: 22px;
+}
+
+.variant-button {
+    flex: 1 1 auto;
+    min-width: 80px;
+    padding: 10px 12px;
+    border: 1px solid #cfd5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1f2328;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.variant-button:hover {
+    border-color: #00b0c0;
+    background: #f2fbfc;
+}
+
+.variant-button.active {
+    border-color: #00808e;
+    background: #e6f7f9;
+    color: #00808e;
+    box-shadow: inset 0 0 0 1px #00808e;
+}
+
+/* Cuscini a cuore: lo sfondo dell'anteprima deve avere lo stesso colore
+   della sagoma (#f1f4f6), anche su smartphone */
+.preview-area:has(.generic-heart) {
+    background-color: #f1f4f6;
+}

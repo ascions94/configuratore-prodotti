@@ -27,6 +27,9 @@ const productDimensions = document.getElementById("productDimensions");
 const printDimensions = document.getElementById("printDimensions");
 
 const tshirtOptions = document.getElementById("tshirtOptions");
+const variantOptions = document.getElementById("variantOptions");
+const variantButtons = document.getElementById("variantButtons");
+const printShapeMask = document.getElementById("printShapeMask");
 const printFormatOptions =
     document.getElementById("printFormatOptions");
 
@@ -1307,7 +1310,7 @@ const products = {
         dimensions: "Dimensione: 40x40 cm",
         print: "Area di stampa: 30x30 cm",
         printInfo: "Area stampabile 30x30 cm",
-        price: 19.90
+        price: 15.00
     },
 
     tshirt: {
@@ -1316,7 +1319,7 @@ const products = {
         dimensions: "Taglie disponibili: S, M, L, XL, XXL",
         print: "Area massima di stampa: 30x40 cm",
         printInfo: "Area stampabile massima 30x40 cm",
-        price: 19.90
+        price: 15.00
     },
 
     keychain: {
@@ -1325,10 +1328,163 @@ const products = {
         dimensions: "Dimensione: 4,5x4,5 cm",
         print: "Superficie interamente stampabile",
         printInfo: "Area stampabile 4,5x4,5 cm",
-        price: 14.90
+        price: 10.00
     }
 
 };
+
+
+/* =========================================
+   NUOVI PRODOTTI
+   -----------------------------------------
+   Funzionano come il cuscino (un solo lato).
+   - printCm: area reale di stampa in cm, presa dai
+     modelli a 300 dpi (comprende il margine di taglio).
+   - layout: aspetto dell'anteprima (vedi style.css).
+   - price: null = prezzo ancora da definire
+     (il prodotto si personalizza ma non va nel carrello).
+   ========================================= */
+
+Object.assign(products, {
+
+    "cushion-small": {
+        title: "Cuscino quadrato piccolo",
+        name: "Cuscino piccolo personalizzato",
+        dimensions: "Formato: quadrato piccolo",
+        print: "Area di stampa: 16x16 cm",
+        printInfo: "Area stampabile 16x16 cm",
+        printCm: { width: 16, height: 16 },
+        layout: "cushion",
+        price: 10.00
+    },
+
+    "heart-small": {
+        title: "Cuscino a cuore piccolo",
+        name: "Cuscino a cuore personalizzato",
+        dimensions: "Dimensione: circa 15x15 cm",
+        print: "Superficie del cuore interamente stampabile",
+        printInfo: "Area stampabile circa 14,5x14,5 cm",
+        printCm: { width: 14.4, height: 14.7 },
+        layout: "heart",
+        shape: "heart-small",
+        price: 10.00
+    },
+
+    "heart-large": {
+        title: "Cuscino a cuore grande",
+        name: "Cuscino a cuore personalizzato",
+        dimensions: "Dimensione: circa 35x30 cm",
+        print: "Superficie del cuore interamente stampabile",
+        printInfo: "Area stampabile circa 35x30 cm",
+        printCm: { width: 35, height: 30.2 },
+        layout: "heart",
+        shape: "heart-large",
+        price: 15.00
+    },
+
+    "canvas-s": {
+        title: "Tela 18x24 cm",
+        name: "Tela personalizzata",
+        dimensions: "Dimensione: 18x24 cm",
+        print: "Area di stampa: 18x24 cm + 0,5 cm di margine per lato",
+        printInfo: "Area stampabile 18x24 cm (con margine)",
+        printCm: { width: 19, height: 25 },
+        layout: "canvas",
+        price: null // DA DEFINIRE
+    },
+
+    "canvas-m": {
+        title: "Tela 20x30 cm",
+        name: "Tela personalizzata",
+        dimensions: "Dimensione: 20x30 cm",
+        print: "Area di stampa: 20x30 cm + 0,5 cm di margine per lato",
+        printInfo: "Area stampabile 20x30 cm (con margine)",
+        printCm: { width: 21, height: 31 },
+        layout: "canvas",
+        price: null // DA DEFINIRE
+    },
+
+    "canvas-l": {
+        title: "Tela 30x40 cm",
+        name: "Tela personalizzata",
+        dimensions: "Dimensione: 30x40 cm",
+        print: "Area di stampa: 30x40 cm + 0,5 cm di margine per lato",
+        printInfo: "Area stampabile 30x40 cm (con margine)",
+        printCm: { width: 31, height: 41 },
+        layout: "canvas",
+        price: null // DA DEFINIRE
+    },
+
+    "tile-square": {
+        title: "Mattonella 20x20 cm",
+        name: "Mattonella personalizzata",
+        dimensions: "Dimensione: 20x20 cm",
+        print: "Area di stampa: 20x20 cm + margine di taglio",
+        printInfo: "Area stampabile 20x20 cm (con margine)",
+        printCm: { width: 20.5, height: 20.5 },
+        layout: "tile",
+        price: null // DA DEFINIRE
+    },
+
+    "tile-rect": {
+        title: "Mattonella 15x20 cm",
+        name: "Mattonella personalizzata",
+        dimensions: "Dimensione: 15x20 cm",
+        print: "Area di stampa: 15x20 cm + margine di taglio",
+        printInfo: "Area stampabile 15x20 cm (con margine)",
+        printCm: { width: 20.5, height: 15.5 },
+        layout: "tile",
+        price: null // DA DEFINIRE
+    },
+
+    mousepad: {
+        title: "Tappetino mouse 22x18 cm",
+        name: "Tappetino mouse personalizzato",
+        dimensions: "Dimensione: 22x18 cm",
+        print: "Area di stampa: 22x18 cm + margine di taglio",
+        printInfo: "Area stampabile 22x18 cm (con margine)",
+        printCm: { width: 22.5, height: 18.5 },
+        layout: "mousepad",
+        price: 10.00
+    }
+});
+
+
+/*
+   Famiglie di prodotti e relative varianti
+   (servono per i pulsanti "Formato" nel pannello).
+*/
+const productVariants = {
+    cushion:         { group: "cuscini",  label: "Quadrato 40×40" },
+    "cushion-small": { group: "cuscini",  label: "Quadrato piccolo" },
+    "heart-small":   { group: "cuscini",  label: "Cuore piccolo" },
+    "heart-large":   { group: "cuscini",  label: "Cuore grande" },
+    tshirt:          { group: "tshirt",   label: "T-Shirt" },
+    keychain:        { group: "keychain", label: "Quadrato 4,5×4,5" },
+    "canvas-s":      { group: "tele",     label: "18×24" },
+    "canvas-m":      { group: "tele",     label: "20×30" },
+    "canvas-l":      { group: "tele",     label: "30×40" },
+    "tile-square":   { group: "mattonelle", label: "20×20" },
+    "tile-rect":     { group: "mattonelle", label: "15×20" },
+    mousepad:        { group: "tappetini", label: "22×18" }
+};
+
+
+/* Prodotti "semplici" (un solo lato), compresi cuscino e portachiavi */
+function isSingleSideProduct(productKey) {
+    return productKey !== "tshirt";
+}
+
+
+/* Prezzo formattato; se manca mostra "Prezzo da definire" */
+function formatProductPrice(price) {
+
+    if (typeof price !== "number") {
+        return "Prezzo da definire";
+    }
+
+    return `€${price.toFixed(2).replace(".", ",")}`;
+}
 
 
 function createImageState(src) {
@@ -1794,6 +1950,15 @@ let productStates = {
 
 };
 
+/* Uno stato indipendente per ogni nuovo prodotto */
+Object.keys(products).forEach(function (productKey) {
+    if (!productStates[productKey]) {
+        productStates[productKey] = {
+            front: createEmptyState()
+        };
+    }
+});
+
 /*
     Recuperiamo un eventuale
     progetto salvato.
@@ -1823,6 +1988,20 @@ if (savedProductStates.keychain) {
     productStates.keychain =
         savedProductStates.keychain;
 }
+
+/* Nuovi prodotti salvati in precedenza */
+Object.keys(products).forEach(function (productKey) {
+    if (
+        productKey !== "tshirt" &&
+        productKey !== "cushion" &&
+        productKey !== "keychain" &&
+        savedProductStates[productKey] &&
+        savedProductStates[productKey].front
+    ) {
+        productStates[productKey] =
+            savedProductStates[productKey];
+    }
+});
 
 /*
     T-SHIRT
@@ -3865,6 +4044,17 @@ function getCurrentState() {
 
 function getCurrentPrintAreaCm() {
 
+    /* Nuovi prodotti: misure prese dalla definizione */
+    if (
+        products[currentProduct] &&
+        products[currentProduct].printCm
+    ) {
+        return {
+            width: products[currentProduct].printCm.width,
+            height: products[currentProduct].printCm.height
+        };
+    }
+
     if (currentProduct === "cushion") {
 
         return {
@@ -5061,7 +5251,12 @@ function updateProductPreview() {
     productTitle.textContent = product.title;
     productName.textContent = product.name;
     productPrice.textContent =
-    `€${product.price.toFixed(2).replace(".", ",")}`;
+    formatProductPrice(product.price);
+
+    productPrice.classList.toggle(
+        "price-pending",
+        typeof product.price !== "number"
+    );
 
     productDimensions.textContent = product.dimensions;
     printDimensions.textContent = product.print;
@@ -5120,7 +5315,177 @@ printArea.style.transform = "";
     }
 
 
+    /* Nuovi prodotti */
+    productPreview.style.width = "";
+    productPreview.style.height = "";
+    printShapeMask.style.display = "none";
+    printShapeMask.style.backgroundImage = "";
+
+    if (product.layout) {
+        applyGenericProductPreview(product);
+
+        tshirtOptions.style.display = "none";
+        printFormatOptions.style.display = "none";
+    }
+
+    updateVariantButtons();
+
     renderCurrentState();
+}
+
+
+/* =========================================
+   ANTEPRIMA DEI NUOVI PRODOTTI
+   -----------------------------------------
+   L'area di stampa viene dimensionata in pixel
+   mantenendo le proporzioni reali in cm: così le
+   misure mostrate restano quelle di stampa.
+   ========================================= */
+
+const GENERIC_PREVIEW_PADDING = {
+    cushion: 0.12,
+    heart: 0.06, // uguale al margine delle immagini assets/products/*-body.png
+    canvas: 0,
+    tile: 0.025,
+    mousepad: 0.02
+};
+
+function applyGenericProductPreview(product) {
+
+    const isMobile = window.innerWidth <= 600;
+    const maxBox = isMobile ? 290 : 430;
+
+    const paddingRatio =
+        GENERIC_PREVIEW_PADDING[product.layout] || 0;
+
+    const ratio =
+        product.printCm.width / product.printCm.height;
+
+    const available = maxBox / (1 + paddingRatio * 2);
+
+    let printWidth = available;
+    let printHeight = available / ratio;
+
+    if (printHeight > available) {
+        printHeight = available;
+        printWidth = available * ratio;
+    }
+
+    printWidth = Math.round(printWidth);
+    printHeight = Math.round(printHeight);
+
+    const padding = Math.round(
+        Math.max(printWidth, printHeight) * paddingRatio
+    );
+
+    productPreview.classList.add(
+        "generic-preview",
+        `generic-${product.layout}`
+    );
+
+    printArea.classList.add(
+        "generic-print-area",
+        `generic-print-${product.layout}`
+    );
+
+    productPreview.style.width =
+        printWidth + padding * 2 + "px";
+
+    productPreview.style.height =
+        printHeight + padding * 2 + "px";
+
+    printArea.style.width = printWidth + "px";
+    printArea.style.height = printHeight + "px";
+
+    if (product.shape) {
+        productPreview.style.backgroundImage =
+            `url("assets/products/${product.shape}-body.png")`;
+
+        printShapeMask.style.backgroundImage =
+            `url("assets/products/${product.shape}-mask.png")`;
+
+        printShapeMask.style.display = "block";
+    }
+}
+
+
+/* Se si passa da computer a smartphone (o viceversa) ricalcola le misure */
+let genericPreviewIsMobile = window.innerWidth <= 600;
+
+window.addEventListener("resize", function () {
+
+    const isMobile = window.innerWidth <= 600;
+
+    if (
+        isMobile !== genericPreviewIsMobile &&
+        products[currentProduct] &&
+        products[currentProduct].layout
+    ) {
+        updateProductPreview();
+    }
+
+    genericPreviewIsMobile = isMobile;
+});
+
+
+/* =========================================
+   PULSANTI "FORMATO" (varianti dello stesso prodotto)
+   ========================================= */
+
+function updateVariantButtons() {
+
+    if (!variantOptions) {
+        return;
+    }
+
+    const current = productVariants[currentProduct];
+
+    const siblings = Object.keys(productVariants).filter(
+        function (key) {
+            return (
+                current &&
+                productVariants[key].group === current.group &&
+                products[key]
+            );
+        }
+    );
+
+    variantButtons.innerHTML = "";
+
+    if (siblings.length < 2) {
+        variantOptions.style.display = "none";
+        return;
+    }
+
+    siblings.forEach(function (key) {
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "variant-button";
+        button.textContent = productVariants[key].label;
+        button.dataset.variant = key;
+
+        if (key === currentProduct) {
+            button.classList.add("active");
+        }
+
+        button.addEventListener("click", function () {
+
+            if (productSelect.value === key) {
+                return;
+            }
+
+            productSelect.value = key;
+            productSelect.dispatchEvent(
+                new Event("change", { bubbles: true })
+            );
+        });
+
+        variantButtons.appendChild(button);
+    });
+
+    variantOptions.style.display = "block";
 }
 
 
@@ -8705,6 +9070,11 @@ function renderCart() {
     `<br>Taglia: ${item.tshirtSize || "Non specificata"}` +
     `<br>Fronte: ${frontFormat}` +
     `<br>Retro: ${backFormat}`;
+} else if (product && product.dimensions) {
+
+    /* Altri prodotti: mostriamo misura/formato per distinguerli
+       (es. cuscino a cuore piccolo o grande) */
+    details = product.dimensions;
 }
 
 
@@ -8849,6 +9219,12 @@ function updateCartCount() {
 
 
 addToCartButton.addEventListener("click", async function () {
+
+    if (typeof products[currentProduct].price !== "number") {
+        statusMessage.textContent =
+            "Questo prodotto sarà presto acquistabile: il prezzo non è ancora disponibile.";
+        return;
+    }
 
     const quantity = Math.max(
         1,

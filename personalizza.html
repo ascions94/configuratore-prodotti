@@ -333,18 +333,36 @@
                 <label for="productSelect">Prodotto</label>
 
                 <select id="productSelect">
-                    <option value="cushion">
-                        Cuscino 40x40 cm
-                    </option>
+                    <optgroup label="Cuscini">
+                        <option value="cushion">Cuscino 40x40 cm</option>
+                        <option value="cushion-small">Cuscino quadrato piccolo</option>
+                        <option value="heart-small">Cuscino a cuore piccolo</option>
+                        <option value="heart-large">Cuscino a cuore grande</option>
+                    </optgroup>
 
-                    <option value="tshirt">
-                        T-Shirt
-                    </option>
+                    <optgroup label="Abbigliamento">
+                        <option value="tshirt">T-Shirt</option>
+                    </optgroup>
 
-                    <option value="keychain">
-                        Portachiavi 4,5x4,5 cm
-                    </option>
+                    <optgroup label="Casa e ufficio">
+                        <option value="canvas-s">Tela 18x24 cm</option>
+                        <option value="canvas-m">Tela 20x30 cm</option>
+                        <option value="canvas-l">Tela 30x40 cm</option>
+                        <option value="tile-square">Mattonella 20x20 cm</option>
+                        <option value="tile-rect">Mattonella 15x20 cm</option>
+                        <option value="mousepad">Tappetino mouse 22x18 cm</option>
+                    </optgroup>
+
+                    <optgroup label="Accessori">
+                        <option value="keychain">Portachiavi 4,5x4,5 cm</option>
+                    </optgroup>
                 </select>
+            </div>
+
+            <!-- FORMATO: pulsanti per le varianti dello stesso prodotto -->
+            <div class="tool-section" id="variantOptions">
+                <label>Formato</label>
+                <div class="variant-buttons" id="variantButtons"></div>
             </div>
 
             <!-- OPZIONI T-SHIRT -->
@@ -923,6 +941,9 @@
 
 <div id="customText"></div>
 
+<!-- Sagoma del prodotto (es. cuscino a cuore): copre la parte fuori forma -->
+<div id="printShapeMask" class="print-shape-mask" aria-hidden="true"></div>
+
 <div
     id="guideVertical"
     class="center-guide vertical-guide"
@@ -1408,6 +1429,141 @@
             <span class="mobile-product-option-text">
                 <strong>Portachiavi</strong>
                 <small>4,5 × 4,5 cm</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="cushion-small"
+        >
+            <span class="mobile-product-option-icon">▫</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Cuscino piccolo</strong>
+                <small>Quadrato piccolo</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="heart-small"
+        >
+            <span class="mobile-product-option-icon">♡</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Cuscino a cuore</strong>
+                <small>Piccolo, circa 15 × 15 cm</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="heart-large"
+        >
+            <span class="mobile-product-option-icon">♡</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Cuscino a cuore grande</strong>
+                <small>Circa 35 × 30 cm</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="canvas-s"
+        >
+            <span class="mobile-product-option-icon">▭</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Tela 18 × 24</strong>
+                <small>Formato verticale</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="canvas-m"
+        >
+            <span class="mobile-product-option-icon">▭</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Tela 20 × 30</strong>
+                <small>Formato verticale</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="canvas-l"
+        >
+            <span class="mobile-product-option-icon">▭</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Tela 30 × 40</strong>
+                <small>Formato verticale</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="tile-square"
+        >
+            <span class="mobile-product-option-icon">◻</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Mattonella 20 × 20</strong>
+                <small>Formato quadrato</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="tile-rect"
+        >
+            <span class="mobile-product-option-icon">◻</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Mattonella 15 × 20</strong>
+                <small>Formato rettangolare</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="mousepad"
+        >
+            <span class="mobile-product-option-icon">▬</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Tappetino mouse</strong>
+                <small>22 × 18 cm</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>
