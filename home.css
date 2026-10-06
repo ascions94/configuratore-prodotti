@@ -1998,3 +1998,10 @@ a.is-missing {
 .product-card .price {
     white-space: nowrap;
 }
+
+/* "Presto disponibili": ora due prodotti */
+@media (min-width: 1081px) {
+    .soon-grid {
+        grid-template-columns: repeat(2, minmax(0, 380px));
+    }
+}
