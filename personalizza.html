@@ -330,9 +330,15 @@
 
                 <div class="panel-group-body">
             <div class="tool-section">
-                <label for="productSelect">Prodotto</label>
+                <label>Categoria</label>
 
-                <select id="productSelect">
+                <!-- CATEGORIE: i pulsanti sono creati da script.js
+                     (vedi "productCategories") -->
+                <div class="category-buttons" id="categoryButtons"></div>
+
+                <!-- Menu tecnico nascosto: resta la "fonte" del prodotto
+                     scelto, usata da tutto il configuratore -->
+                <select id="productSelect" class="product-select-hidden" aria-hidden="true" tabindex="-1">
                     <optgroup label="Cuscini">
                         <option value="cushion">Cuscino grande</option>
                         <option value="cushion-small">Cuscino quadrato piccolo</option>
@@ -364,7 +370,7 @@
 
             <!-- FORMATO: pulsanti per le varianti dello stesso prodotto -->
             <div class="tool-section" id="variantOptions">
-                <label>Formato</label>
+                <label id="variantOptionsLabel">Tipo</label>
                 <div class="variant-buttons" id="variantButtons"></div>
             </div>
 
@@ -386,6 +392,30 @@
             <!-- OPZIONI T-SHIRT -->
             <div class="tool-section" id="tshirtOptions">
 
+                <label>Tessuto</label>
+
+                <div class="variant-buttons tshirt-choice-buttons">
+                    <button type="button" class="variant-button tshirt-fabric-button active" data-tshirt-fabric="cotton">
+                        100% cotone
+                    </button>
+                    <button type="button" class="variant-button tshirt-fabric-button" data-tshirt-fabric="polyester">
+                        Poliestere
+                    </button>
+                </div>
+
+                <label>Modello</label>
+
+                <div class="variant-buttons tshirt-choice-buttons">
+                    <button type="button" class="variant-button tshirt-fit-button active" data-tshirt-fit="adult">
+                        Adulto unisex
+                    </button>
+                    <button type="button" class="variant-button tshirt-fit-button" data-tshirt-fit="kids">
+                        Bambino
+                    </button>
+                </div>
+
+                <div id="tshirtColorRow">
+
                 <label>Colore T-Shirt</label>
 
                 <div class="color-buttons">
@@ -404,9 +434,15 @@
                     </button>
                 </div>
 
-                <label>Taglia</label>
+                </div>
 
-<div class="size-buttons">
+                <p class="tshirt-color-note" id="tshirtColorNote">
+                    La T-Shirt in poliestere è disponibile solo bianca.
+                </p>
+
+                <label id="tshirtSizeLabel">Taglia</label>
+
+<div class="size-buttons" data-size-group="adult">
 
     <button
         type="button"
@@ -446,6 +482,79 @@
         data-size="XXL"
     >
         XXL
+    </button>
+
+</div>
+
+<!-- Taglie bambino (età): cotone e poliestere hanno taglie diverse -->
+<div class="size-buttons" data-size-group="kids-cotton">
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="3-4 anni"
+    >
+        3-4
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="5-6 anni"
+    >
+        5-6
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="7-8 anni"
+    >
+        7-8
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="9-11 anni"
+    >
+        9-11
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="12-13 anni"
+    >
+        12-13
+    </button>
+
+</div>
+
+<div class="size-buttons" data-size-group="kids-polyester">
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="4-5 anni"
+    >
+        4-5
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="6-8 anni"
+    >
+        6-8
+    </button>
+
+    <button
+        type="button"
+        class="size-button"
+        data-size="10-12 anni"
+    >
+        10-12
     </button>
 
 </div>
@@ -1395,7 +1504,16 @@
 
     <div class="mobile-sheet-header">
 
-        <h2>Prodotti</h2>
+        <button
+            type="button"
+            class="mobile-sheet-back"
+            id="mobileProductsBack"
+            aria-label="Torna alle categorie"
+        >
+            ‹
+        </button>
+
+        <h2 id="mobileProductsTitle">Prodotti</h2>
 
         <button
             type="button"
@@ -1409,19 +1527,115 @@
     </div>
 
 
-    <p class="mobile-sheet-subtitle">
-        Scegli il prodotto da personalizzare
+    <p class="mobile-sheet-subtitle" id="mobileProductsSubtitle">
+        Scegli la categoria
     </p>
 
 
-    <div class="mobile-product-options">
+    <!-- PASSO 1: CATEGORIE -->
+    <div class="mobile-category-options" id="mobileCategoryOptions">
 
-        <p class="mobile-product-group">Cuscini</p>
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-category-open="cuscini"
+        >
+            <span class="mobile-product-option-icon">▢</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Cuscini</strong>
+                <small>Quadrati e a cuore</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-category-open="tshirt"
+        >
+            <span class="mobile-product-option-icon">👕</span>
+
+            <span class="mobile-product-option-text">
+                <strong>T-Shirt</strong>
+                <small>Cotone o poliestere, adulto e bambino</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-category-open="keychain"
+        >
+            <span class="mobile-product-option-icon">○</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Portachiavi in legno</strong>
+                <small>Tondo, quadrato, rettangolo, cuore</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-category-open="tele"
+        >
+            <span class="mobile-product-option-icon">▭</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Tele</strong>
+                <small>18 × 24, 20 × 30, 30 × 40</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-category-open="mattonelle"
+        >
+            <span class="mobile-product-option-icon">◻</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Mattonelle</strong>
+                <small>20 × 20 e 15 × 20</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-category-open="tappetini"
+        >
+            <span class="mobile-product-option-icon">▬</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Tappetino mouse</strong>
+                <small>22 × 18 cm</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+    </div>
+
+
+    <!-- PASSO 2: TIPI DELLA CATEGORIA SCELTA -->
+    <div class="mobile-product-options" id="mobileProductOptions">
 
         <button
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="cushion"
+            data-mobile-category="cuscini"
         >
             <span class="mobile-product-option-icon">▢</span>
 
@@ -1437,6 +1651,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="cushion-small"
+            data-mobile-category="cuscini"
         >
             <span class="mobile-product-option-icon">▫</span>
 
@@ -1452,6 +1667,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="heart-small"
+            data-mobile-category="cuscini"
         >
             <span class="mobile-product-option-icon">♡</span>
 
@@ -1467,6 +1683,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="heart-large"
+            data-mobile-category="cuscini"
         >
             <span class="mobile-product-option-icon">♡</span>
 
@@ -1478,29 +1695,11 @@
             <span class="mobile-product-arrow">›</span>
         </button>
 
-        <p class="mobile-product-group">Abbigliamento</p>
-
-        <button
-            type="button"
-            class="mobile-product-option"
-            data-mobile-product-choice="tshirt"
-        >
-            <span class="mobile-product-option-icon">👕</span>
-
-            <span class="mobile-product-option-text">
-                <strong>T-Shirt</strong>
-                <small>Personalizza fronte e retro</small>
-            </span>
-
-            <span class="mobile-product-arrow">›</span>
-        </button>
-
-        <p class="mobile-product-group">Portachiavi in legno</p>
-
         <button
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="keychain-round"
+            data-mobile-category="keychain"
         >
             <span class="mobile-product-option-icon">○</span>
 
@@ -1516,6 +1715,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="keychain-square"
+            data-mobile-category="keychain"
         >
             <span class="mobile-product-option-icon">◇</span>
 
@@ -1531,6 +1731,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="keychain-rect"
+            data-mobile-category="keychain"
         >
             <span class="mobile-product-option-icon">▯</span>
 
@@ -1546,6 +1747,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="keychain-heart"
+            data-mobile-category="keychain"
         >
             <span class="mobile-product-option-icon">♡</span>
 
@@ -1557,12 +1759,11 @@
             <span class="mobile-product-arrow">›</span>
         </button>
 
-        <p class="mobile-product-group">Casa e ufficio</p>
-
         <button
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="mousepad"
+            data-mobile-category="tappetini"
         >
             <span class="mobile-product-option-icon">▬</span>
 
@@ -1578,6 +1779,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="canvas-s"
+            data-mobile-category="tele"
         >
             <span class="mobile-product-option-icon">▭</span>
 
@@ -1593,6 +1795,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="canvas-m"
+            data-mobile-category="tele"
         >
             <span class="mobile-product-option-icon">▭</span>
 
@@ -1608,6 +1811,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="canvas-l"
+            data-mobile-category="tele"
         >
             <span class="mobile-product-option-icon">▭</span>
 
@@ -1623,6 +1827,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="tile-square"
+            data-mobile-category="mattonelle"
         >
             <span class="mobile-product-option-icon">◻</span>
 
@@ -1638,6 +1843,7 @@
             type="button"
             class="mobile-product-option"
             data-mobile-product-choice="tile-rect"
+            data-mobile-category="mattonelle"
         >
             <span class="mobile-product-option-icon">◻</span>
 
@@ -1678,7 +1884,7 @@
             ‹
         </button>
 
-        <h2>Scegli la T-Shirt</h2>
+        <h2>Scegli il tessuto</h2>
 
         <button
             type="button"
@@ -1693,82 +1899,187 @@
 
 
     <p class="mobile-sheet-subtitle">
-        Scegli il modello da personalizzare
+        Che tipo di T-Shirt vuoi personalizzare?
     </p>
 
 
     <div class="mobile-tshirt-models">
 
+        <!-- 100% COTONE -->
         <button
             type="button"
             class="mobile-tshirt-model"
-            id="mobileClassicTshirt"
+            data-mobile-tshirt-fabric="cotton"
         >
 
             <div class="mobile-tshirt-model-preview">
-
                 <img
                     src="assets/tshirt-white-front.png"
-                    alt="T-Shirt Cotone 100%"
+                    alt="T-Shirt 100% cotone"
                 >
-
             </div>
-
 
             <div class="mobile-tshirt-model-info">
-
-                <strong>
-    T-Shirt Cotone 100%
-</strong>
-
-                <span>
-                    Personalizzabile fronte e retro
-                </span>
-
-                <b>
-                    €19,90
-                </b>
-
+                <strong>T-Shirt 100% cotone</strong>
+                <span>Bianca o nera · adulto e bambino</span>
+                <b data-tshirt-price-from="cotton"></b>
             </div>
 
-
-            <span class="mobile-product-arrow">
-                ›
-            </span>
+            <span class="mobile-product-arrow">›</span>
 
         </button>
 
 
-        <div class="mobile-tshirt-model coming-soon">
+        <!-- POLIESTERE -->
+        <button
+            type="button"
+            class="mobile-tshirt-model"
+            data-mobile-tshirt-fabric="polyester"
+        >
 
             <div class="mobile-tshirt-model-preview">
-
-                <span class="mobile-coming-icon">
-                    👕
-                </span>
-
+                <img
+                    src="assets/tshirt-white-front.png"
+                    alt="T-Shirt in poliestere"
+                >
             </div>
-
 
             <div class="mobile-tshirt-model-info">
-
-                <strong>
-                    Altri modelli
-                </strong>
-
-                <span>
-                    Nuove T-Shirt in arrivo
-                </span>
-
-                <b>
-                    Prossimamente
-                </b>
-
+                <strong>T-Shirt Poliestere</strong>
+                <span>Solo bianca · adulto e bambino</span>
+                <b data-tshirt-price-from="polyester"></b>
             </div>
 
-        </div>
+            <span class="mobile-product-arrow">›</span>
+
+        </button>
 
     </div>
+
+</div>
+
+<!-- =========================================
+     PANNELLO MOBILE - ADULTO / BAMBINO
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileTshirtFitOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet"
+    id="mobileTshirtFitSheet"
+>
+
+    <div class="mobile-sheet-header">
+
+        <button
+            type="button"
+            class="mobile-sheet-back"
+            id="mobileTshirtFitBack"
+            aria-label="Torna al tessuto"
+        >
+            ‹
+        </button>
+
+        <h2>Scegli il modello</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileTshirtFitClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <p class="mobile-sheet-subtitle" id="mobileTshirtFitSubtitle">
+        T-Shirt 100% cotone
+    </p>
+
+    <div class="mobile-product-options">
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-tshirt-fit="adult"
+        >
+            <span class="mobile-product-option-icon">👕</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Adulto unisex</strong>
+                <small>Taglie S · M · L · XL · XXL</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-tshirt-fit="kids"
+        >
+            <span class="mobile-product-option-icon mobile-icon-small">👕</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Bambino</strong>
+                <small id="mobileKidsSizesText">Taglie da 3-4 a 12-13 anni</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+     PANNELLO MOBILE - TAGLIA T-SHIRT
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileTshirtSizeOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet"
+    id="mobileTshirtSizeSheet"
+>
+
+    <div class="mobile-sheet-header">
+
+        <button
+            type="button"
+            class="mobile-sheet-back"
+            id="mobileTshirtSizeBack"
+            aria-label="Indietro"
+        >
+            ‹
+        </button>
+
+        <h2>Scegli la taglia</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileTshirtSizeClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <p class="mobile-sheet-subtitle" id="mobileTshirtSizeSubtitle">
+        T-Shirt
+    </p>
+
+    <!-- I pulsanti delle taglie sono creati da script.js -->
+    <div class="mobile-size-options" id="mobileTshirtSizeOptions"></div>
 
 </div>
 
@@ -1792,7 +2103,7 @@
             type="button"
             class="mobile-sheet-back"
             id="mobileTshirtColorBack"
-            aria-label="Torna ai modelli"
+            aria-label="Indietro"
         >
             ‹
         </button>
@@ -1810,8 +2121,8 @@
 
     </div>
 
-    <p class="mobile-sheet-subtitle">
-        T-Shirt Cotone 100%
+    <p class="mobile-sheet-subtitle" id="mobileTshirtColorSubtitle">
+        T-Shirt 100% cotone
     </p>
 
 
@@ -1895,6 +2206,22 @@
     <div class="mobile-more-actions">
 
         <!-- TUTTI I PRODOTTI -->
+
+        <button
+            type="button"
+            class="mobile-more-action tshirt-only-action"
+            id="mobileTshirtSizeAction"
+        >
+            <span class="mobile-more-icon">⇕</span>
+
+            <span class="mobile-more-text">
+                <strong>Taglia</strong>
+                <small id="mobileTshirtSizeActionValue">Scegli la taglia della T-Shirt</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
 
         <button
             type="button"

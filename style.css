@@ -6306,3 +6306,164 @@ a.logo {
         margin-top: 0;
     }
 }
+
+
+/* =========================================
+   CATEGORIE E SOTTOCATEGORIE PRODOTTO
+   ========================================= */
+
+/* Il menu a tendina resta solo come "motore" interno */
+#productSelect.product-select-hidden {
+    display: none !important;
+}
+
+.category-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.category-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    min-height: 68px;
+    padding: 10px 3px;
+    border: 1px solid #cfd5db;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #1f2328;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.category-button:hover {
+    border-color: #00b0c0;
+    background: #f2fbfc;
+}
+
+.category-button.active {
+    border-color: #00808e;
+    background: #e6f7f9;
+    color: #00808e;
+    box-shadow: inset 0 0 0 1px #00808e;
+}
+
+.category-button-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.category-button-label {
+    max-width: 100%;
+    font-size: 12px;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* T-Shirt: tessuto e modello */
+#tshirtOptions .tshirt-choice-buttons {
+    margin-bottom: 16px;
+}
+
+.tshirt-color-note {
+    display: none;
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f5f7f8;
+    color: #4b5560;
+    font-size: 13px;
+}
+
+/* Taglie bambino: nascoste finché non si sceglie "Bambino" */
+.size-buttons[data-size-group^="kids"] {
+    display: none;
+}
+
+.size-buttons[data-size-group="kids-polyester"] {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.size-buttons[data-size-group^="kids"] .size-button {
+    font-size: 13px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+
+/* --------- MOBILE: categorie → tipi, taglia T-Shirt --------- */
+
+@media (max-width: 600px) {
+
+    #mobileProductsSheet .mobile-sheet-back {
+        display: none;
+    }
+
+    #mobileProductsSheet.showing-products .mobile-sheet-back {
+        display: flex;
+    }
+
+    #mobileProductsSheet .mobile-category-options {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+        margin: 0 -4px;
+        padding: 0 4px 4px;
+    }
+
+    #mobileProductsSheet:not(.showing-products) #mobileProductOptions,
+    #mobileProductsSheet.showing-products #mobileCategoryOptions {
+        display: none;
+    }
+
+    #mobileProductsSheet .mobile-product-option[hidden] {
+        display: none;
+    }
+
+    #mobileProductsSheet .mobile-product-option.active {
+        box-shadow: inset 0 0 0 2px #00808e;
+        background: #e6f7f9;
+    }
+
+    .mobile-icon-small {
+        font-size: 19px;
+    }
+
+    .mobile-size-options {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        padding-bottom: 6px;
+    }
+
+    .mobile-size-option {
+        min-height: 54px;
+        border: none;
+        border-radius: 14px;
+        background: #f4f4f4;
+        color: #1f2328;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .mobile-size-option.active {
+        background: #e6f7f9;
+        color: #00808e;
+        box-shadow: inset 0 0 0 2px #00808e;
+    }
+}

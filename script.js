@@ -1297,6 +1297,8 @@ let currentProduct = productSelect.value;
 
 let tshirtColor = "white";
 let tshirtSize = "M";
+let tshirtFabric = "cotton"; // "cotton" (100% cotone) oppure "polyester"
+let tshirtFit = "adult";     // "adult" (adulto unisex) oppure "kids" (bambino)
 let tshirtSide = "front";
 let tshirtPrintFormat = {
     front: "vertical",
@@ -1543,6 +1545,189 @@ const productVariants = {
 };
 
 
+/* =========================================
+   CATEGORIE DI PRODOTTO
+   -----------------------------------------
+   Ogni categoria raggruppa i prodotti con lo stesso
+   "group" in productVariants. L'ordine qui è l'ordine
+   dei pulsanti nel pannello.
+   variantLabel = titolo dei pulsanti dei tipi.
+   ========================================= */
+const productCategories = [
+    { key: "cuscini",    label: "Cuscini",         icon: "▢", variantLabel: "Tipo di cuscino" },
+    { key: "tshirt",     label: "T-Shirt",         icon: "👕" },
+    { key: "keychain",   label: "Portachiavi",     icon: "○", variantLabel: "Forma del portachiavi" },
+    { key: "tele",       label: "Tele",            icon: "▭", variantLabel: "Misura della tela" },
+    { key: "mattonelle", label: "Mattonelle",      icon: "◻", variantLabel: "Misura della mattonella" },
+    { key: "tappetini",  label: "Tappetino mouse", icon: "▬" }
+];
+
+/* Ultimo tipo scelto in ogni categoria (per riaprirlo al ritorno) */
+const lastProductByCategory = {};
+
+function getProductCategory(productKey) {
+    return productVariants[productKey]
+        ? productVariants[productKey].group
+        : null;
+}
+
+function getCategoryProducts(categoryKey) {
+    return Object.keys(productVariants).filter(function (key) {
+        return (
+            productVariants[key].group === categoryKey &&
+            products[key]
+        );
+    });
+}
+
+
+/* =========================================
+   T-SHIRT: TESSUTO, MODELLO E PREZZI
+   -----------------------------------------
+   Il disegno è condiviso tra cotone e poliestere
+   e tra adulto e bambino: cambiano solo le opzioni
+   dell'ordine (stati separati restano per Bianca/Nera).
+   ========================================= */
+const TSHIRT_FABRICS = {
+    cotton:    { label: "100% cotone", colors: ["white", "black"] },
+    polyester: { label: "Poliestere",  colors: ["white"] }
+};
+
+const TSHIRT_FITS = {
+    adult: { label: "Adulto unisex" },
+    kids:  { label: "Bambino" }
+};
+
+/* TAGLIE: dipendono da modello (adulto/bambino) e tessuto.
+   La taglia "default" è quella proposta quando si cambia modello. */
+const TSHIRT_SIZES = {
+    adult: {
+        cotton:    { sizes: ["S", "M", "L", "XL", "XXL"], default: "M" },
+        polyester: { sizes: ["S", "M", "L", "XL", "XXL"], default: "M" }
+    },
+    kids: {
+        cotton: {
+            sizes: ["3-4 anni", "5-6 anni", "7-8 anni", "9-11 anni", "12-13 anni"],
+            default: "7-8 anni"
+        },
+        polyester: {
+            sizes: ["4-5 anni", "6-8 anni", "10-12 anni"],
+            default: "6-8 anni"
+        }
+    }
+};
+
+function getTshirtSizeInfo(fabric, fit) {
+    return TSHIRT_SIZES[normalizeTshirtFit(fit)][normalizeTshirtFabric(fabric)];
+}
+
+/* AREA DI STAMPA MASSIMA (cm), lato corto × lato lungo.
+   Bambino: per ora 15x20 per tutte le taglie. */
+const TSHIRT_PRINT_CM = {
+    adult: { short: 20, long: 30 },
+    kids:  { short: 15, long: 20 }
+};
+
+/* Misure in cm dell'area di stampa per formato verticale/orizzontale */
+function getTshirtPrintCm(format, fit) {
+
+    const size = TSHIRT_PRINT_CM[normalizeTshirtFit(fit || tshirtFit)];
+
+    return format === "horizontal"
+        ? { width: size.long, height: size.short }
+        : { width: size.short, height: size.long };
+}
+
+/* Misure in px del riquadro tratteggiato.
+   Adulto: valori originali (desktop 95x142, mobile 70x105).
+   Bambino: stessa scala px/cm dell'adulto, così i cm restano reali. */
+function getTshirtPrintAreaPx(format, isMobile, fit) {
+
+    const base = isMobile
+        ? { short: 70, long: 105 }
+        : { short: 95, long: 142 };
+
+    let shortPx = base.short;
+    let longPx = base.long;
+
+    if (normalizeTshirtFit(fit || tshirtFit) !== "adult") {
+
+        const cm = TSHIRT_PRINT_CM[normalizeTshirtFit(fit || tshirtFit)];
+        const pxPerCm = base.short / TSHIRT_PRINT_CM.adult.short;
+
+        shortPx = cm.short * pxPerCm;
+        longPx = cm.long * pxPerCm;
+    }
+
+    return format === "horizontal"
+        ? { width: longPx, height: shortPx, baseWidth: base.long, baseHeight: base.short }
+        : { width: shortPx, height: longPx, baseWidth: base.short, baseHeight: base.long };
+}
+
+function formatTshirtPrintCm(format, fit) {
+    const cm = getTshirtPrintCm(format, fit);
+    return cm.width + "x" + cm.height;
+}
+
+/* PREZZI T-SHIRT: scrivi il prezzo (es. 12.50).
+   null = "Prezzo da definire" (non si può ancora aggiungere al carrello) */
+const TSHIRT_PRICES = {
+    cotton:    { adult: 15.00, kids: 15.00 },
+    polyester: { adult: 15.00, kids: 15.00 }
+};
+
+function normalizeTshirtFabric(value) {
+    return TSHIRT_FABRICS[value] ? value : "cotton";
+}
+
+function normalizeTshirtFit(value) {
+    return TSHIRT_FITS[value] ? value : "adult";
+}
+
+function getTshirtPrice(fabric, fit) {
+
+    const row = TSHIRT_PRICES[normalizeTshirtFabric(fabric)];
+    const price = row ? row[normalizeTshirtFit(fit)] : null;
+
+    return typeof price === "number" ? price : null;
+}
+
+/* Prezzo "a partire da" di un tessuto (per le schede su mobile) */
+function getTshirtPriceFrom(fabric) {
+
+    const prices = Object.keys(TSHIRT_FITS)
+        .map(function (fit) {
+            return getTshirtPrice(fabric, fit);
+        })
+        .filter(function (price) {
+            return typeof price === "number";
+        });
+
+    return prices.length ? Math.min.apply(null, prices) : null;
+}
+
+function getTshirtVariantLabel(fabric, fit) {
+    return (
+        "T-Shirt " +
+        TSHIRT_FABRICS[normalizeTshirtFabric(fabric)].label +
+        " · " +
+        TSHIRT_FITS[normalizeTshirtFit(fit)].label
+    );
+}
+
+/* Prezzo del prodotto attualmente in modifica */
+function getCurrentUnitPrice() {
+
+    if (currentProduct === "tshirt") {
+        return getTshirtPrice(tshirtFabric, tshirtFit);
+    }
+
+    const price = products[currentProduct].price;
+
+    return typeof price === "number" ? price : null;
+}
+
+
 /* Prodotti "semplici" (un solo lato), compresi cuscino e portachiavi */
 function isSingleSideProduct(productKey) {
     return productKey !== "tshirt";
@@ -1629,6 +1814,17 @@ function formatCm(value) {
 function getOrientedPrintTexts(productKey) {
 
     const product = products[productKey];
+
+    /* T-Shirt bambino: area di stampa più piccola */
+    if (productKey === "tshirt" && tshirtFit !== "adult") {
+
+        const cm = TSHIRT_PRINT_CM[normalizeTshirtFit(tshirtFit)];
+
+        return {
+            print: `Area massima di stampa: ${cm.short}x${cm.long} cm`,
+            printInfo: `Area stampabile massima ${cm.short}x${cm.long} cm`
+        };
+    }
 
     if (!product.orientable || !product.nominal) {
         return {
@@ -2051,6 +2247,12 @@ function saveConfiguratorState() {
         tshirtSize:
             tshirtSize,
 
+        tshirtFabric:
+            tshirtFabric,
+
+        tshirtFit:
+            tshirtFit,
+
         tshirtSide:
             tshirtSide,
 
@@ -2244,6 +2446,14 @@ if (savedProductStates.tshirt) {
             savedConfigurator.tshirtSize;
     }
 
+    /* Tessuto e modello (i vecchi salvataggi non li hanno:
+       restano 100% cotone e adulto) */
+    tshirtFabric =
+        normalizeTshirtFabric(savedConfigurator.tshirtFabric);
+
+    tshirtFit =
+        normalizeTshirtFit(savedConfigurator.tshirtFit);
+
     if (savedConfigurator.tshirtSide) {
         tshirtSide =
             savedConfigurator.tshirtSide;
@@ -2298,6 +2508,8 @@ function createHistorySnapshot() {
         currentProduct: currentProduct,
         tshirtColor: tshirtColor,
         tshirtSize: tshirtSize,
+        tshirtFabric: tshirtFabric,
+        tshirtFit: tshirtFit,
         tshirtSide: tshirtSide,
         tshirtPrintFormat: tshirtPrintFormat
     });
@@ -2399,6 +2611,12 @@ function restoreHistorySnapshot(snapshot) {
 
     tshirtSize =
         data.tshirtSize;
+
+    tshirtFabric =
+        normalizeTshirtFabric(data.tshirtFabric);
+
+    tshirtFit =
+        normalizeTshirtFit(data.tshirtFit);
 
     tshirtSide =
         data.tshirtSide;
@@ -4261,23 +4479,8 @@ function getCurrentPrintAreaCm() {
 
     if (currentProduct === "tshirt") {
 
-        if (
-            tshirtPrintFormat[tshirtSide] ===
-            "vertical"
-        ) {
-
-            return {
-                width: 20,
-                height: 30
-            };
-
-        } else {
-
-            return {
-                width: 30,
-                height: 20
-            };
-        }
+        /* Adulto 20x30 / 30x20, bambino 15x20 / 20x15 */
+        return getTshirtPrintCm(tshirtPrintFormat[tshirtSide]);
     }
 
 
@@ -5529,17 +5732,22 @@ function updateProductPreview() {
 
     const product = products[currentProduct];
 
-    productTitle.textContent = product.title;
+    const unitPrice = getCurrentUnitPrice();
+
+    productTitle.textContent =
+        currentProduct === "tshirt"
+            ? getTshirtVariantLabel(tshirtFabric, tshirtFit)
+            : product.title;
     productName.textContent = product.name;
     productPrice.textContent =
-    formatProductPrice(product.price);
+    formatProductPrice(unitPrice);
 
     productPrice.classList.toggle(
         "price-pending",
-        typeof product.price !== "number"
+        typeof unitPrice !== "number"
     );
 
-    productDimensions.textContent = product.dimensions;
+    productDimensions.textContent = getProductDimensionsText();
     const printTexts = getOrientedPrintTexts(currentProduct);
 
     printDimensions.textContent = printTexts.print;
@@ -5582,6 +5790,7 @@ printArea.style.transform = "";
     tshirtOptions.style.display = "block";
     printFormatOptions.style.display = "block";
 
+    syncTshirtOptionButtons();
     updateTshirtPrintFormat();
     updateTshirtMockup();
 }
@@ -5844,13 +6053,119 @@ window.addEventListener("resize", function () {
    PULSANTI "FORMATO" (varianti dello stesso prodotto)
    ========================================= */
 
+/* Pulsanti delle categorie (Cuscini, T-Shirt, Portachiavi...) */
+function updateCategoryButtons() {
+
+    const container =
+        document.getElementById("categoryButtons");
+
+    if (!container) {
+        return;
+    }
+
+    const activeCategory = getProductCategory(currentProduct);
+
+    if (!container.dataset.built) {
+
+        productCategories.forEach(function (category) {
+
+            const productsInCategory =
+                getCategoryProducts(category.key);
+
+            if (!productsInCategory.length) {
+                return;
+            }
+
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.className = "category-button";
+            button.dataset.category = category.key;
+
+            const icon = document.createElement("span");
+            icon.className = "category-button-icon";
+            icon.setAttribute("aria-hidden", "true");
+            icon.textContent = category.icon;
+
+            const label = document.createElement("span");
+            label.className = "category-button-label";
+            label.textContent = category.label;
+
+            button.appendChild(icon);
+            button.appendChild(label);
+
+            button.addEventListener("click", function () {
+                selectProductCategory(category.key);
+            });
+
+            container.appendChild(button);
+        });
+
+        container.dataset.built = "1";
+    }
+
+    container
+        .querySelectorAll(".category-button")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.category === activeCategory
+            );
+        });
+}
+
+/* Apre una categoria: riprende l'ultimo tipo scelto, altrimenti il primo */
+function selectProductCategory(categoryKey) {
+
+    const productsInCategory = getCategoryProducts(categoryKey);
+
+    if (!productsInCategory.length) {
+        return;
+    }
+
+    if (getProductCategory(currentProduct) === categoryKey) {
+        return;
+    }
+
+    const remembered = lastProductByCategory[categoryKey];
+
+    const target =
+        productsInCategory.indexOf(remembered) !== -1
+            ? remembered
+            : productsInCategory[0];
+
+    productSelect.value = target;
+    productSelect.dispatchEvent(
+        new Event("change", { bubbles: true })
+    );
+}
+
 function updateVariantButtons() {
+
+    if (getProductCategory(currentProduct)) {
+        lastProductByCategory[getProductCategory(currentProduct)] =
+            currentProduct;
+    }
+
+    updateCategoryButtons();
 
     if (!variantOptions) {
         return;
     }
 
     const current = productVariants[currentProduct];
+
+    const category = productCategories.find(function (item) {
+        return current && item.key === current.group;
+    });
+
+    const variantLabel =
+        document.getElementById("variantOptionsLabel");
+
+    if (variantLabel) {
+        variantLabel.textContent =
+            (category && category.variantLabel) || "Tipo";
+    }
 
     const siblings = Object.keys(productVariants).filter(
         function (key) {
@@ -5898,6 +6213,198 @@ function updateVariantButtons() {
     });
 
     variantOptions.style.display = "block";
+}
+
+
+/* =========================================
+   T-SHIRT: TESSUTO E MODELLO
+   ========================================= */
+
+function setTshirtVariant(fabric, fit) {
+
+    fabric = normalizeTshirtFabric(fabric);
+    fit = normalizeTshirtFit(fit);
+
+    tshirtFabric = fabric;
+    tshirtFit = fit;
+
+    /* Il poliestere esiste solo bianco */
+    if (TSHIRT_FABRICS[fabric].colors.indexOf(tshirtColor) === -1) {
+
+        const whiteButton =
+            document.querySelector('.color-button[data-color="white"]');
+
+        if (whiteButton && currentProduct === "tshirt") {
+            /* stesso percorso del pulsante "Bianca":
+               salva il colore attuale e passa al bianco */
+            whiteButton.click();
+        } else {
+            tshirtColor = "white";
+        }
+    }
+
+    /* Taglia non disponibile per il modello: usa quella predefinita */
+    const sizeInfo = getTshirtSizeInfo(fabric, fit);
+
+    if (sizeInfo.sizes.indexOf(tshirtSize) === -1) {
+        tshirtSize = sizeInfo.default;
+    }
+
+    syncTshirtOptionButtons();
+
+    if (currentProduct === "tshirt") {
+        refreshProductHeader();
+
+        /* Adulto e bambino hanno aree di stampa diverse */
+        updateTshirtPrintFormat();
+    }
+}
+
+/* Aggiorna titolo e prezzo senza ridisegnare l'anteprima */
+function refreshProductHeader() {
+
+    const unitPrice = getCurrentUnitPrice();
+
+    productTitle.textContent =
+        currentProduct === "tshirt"
+            ? getTshirtVariantLabel(tshirtFabric, tshirtFit)
+            : products[currentProduct].title;
+
+    productPrice.textContent = formatProductPrice(unitPrice);
+
+    productPrice.classList.toggle(
+        "price-pending",
+        typeof unitPrice !== "number"
+    );
+
+    productDimensions.textContent = getProductDimensionsText();
+
+    const printTexts = getOrientedPrintTexts(currentProduct);
+    printDimensions.textContent = printTexts.print;
+    printAreaInfo.textContent = printTexts.printInfo;
+}
+
+/* Testo "Dimensione / Taglie" del riquadro prodotto */
+function getProductDimensionsText() {
+
+    if (currentProduct !== "tshirt") {
+        return products[currentProduct].dimensions;
+    }
+
+    const sizes = getTshirtSizeInfo(tshirtFabric, tshirtFit).sizes;
+
+    if (tshirtFit === "kids") {
+        return "Taglie disponibili: " +
+            sizes
+                .map(function (size) {
+                    return size.replace(" anni", "");
+                })
+                .join(", ") +
+            " anni";
+    }
+
+    return "Taglie disponibili: " + sizes.join(", ");
+}
+
+/* Mette in evidenza i pulsanti giusti (tessuto, modello, colore, taglia) */
+function syncTshirtOptionButtons() {
+
+    tshirtFabric = normalizeTshirtFabric(tshirtFabric);
+    tshirtFit = normalizeTshirtFit(tshirtFit);
+
+    /* Taglia non valida (es. salvataggio vecchio): usa quella proposta */
+    const sizeInfo = getTshirtSizeInfo(tshirtFabric, tshirtFit);
+
+    if (sizeInfo.sizes.indexOf(tshirtSize) === -1) {
+        tshirtSize = sizeInfo.default;
+    }
+
+    document
+        .querySelectorAll("[data-tshirt-fabric]")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.tshirtFabric === tshirtFabric
+            );
+        });
+
+    document
+        .querySelectorAll("[data-tshirt-fit]")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.tshirtFit === tshirtFit
+            );
+        });
+
+    const onlyWhite =
+        TSHIRT_FABRICS[tshirtFabric].colors.length < 2;
+
+    const colorRow = document.getElementById("tshirtColorRow");
+    const colorNote = document.getElementById("tshirtColorNote");
+
+    if (colorRow) {
+        colorRow.style.display = onlyWhite ? "none" : "";
+    }
+
+    if (colorNote) {
+        colorNote.style.display = onlyWhite ? "block" : "none";
+    }
+
+    document
+        .querySelectorAll(".color-button")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.color === tshirtColor
+            );
+        });
+
+    document
+        .querySelectorAll(".size-buttons[data-size-group]")
+        .forEach(function (group) {
+            group.style.display =
+                group.dataset.sizeGroup ===
+                    (tshirtFit === "adult" ? "adult" : tshirtFit + "-" + tshirtFabric)
+                    ? "grid"
+                    : "none";
+        });
+
+    document
+        .querySelectorAll(".size-button")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.size === tshirtSize
+            );
+        });
+
+    /* Testo dei pulsanti Verticale / Orizzontale con le misure giuste */
+    document
+        .querySelectorAll(".print-format-button[data-format]")
+        .forEach(function (button) {
+            button.textContent =
+                (button.dataset.format === "horizontal"
+                    ? "Orizzontale "
+                    : "Verticale ") +
+                formatTshirtPrintCm(button.dataset.format);
+        });
+
+    const sizeLabel = document.getElementById("tshirtSizeLabel");
+
+    if (sizeLabel) {
+        sizeLabel.textContent =
+            tshirtFit === "kids" ? "Taglia (età)" : "Taglia";
+    }
+
+    const mobileSizeValue =
+        document.getElementById("mobileTshirtSizeActionValue");
+
+    if (mobileSizeValue) {
+        mobileSizeValue.textContent =
+            "Taglia attuale: " + tshirtSize +
+            " · " + TSHIRT_FITS[tshirtFit].label;
+    }
 }
 
 
@@ -7322,8 +7829,30 @@ document
             statusMessage.textContent =
                 `Taglia selezionata: ${tshirtSize}`;
 
+            syncTshirtOptionButtons();
+
         });
 
+    });
+
+
+/* T-Shirt: pulsanti Tessuto (cotone/poliestere) e Modello (adulto/bambino) */
+document
+    .querySelectorAll("[data-tshirt-fabric]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+            setTshirtVariant(this.dataset.tshirtFabric, tshirtFit);
+        });
+    });
+
+document
+    .querySelectorAll("[data-tshirt-fit]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+            setTshirtVariant(tshirtFabric, this.dataset.tshirtFit);
+        });
     });
 
 
@@ -7429,26 +7958,15 @@ function updateTshirtPrintFormat() {
     DIMENSIONI AREA DI STAMPA
     Desktop invariato - Mobile più compatto
 */
-if (window.innerWidth <= 600) {
+const printAreaPx = getTshirtPrintAreaPx(
+    tshirtPrintFormat[tshirtSide],
+    window.innerWidth <= 600
+);
 
-    if (isVertical) {
-        printArea.style.width = "70px";
-        printArea.style.height = "105px";
-    } else {
-        printArea.style.width = "105px";
-        printArea.style.height = "70px";
-    }
-
-} else {
-
-    if (isVertical) {
-        printArea.style.width = "95px";
-        printArea.style.height = "142px";
-    } else {
-        printArea.style.width = "142px";
-        printArea.style.height = "95px";
-    }
-}
+printArea.style.width = printAreaPx.width + "px";
+printArea.style.height = printAreaPx.height + "px";
+/* Il riquadro è centrato con translate(-50%, -50%) dal CSS:
+   quello del bambino, più piccolo, resta centrato nello stesso punto */
 
 
     /*
@@ -7907,13 +8425,16 @@ preview.style.pointerEvents =
         tshirtPrintFormat[side];
 
 
+    const copyAreaPx =
+        getTshirtPrintAreaPx(format, false);
+
     if (format === "vertical") {
 
         printAreaCopy.style.width =
-            "95px";
+            copyAreaPx.width + "px";
 
         printAreaCopy.style.height =
-            "142px";
+            copyAreaPx.height + "px";
 
         printAreaCopy.style.top =
             side === "back"
@@ -7923,10 +8444,10 @@ preview.style.pointerEvents =
     } else {
 
         printAreaCopy.style.width =
-            "142px";
+            copyAreaPx.width + "px";
 
         printAreaCopy.style.height =
-            "95px";
+            copyAreaPx.height + "px";
 
         printAreaCopy.style.top =
             side === "back"
@@ -8386,15 +8907,19 @@ async function createTshirtCartCanvas(side) {
     let areaTopPercent;
 
 
+    /* Misure del riquadro (bambino più piccolo, vedi getTshirtPrintAreaPx) */
+    const cartAreaPx =
+        getTshirtPrintAreaPx(format, false);
+
     if (
         format === "vertical"
     ) {
 
         areaWidth =
-            95;
+            cartAreaPx.width;
 
         areaHeight =
-            142;
+            cartAreaPx.height;
 
         areaTopPercent =
             side === "back"
@@ -8404,10 +8929,10 @@ async function createTshirtCartCanvas(side) {
     } else {
 
         areaWidth =
-            142;
+            cartAreaPx.width;
 
         areaHeight =
-            95;
+            cartAreaPx.height;
 
         areaTopPercent =
             side === "back"
@@ -9466,19 +9991,24 @@ function renderCart() {
 
 
     const frontFormat =
-        item.printFormat.front === "horizontal"
-            ? "30x20"
-            : "20x30";
+        formatTshirtPrintCm(item.printFormat.front, normalizeTshirtFit(item.tshirtFit));
 
 
     const backFormat =
-        item.printFormat.back === "horizontal"
-            ? "30x20"
-            : "20x30";
+        formatTshirtPrintCm(item.printFormat.back, normalizeTshirtFit(item.tshirtFit));
 
+
+    /* I vecchi articoli nel carrello non hanno tessuto/modello:
+       erano T-Shirt 100% cotone adulto */
+    const fabricLabel =
+        TSHIRT_FABRICS[normalizeTshirtFabric(item.tshirtFabric)].label;
+
+    const fitLabel =
+        TSHIRT_FITS[normalizeTshirtFit(item.tshirtFit)].label;
 
     details =
-    `${color}` +
+    `${fabricLabel} · ${fitLabel}` +
+    `<br>Colore: ${color}` +
     `<br>Taglia: ${item.tshirtSize || "Non specificata"}` +
     `<br>Fronte: ${frontFormat}` +
     `<br>Retro: ${backFormat}`;
@@ -9640,7 +10170,7 @@ function updateCartCount() {
 
 addToCartButton.addEventListener("click", async function () {
 
-    if (typeof products[currentProduct].price !== "number") {
+    if (typeof getCurrentUnitPrice() !== "number") {
         statusMessage.textContent =
             "Questo prodotto sarà presto acquistabile: il prezzo non è ancora disponibile.";
         return;
@@ -9685,7 +10215,7 @@ if (currentProduct === "tshirt") {
     product: currentProduct,
 
     unitPrice:
-        products[currentProduct].price,
+        getCurrentUnitPrice(),
 
     quantity: quantity,
     
@@ -9701,6 +10231,16 @@ if (currentProduct === "tshirt") {
     currentProduct === "tshirt"
         ? tshirtSize
         : null,
+
+    tshirtFabric:
+        currentProduct === "tshirt"
+            ? tshirtFabric
+            : null,
+
+    tshirtFit:
+        currentProduct === "tshirt"
+            ? tshirtFit
+            : null,
 
 
     orientation:
@@ -9749,6 +10289,12 @@ if (currentProduct === "tshirt") {
 
 item.tshirtSize ===
     cartItem.tshirtSize &&
+
+(item.tshirtFabric || null) ===
+    (cartItem.tshirtFabric || null) &&
+
+(item.tshirtFit || null) ===
+    (cartItem.tshirtFit || null) &&
 
 JSON.stringify(item.printFormat) ===
                 JSON.stringify(cartItem.printFormat) &&
@@ -10285,7 +10831,65 @@ const mobileProductsClose =
     );
 
 
+/* Su mobile la scheda Prodotti ha due passi:
+   1) categorie  2) tipi della categoria scelta */
+const mobileProductsBack =
+    document.getElementById("mobileProductsBack");
+
+const mobileProductsTitle =
+    document.getElementById("mobileProductsTitle");
+
+const mobileProductsSubtitle =
+    document.getElementById("mobileProductsSubtitle");
+
+const mobileProductOptions =
+    document.getElementById("mobileProductOptions");
+
+
+function showMobileCategories() {
+
+    mobileProductsSheet.classList.remove("showing-products");
+
+    mobileProductsTitle.textContent = "Prodotti";
+    mobileProductsSubtitle.textContent = "Scegli la categoria";
+}
+
+
+function showMobileCategoryProducts(categoryKey) {
+
+    const category = productCategories.find(function (item) {
+        return item.key === categoryKey;
+    });
+
+    mobileProductsSheet
+        .querySelectorAll("[data-mobile-category]")
+        .forEach(function (button) {
+            button.hidden =
+                button.dataset.mobileCategory !== categoryKey;
+
+            button.classList.toggle(
+                "active",
+                button.dataset.mobileProductChoice === currentProduct
+            );
+        });
+
+    mobileProductsSheet.classList.add("showing-products");
+
+    mobileProductsTitle.textContent =
+        category ? category.label : "Prodotti";
+
+    mobileProductsSubtitle.textContent =
+        (category && category.variantLabel) || "Scegli il tipo";
+
+    if (mobileProductOptions) {
+        mobileProductOptions.scrollTop = 0;
+    }
+}
+
+
 function openMobileProducts() {
+
+    showMobileCategories();
 
     mobileProductsSheet.classList.add(
         "open"
@@ -10327,6 +10931,24 @@ mobileProductsOverlay.addEventListener(
 );
 
 
+mobileProductsBack.addEventListener(
+    "click",
+    showMobileCategories
+);
+
+
+/* Passa da un pannello mobile all'altro */
+function openMobileSheet(sheet, overlay) {
+    sheet.classList.add("open");
+    overlay.classList.add("open");
+}
+
+function closeMobileSheet(sheet, overlay) {
+    sheet.classList.remove("open");
+    overlay.classList.remove("open");
+}
+
+
 const mobileTshirtSheet =
     document.getElementById(
         "mobileTshirtSheet"
@@ -10347,36 +10969,97 @@ const mobileTshirtBack =
         "mobileTshirtBack"
     );
 
-const mobileClassicTshirt =
-    document.getElementById(
-        "mobileClassicTshirt"
-    );
+const mobileTshirtFitSheet =
+    document.getElementById("mobileTshirtFitSheet");
+
+const mobileTshirtFitOverlay =
+    document.getElementById("mobileTshirtFitOverlay");
+
+const mobileTshirtSizeSheet =
+    document.getElementById("mobileTshirtSizeSheet");
+
+const mobileTshirtSizeOverlay =
+    document.getElementById("mobileTshirtSizeOverlay");
+
+
+/* Scelte fatte nei passi della T-Shirt su mobile:
+   vengono applicate tutte insieme alla fine */
+const mobileTshirtDraft = {
+    fabric: "cotton",
+    fit: "adult",
+    color: "white"
+};
+
+/* Da dove si è aperta la scelta taglia: "flow" o "more" */
+let mobileSizeOpenedFrom = "flow";
 
 
 function openMobileTshirtModels() {
 
     closeMobileProducts();
 
-    mobileTshirtSheet.classList.add(
-        "open"
-    );
+    /* Prezzo "da" sulle schede dei tessuti */
+    document
+        .querySelectorAll("[data-tshirt-price-from]")
+        .forEach(function (element) {
 
-    mobileTshirtOverlay.classList.add(
-        "open"
-    );
+            const price =
+                getTshirtPriceFrom(element.dataset.tshirtPriceFrom);
+
+            element.textContent =
+                typeof price === "number"
+                    ? "da " + formatProductPrice(price)
+                    : "Prezzo da definire";
+        });
+
+    openMobileSheet(mobileTshirtSheet, mobileTshirtOverlay);
 }
 
 
 function closeMobileTshirtModels() {
-
-    mobileTshirtSheet.classList.remove(
-        "open"
-    );
-
-    mobileTshirtOverlay.classList.remove(
-        "open"
-    );
+    closeMobileSheet(mobileTshirtSheet, mobileTshirtOverlay);
 }
+
+
+document
+    .querySelectorAll(
+        "[data-mobile-category-open]"
+    )
+    .forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const categoryKey =
+                    button.dataset.mobileCategoryOpen;
+
+                /* T-Shirt: tessuto → modello → colore → taglia */
+                if (categoryKey === "tshirt") {
+                    openMobileTshirtModels();
+                    return;
+                }
+
+                const productsInCategory =
+                    getCategoryProducts(categoryKey);
+
+                /* Un solo tipo (es. tappetino): si entra subito */
+                if (productsInCategory.length === 1) {
+
+                    productSelect.value = productsInCategory[0];
+
+                    productSelect.dispatchEvent(
+                        new Event("change", { bubbles: true })
+                    );
+
+                    closeMobileProducts();
+                    return;
+                }
+
+                showMobileCategoryProducts(categoryKey);
+            }
+        );
+    });
 
 
 document
@@ -10393,19 +11076,6 @@ document
                     button.dataset
                         .mobileProductChoice;
 
-
-                /* T-Shirt:
-                   prima scegliamo il modello */
-                if (product === "tshirt") {
-
-                    openMobileTshirtModels();
-
-                    return;
-                }
-
-
-                /* Cuscino e Portachiavi:
-                   entrano direttamente nell'editor */
                 productSelect.value =
                     product;
 
@@ -10449,6 +11119,106 @@ mobileTshirtOverlay.addEventListener(
 );
 
 
+/* PASSO TESSUTO → apre Adulto / Bambino */
+document
+    .querySelectorAll("[data-mobile-tshirt-fabric]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            mobileTshirtDraft.fabric =
+                normalizeTshirtFabric(button.dataset.mobileTshirtFabric);
+
+            document.getElementById("mobileTshirtFitSubtitle").textContent =
+                "T-Shirt " + TSHIRT_FABRICS[mobileTshirtDraft.fabric].label;
+
+            const kidsSizes =
+                getTshirtSizeInfo(mobileTshirtDraft.fabric, "kids").sizes;
+
+            document.getElementById("mobileKidsSizesText").textContent =
+                "Taglie da " +
+                kidsSizes[0].replace(" anni", "") +
+                " a " +
+                kidsSizes[kidsSizes.length - 1];
+
+            closeMobileTshirtModels();
+            openMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+        });
+    });
+
+
+document
+    .getElementById("mobileTshirtFitBack")
+    .addEventListener("click", function () {
+        closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+        openMobileTshirtModels();
+    });
+
+document
+    .getElementById("mobileTshirtFitClose")
+    .addEventListener("click", function () {
+        closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+    });
+
+mobileTshirtFitOverlay.addEventListener("click", function () {
+    closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+});
+
+
+/* PASSO ADULTO / BAMBINO → colore (solo cotone) oppure taglia */
+document
+    .querySelectorAll("[data-mobile-tshirt-fit]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            mobileTshirtDraft.fit =
+                normalizeTshirtFit(button.dataset.mobileTshirtFit);
+
+            closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+
+            if (TSHIRT_FABRICS[mobileTshirtDraft.fabric].colors.length > 1) {
+                openMobileTshirtColors();
+                return;
+            }
+
+            /* Poliestere: solo bianca */
+            mobileTshirtDraft.color = "white";
+            applyMobileTshirtDraft();
+            openMobileTshirtSizes("flow");
+        });
+    });
+
+
+/* Entra nella T-Shirt con tessuto, modello e colore scelti */
+function applyMobileTshirtDraft() {
+
+    if (productSelect.value !== "tshirt") {
+
+        productSelect.value = "tshirt";
+
+        productSelect.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+    }
+
+    setTshirtVariant(mobileTshirtDraft.fabric, mobileTshirtDraft.fit);
+
+    if (tshirtColor !== mobileTshirtDraft.color) {
+
+        /* Utilizziamo i pulsanti colore originali del configuratore */
+        const originalColorButton =
+            document.querySelector(
+                `.color-button[data-color="${mobileTshirtDraft.color}"]`
+            );
+
+        if (originalColorButton) {
+            originalColorButton.click();
+        }
+    }
+}
+
+
 const mobileTshirtColorSheet =
     document.getElementById(
         "mobileTshirtColorSheet"
@@ -10474,32 +11244,16 @@ function openMobileTshirtColors() {
 
     closeMobileTshirtModels();
 
-    mobileTshirtColorSheet.classList.add(
-        "open"
-    );
+    document.getElementById("mobileTshirtColorSubtitle").textContent =
+        getTshirtVariantLabel(mobileTshirtDraft.fabric, mobileTshirtDraft.fit);
 
-    mobileTshirtColorOverlay.classList.add(
-        "open"
-    );
+    openMobileSheet(mobileTshirtColorSheet, mobileTshirtColorOverlay);
 }
 
 
 function closeMobileTshirtColors() {
-
-    mobileTshirtColorSheet.classList.remove(
-        "open"
-    );
-
-    mobileTshirtColorOverlay.classList.remove(
-        "open"
-    );
+    closeMobileSheet(mobileTshirtColorSheet, mobileTshirtColorOverlay);
 }
-
-
-mobileClassicTshirt.addEventListener(
-    "click",
-    openMobileTshirtColors
-);
 
 
 mobileTshirtColorBack.addEventListener(
@@ -10508,7 +11262,7 @@ mobileTshirtColorBack.addEventListener(
 
         closeMobileTshirtColors();
 
-        openMobileTshirtModels();
+        openMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
     }
 );
 
@@ -10538,47 +11292,99 @@ document
             "click",
             function () {
 
-                const selectedColor =
+                mobileTshirtDraft.color =
                     button.dataset
                         .tshirtMobileColor;
 
+                applyMobileTshirtDraft();
 
-                /* Entriamo nella T-Shirt */
-                productSelect.value =
-                    "tshirt";
-
-
-                productSelect.dispatchEvent(
-                    new Event(
-                        "change",
-                        {
-                            bubbles: true
-                        }
-                    )
-                );
-
-
-                /*
-                   Utilizziamo i pulsanti colore
-                   originali del configuratore.
-                */
-                const originalColorButton =
-                    document.querySelector(
-                        `.color-button[data-color="${selectedColor}"]`
-                    );
-
-
-                if (originalColorButton) {
-
-                    originalColorButton.click();
-                }
-
-
-                /* Chiude la scelta colore */
+                /* Chiude la scelta colore e passa alla taglia */
                 closeMobileTshirtColors();
+
+                openMobileTshirtSizes("flow");
             }
         );
     });
+
+
+/* =========================================
+   MOBILE - SCELTA TAGLIA T-SHIRT
+   ========================================= */
+
+function openMobileTshirtSizes(openedFrom) {
+
+    mobileSizeOpenedFrom = openedFrom || "flow";
+
+    const container =
+        document.getElementById("mobileTshirtSizeOptions");
+
+    container.innerHTML = "";
+
+    getTshirtSizeInfo(tshirtFabric, tshirtFit).sizes.forEach(function (size) {
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "mobile-size-option";
+        button.textContent = size;
+        button.dataset.mobileSize = size;
+
+        if (size === tshirtSize) {
+            button.classList.add("active");
+        }
+
+        button.addEventListener("click", function () {
+
+            /* Usiamo i pulsanti taglia originali del configuratore */
+            const originalSizeButton =
+                document.querySelector(
+                    `.size-button[data-size="${size}"]`
+                );
+
+            if (originalSizeButton) {
+                originalSizeButton.click();
+            }
+
+            closeMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+        });
+
+        container.appendChild(button);
+    });
+
+    document.getElementById("mobileTshirtSizeSubtitle").textContent =
+        getTshirtVariantLabel(tshirtFabric, tshirtFit);
+
+    openMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+}
+
+
+document
+    .getElementById("mobileTshirtSizeBack")
+    .addEventListener("click", function () {
+
+        closeMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+
+        if (mobileSizeOpenedFrom === "more") {
+            openMobileSheet(mobileMoreSheet, mobileMoreOverlay);
+            return;
+        }
+
+        if (TSHIRT_FABRICS[tshirtFabric].colors.length > 1) {
+            openMobileTshirtColors();
+        } else {
+            openMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+        }
+    });
+
+document
+    .getElementById("mobileTshirtSizeClose")
+    .addEventListener("click", function () {
+        closeMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+    });
+
+mobileTshirtSizeOverlay.addEventListener("click", function () {
+    closeMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+});
 
     /* =========================================
    MOBILE - ALTRE AZIONI
@@ -10662,6 +11468,12 @@ mobileMoreOverlay.addEventListener(
     "click",
     closeMobileMore
 );
+
+/* Altre azioni → Taglia (solo T-Shirt) */
+document.getElementById("mobileTshirtSizeAction").addEventListener("click", function () {
+    closeMobileMore();
+    openMobileTshirtSizes("more");
+});
 
 document.getElementById("mobileResetAction").addEventListener("click", function () {
     resetButton.click();
