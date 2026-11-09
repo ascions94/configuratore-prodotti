@@ -12017,3 +12017,67 @@ mobileTshirtZoomIn.addEventListener("click", function () {
 mobileTshirtZoomOut.addEventListener("click", function () {
     applyMobileTshirtZoom(-10);
 });
+
+
+/* =========================================
+   COLONNA SINISTRA - OPZIONI DEL CONTESTO
+   Le opzioni del testo (e la misura della foto) si vedono
+   solo con una scritta (o una foto) selezionata. Seguiamo
+   i cambi di selectionControls invece di toccare i molti
+   punti che cambiano la selezione.
+   ========================================= */
+
+(function () {
+
+    const toolsPanel =
+        document.querySelector(".tools-panel");
+
+    if (!toolsPanel || !selectionControls) {
+        return;
+    }
+
+    let updateScheduled = false;
+
+
+    function updateToolsPanelContext() {
+
+        updateScheduled = false;
+
+        const hasSelection =
+            selectionControls.style.display === "block";
+
+        toolsPanel.classList.toggle(
+            "has-text-selected",
+            hasSelection && selectedElementType === "text"
+        );
+
+        toolsPanel.classList.toggle(
+            "has-image-selected",
+            hasSelection && selectedElementType === "image"
+        );
+    }
+
+
+    function scheduleToolsPanelContext() {
+
+        if (updateScheduled) {
+            return;
+        }
+
+        updateScheduled = true;
+
+        /* Dopo il codice in corso, che imposta anche selectedElementType. */
+        queueMicrotask(updateToolsPanelContext);
+    }
+
+
+    new MutationObserver(scheduleToolsPanelContext).observe(
+        selectionControls,
+        {
+            attributes: true,
+            attributeFilter: ["style"]
+        }
+    );
+
+    updateToolsPanelContext();
+})();

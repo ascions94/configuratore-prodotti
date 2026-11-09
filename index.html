@@ -6,7 +6,7 @@
 
     <title>Personalizza il tuo prodotto</title>
 
-    <link rel="stylesheet" href="style.css?v=f4fd20330c9e">
+    <link rel="stylesheet" href="style.css?v=c65d548d60da">
 </head>
 
 <body>
@@ -450,12 +450,13 @@
 </div>
 
 
+            <!-- =========== GRUPPO FOTO =========== -->
+            <section class="tools-group" aria-labelledby="toolsGroupPhoto">
+
+            <h3 class="tools-group-title" id="toolsGroupPhoto">Foto</h3>
+
             <!-- CARICAMENTO FOTO -->
             <div class="tool-section">
-
-                <label for="imageUpload">
-                    Carica una foto
-                </label>
 
                 <!--
                     Il campo file resta (lo usano anche i pulsanti mobile),
@@ -478,25 +479,68 @@
 
             </div>
 
-            <div class="tool-section layers-section">
+            <!-- Visibili solo con una foto selezionata -->
+            <div class="image-options">
 
-    <div class="layers-header">
+            <!-- ZOOM -->
+            <div class="tool-section">
 
-        <strong>Livelli</strong>
+                <label for="zoomRange">
+                    Dimensione immagine
+                </label>
 
-        <span>
-            Clicca per selezionare
-        </span>
+                <input
+    type="range"
+    id="zoomRange"
+    min="0.1"
+    max="3"
+    value="1"
+    step="0.02"
+>
 
-    </div>
-
-    <div
-        id="layersList"
-        class="layers-list"
-    ></div>
-
+<div id="imageSizeInfo" class="image-size-info">
+    Dimensione stampa:
+    <strong id="imageSizeValue">—</strong>
 </div>
 
+            </div>
+
+            <!-- ROTAZIONE -->
+            <div class="tool-section">
+    <label for="rotationRange">
+        Rotazione immagine:
+        <span id="rotationValue">0°</span>
+    </label>
+
+    <input
+        type="range"
+        id="rotationRange"
+        min="-180"
+        max="180"
+        value="0"
+        step="1"
+    >
+
+    <div class="rotation-marks">
+        <span>-180°</span>
+        <span>-90°</span>
+        <span>-45°</span>
+        <span>0°</span>
+        <span>45°</span>
+        <span>90°</span>
+        <span>180°</span>
+    </div>
+</div>
+
+            </div>
+
+            </section>
+
+
+            <!-- =========== GRUPPO TESTO =========== -->
+            <section class="tools-group" aria-labelledby="toolsGroupText">
+
+            <h3 class="tools-group-title" id="toolsGroupText">Testo</h3>
 
             <!-- TESTO -->
             <div class="tool-section">
@@ -521,6 +565,13 @@
 </button>
 
             </div>
+
+            <p class="tools-hint text-options-hint">
+                Seleziona una scritta per cambiarne font, colore, contorno e allineamento.
+            </p>
+
+            <!-- Visibili solo con una scritta selezionata -->
+            <div class="text-options">
 
             <div class="tool-section">
     <label for="fontSelect">Font</label>
@@ -605,28 +656,6 @@
         >
 
     </div>
-
-</div>
-
-<div class="tool-section">
-
-    <label for="printBgColor">
-        Colore sfondo
-    </label>
-
-    <input
-        type="color"
-        id="printBgColor"
-        value="#ffffff"
-    >
-
-    <button
-        type="button"
-        id="clearPrintBgButton"
-        class="secondary-button"
-    >
-        Nessuno sfondo
-    </button>
 
 </div>
 
@@ -721,6 +750,62 @@
     </div>
 </div>
 
+            </div>
+
+            </section>
+
+
+            <!-- =========== LIVELLI =========== -->
+            <div class="tool-section layers-section">
+
+    <div class="layers-header">
+
+        <strong>Livelli</strong>
+
+        <span>
+            Clicca per selezionare
+        </span>
+
+    </div>
+
+    <div
+        id="layersList"
+        class="layers-list"
+    ></div>
+
+</div>
+
+
+            <!-- =========== GRUPPO SFONDO =========== -->
+            <section class="tools-group" aria-labelledby="toolsGroupBackground">
+
+            <h3 class="tools-group-title" id="toolsGroupBackground">Sfondo</h3>
+
+<div class="tool-section">
+
+    <label for="printBgColor">
+        Colore
+    </label>
+
+    <input
+        type="color"
+        id="printBgColor"
+        value="#ffffff"
+    >
+
+    <button
+        type="button"
+        id="clearPrintBgButton"
+        class="secondary-button"
+    >
+        Nessuno sfondo
+    </button>
+
+</div>
+
+            </section>
+
+
 <div class="tool-section">
 
     <label>Allineamento</label>
@@ -745,58 +830,6 @@
 
     </div>
 
-</div>
-
-
-            <!-- ZOOM -->
-            <div class="tool-section">
-
-                <label for="zoomRange">
-                    Dimensione immagine
-                </label>
-
-                <input
-    type="range"
-    id="zoomRange"
-    min="0.1"
-    max="3"
-    value="1"
-    step="0.02"
->
-
-<div id="imageSizeInfo" class="image-size-info">
-    Dimensione stampa:
-    <strong id="imageSizeValue">—</strong>
-</div>
-
-            </div>
-
-
-            <!-- ROTAZIONE -->
-            <div class="tool-section">
-    <label for="rotationRange">
-        Rotazione immagine:
-        <span id="rotationValue">0°</span>
-    </label>
-
-    <input
-        type="range"
-        id="rotationRange"
-        min="-180"
-        max="180"
-        value="0"
-        step="1"
-    >
-
-    <div class="rotation-marks">
-        <span>-180°</span>
-        <span>-90°</span>
-        <span>-45°</span>
-        <span>0°</span>
-        <span>45°</span>
-        <span>90°</span>
-        <span>180°</span>
-    </div>
 </div>
 
 
@@ -2075,7 +2108,7 @@
 -->
 <script
     src="storage.js?v=d50ff04e43df"
-    data-app-src="script.js?v=580c6de59585">
+    data-app-src="script.js?v=82ef38ccca80">
 </script>
 
 </body>

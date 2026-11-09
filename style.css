@@ -5316,3 +5316,70 @@ nav a {
         right: calc(-44 * var(--ui));
     }
 }
+
+/* =========================================
+   COLONNA SINISTRA A GRUPPI (desktop)
+   Foto / Testo / Livelli / Sfondo, con le opzioni del testo
+   e la misura della foto visibili solo quando servono.
+   ========================================= */
+
+.tools-group,
+.tools-panel .layers-section {
+    margin: 0 0 18px;
+    padding-top: 16px;
+
+    border-top: 1px solid #e3eef0;
+}
+
+.tools-group-title,
+.tools-panel .layers-header strong {
+    margin: 0 0 12px;
+
+    color: #247f8e;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.tools-panel .layers-header {
+    margin-bottom: 12px;
+}
+
+.tools-panel .layers-header strong {
+    margin: 0;
+}
+
+.tools-group > .tool-section:last-child {
+    margin-bottom: 0;
+}
+
+.tools-hint {
+    margin: -8px 0 0;
+
+    color: #6b7275;
+
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.text-options,
+.image-options {
+    display: none;
+}
+
+.tools-panel.has-text-selected .text-options,
+.tools-panel.has-image-selected .image-options {
+    display: block;
+}
+
+.tools-panel.has-text-selected .text-options-hint {
+    display: none;
+}
+
+/* Sezioni rimaste vuote: i loro controlli sono già nascosti. */
+.tool-section:has(#textRotationRange),
+.tool-section:has(#rotationRange) {
+    display: none;
+}
