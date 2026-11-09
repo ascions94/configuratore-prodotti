@@ -65,6 +65,17 @@ function sublimami_load_cart() {
 		WC()->session->set_customer_session_cookie( true );
 	}
 
+	/*
+	 * Nelle richieste REST l'hook wp_loaded è già passato: il carrello
+	 * salvato in sessione viene letto solo alla prima chiamata di
+	 * get_cart(). Lo leggiamo subito, prima di add_to_cart: altrimenti
+	 * il ricalcolo dei totali lo carica dopo e sovrascrive l'articolo
+	 * appena aggiunto (nel carrello restava solo il primo articolo).
+	 */
+	if ( WC()->cart ) {
+		WC()->cart->get_cart();
+	}
+
 	return true;
 }
 
