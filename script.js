@@ -269,7 +269,7 @@ const clearPrintBgButton =
         }
 
 
-        localStorage.setItem(
+        configuratorStorage.setItem(
             "mycustomCart",
             JSON.stringify(cartItems)
         );
@@ -1686,6 +1686,35 @@ function createCartStateCopy(state) {
     ============================
 */
 
+/*
+    Progetto e carrello vengono salvati in IndexedDB
+    tramite storage.js (window.appStorage), perché le
+    foto superano lo spazio di localStorage.
+    Se storage.js non è presente usiamo localStorage.
+*/
+const configuratorStorage =
+    window.appStorage || {
+
+        getItem: function (key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (error) {
+                return null;
+            }
+        },
+
+        setItem: function (key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (error) {
+                console.warn(
+                    "Impossibile salvare i dati del configuratore:",
+                    error
+                );
+            }
+        }
+    };
+
 const CONFIGURATOR_STORAGE_KEY =
     "mycustomConfigurator";
 
@@ -1724,7 +1753,7 @@ function saveConfiguratorState() {
 
     try {
 
-        localStorage.setItem(
+        configuratorStorage.setItem(
             CONFIGURATOR_STORAGE_KEY,
             JSON.stringify(configuratorData)
         );
@@ -1741,7 +1770,7 @@ function saveConfiguratorState() {
 function loadConfiguratorState() {
 
     const savedData =
-        localStorage.getItem(
+        configuratorStorage.getItem(
             CONFIGURATOR_STORAGE_KEY
         );
 
@@ -2139,7 +2168,7 @@ redoButton.addEventListener(
 );
 
 let cartItems = JSON.parse(
-    localStorage.getItem("mycustomCart")
+    configuratorStorage.getItem("mycustomCart")
 ) || [];
 
 
@@ -8971,7 +9000,7 @@ if (existingItem) {
 }
 
 
-localStorage.setItem(
+configuratorStorage.setItem(
     "mycustomCart",
     JSON.stringify(cartItems)
 );
