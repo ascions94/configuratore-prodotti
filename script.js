@@ -4823,6 +4823,9 @@ function updateMobileCustomizingState() {
 
 function renderCurrentState() {
 
+    /* Porta posizioni e testi alla scala dell'area stampabile attuale. */
+    rebaseVisibleStatesToLayout();
+
     const state = getCurrentState();
 
     loadSelectedImageIntoLegacyState();
@@ -9379,6 +9382,14 @@ addToCartButton.addEventListener("click", async function () {
 syncSelectedImageFromLegacyState();
 syncSelectedTextFromLegacyState();
 
+/*
+    Fronte e retro devono essere alla scala dell'area
+    stampabile attuale, la stessa salvata in printAreaPx.
+*/
+if (rebaseVisibleStatesToLayout()) {
+    renderCurrentState();
+}
+
 
 let cartPreviews = null;
 
@@ -12080,4 +12091,236 @@ mobileTshirtZoomOut.addEventListener("click", function () {
     );
 
     updateToolsPanelContext();
+})();
+
+
+/* =========================================
+   COORDINATE STABILI TRA LAYOUT
+   Posizioni di foto e scritte e dimensione del carattere sono
+   in pixel dell'editor, ma l'area stampabile ha misure diverse
+   su mobile e desktop (es. T-shirt 70 px contro 95 px di
+   larghezza). Ogni stato ricorda la scala con cui è stato
+   modificato (layoutPxPerCm, pixel per cm) e, se la scala
+   attuale è diversa, i valori vengono convertiti. Il sistema
+   di coordinate resta quello di sempre; la larghezza delle foto
+   è già in proporzione all'area e non va toccata.
+   ========================================= */
+
+function getLayoutPxPerCm() {
+
+    const areaCm =
+        getCurrentPrintAreaCm();
+
+    const widthPx =
+        printArea.clientWidth;
+
+    const heightPx =
+        printArea.clientHeight;
+
+    if (
+        !areaCm ||
+        !widthPx ||
+        !heightPx
+    ) {
+        return 0;
+    }
+
+    /*
+        L'area deve essere già quella del prodotto attuale:
+        in un passaggio intermedio (es. cambio prodotto) non
+        misuriamo nulla, per non convertire per errore.
+    */
+    const isTshirtArea =
+        printArea.classList.contains("tshirt-print-area");
+
+    const isKeychainArea =
+        printArea.classList.contains("keychain-print-area");
+
+    if (
+        (currentProduct === "tshirt") !== isTshirtArea ||
+        (currentProduct === "keychain") !== isKeychainArea
+    ) {
+        return 0;
+    }
+
+    /*
+        Lato corto con lato corto, lungo con lungo: verticale e
+        orizzontale della T-shirt danno la stessa scala, anche se
+        il formato del lato non fosse ancora applicato all'area.
+    */
+    const sidesPx =
+        [widthPx, heightPx].sort(function (a, b) { return a - b; });
+
+    const sidesCm =
+        [areaCm.width, areaCm.height].sort(function (a, b) { return a - b; });
+
+    return (
+        sidesPx[0] / sidesCm[0] +
+        sidesPx[1] / sidesCm[1]
+    ) / 2;
+}
+
+
+function scaleStateLengths(state, ratio) {
+
+    function scaleKeys(target, keys) {
+
+        keys.forEach(function (key) {
+
+            if (
+                typeof target[key] === "number" &&
+                Number.isFinite(target[key])
+            ) {
+                target[key] *= ratio;
+            }
+        });
+    }
+
+    /* Campi della foto e della scritta selezionate */
+    scaleKeys(state, ["x", "y", "textX", "textY", "textSize"]);
+
+    (state.images || []).forEach(function (imageState) {
+        scaleKeys(imageState, ["x", "y"]);
+    });
+
+    (state.texts || []).forEach(function (textState) {
+        scaleKeys(textState, ["x", "y", "size"]);
+    });
+}
+
+
+/*
+    Converte gli stati del prodotto visibile (per la T-shirt
+    fronte e retro del colore attuale: stessa scala) alla
+    scala attuale. Restituisce true se ha cambiato qualcosa.
+*/
+function rebaseVisibleStatesToLayout() {
+
+    /* Sotto il 3% non convertiamo: arrotondamenti dei bordi. */
+    const tolerance = 0.03;
+
+    const pxPerCm =
+        getLayoutPxPerCm();
+
+    if (!pxPerCm) {
+        return false;
+    }
+
+    const states =
+        currentProduct === "tshirt"
+            ? [
+                productStates.tshirt[tshirtColor].front,
+                productStates.tshirt[tshirtColor].back
+            ]
+            : Object.values(
+                productStates[currentProduct] || {}
+            );
+
+    let changed = false;
+
+    states.forEach(function (state) {
+
+        if (!state) {
+            return;
+        }
+
+        /* Dati salvati prima di questa funzione: scala attuale. */
+        if (!state.layoutPxPerCm) {
+            state.layoutPxPerCm = pxPerCm;
+            return;
+        }
+
+        const ratio =
+            pxPerCm / state.layoutPxPerCm;
+
+        if (Math.abs(ratio - 1) < tolerance) {
+            return;
+        }
+
+        scaleStateLengths(state, ratio);
+
+        state.layoutPxPerCm = pxPerCm;
+
+        changed = true;
+    });
+
+    return changed;
+}
+
+
+/*
+    Telefono ruotato o finestra ridimensionata oltre i 600px:
+    rifacciamo l'anteprima con le misure calibrate del nuovo
+    layout (stesse funzioni di sempre); renderCurrentState
+    converte poi le coordinate.
+*/
+(function () {
+
+    let wasMobileLayout =
+        window.innerWidth <= 600;
+
+    let resizeTimer = null;
+
+
+    function handleLayoutResize() {
+
+        const isMobileLayout =
+            window.innerWidth <= 600;
+
+        if (isMobileLayout !== wasMobileLayout) {
+
+            wasMobileLayout = isMobileLayout;
+
+            syncSelectedImageFromLegacyState();
+            syncSelectedTextFromLegacyState();
+
+            /* La selezione andrebbe ricalcolata: la togliamo. */
+            selectedElementType = null;
+            selectionControls.style.display = "none";
+
+            uploadedImage.classList.remove("selected-element");
+            customText.classList.remove("selected-element");
+
+            updateMobileTextSelectionBar();
+
+            /* Zoom iniziale del nuovo layout, come al cambio prodotto. */
+            previewZoom =
+                currentProduct === "tshirt"
+                    ? (isMobileLayout ? 100 : 150)
+                    : 100;
+
+            updateProductPreview();
+            updatePreviewZoom();
+
+            return;
+        }
+
+        /* Stesso layout: ridisegniamo solo se l'area è cambiata. */
+        const state =
+            getCurrentState();
+
+        const pxPerCm =
+            getLayoutPxPerCm();
+
+        if (
+            state &&
+            state.layoutPxPerCm &&
+            pxPerCm &&
+            Math.abs(pxPerCm / state.layoutPxPerCm - 1) >= 0.03
+        ) {
+            selectionControls.style.display = "none";
+            selectedElementType = null;
+
+            renderCurrentState();
+        }
+    }
+
+
+    window.addEventListener("resize", function () {
+
+        clearTimeout(resizeTimer);
+
+        resizeTimer =
+            setTimeout(handleLayoutResize, 200);
+    });
 })();
