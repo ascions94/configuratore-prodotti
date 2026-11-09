@@ -2949,6 +2949,14 @@ nav a {
         border-radius: 18px 18px 0 0;
 
         z-index: 2000;
+
+        /*
+            Da chiuso esce del tutto dallo schermo:
+            oltre alla larghezza anche gli 8px dal
+            bordo e l'ombra. Aperto resta translateX(0)
+            grazie a .cart-drawer.open.
+        */
+        transform: translateX(calc(100% + 40px));
     }
 
     /* Header del carrello sempre visibile */
