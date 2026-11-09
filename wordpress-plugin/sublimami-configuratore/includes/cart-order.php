@@ -163,6 +163,17 @@ add_action(
 );
 
 
+/* I dati tecnici non vanno mostrati tra i dettagli dell'articolo. */
+add_filter(
+	'woocommerce_hidden_order_itemmeta',
+	function ( $hidden ) {
+		$hidden[] = '_sublimami';
+		$hidden[] = '_sublimami_token';
+		return $hidden;
+	}
+);
+
+
 /*
  * Pannello ordine (amministrazione): anteprime e file di stampa da scaricare.
  */

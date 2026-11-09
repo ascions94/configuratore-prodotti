@@ -193,6 +193,9 @@ function sublimami_rest_add_item( WP_REST_Request $request ) {
 		return new WP_Error( 'sublimami_upload_dir', 'Impossibile creare la cartella dei file.', array( 'status' => 500 ) );
 	}
 
+	/* Anche sui server che ignorano .htaccess (es. nginx) la cartella non si elenca. */
+	file_put_contents( $item_path . '/index.php', "<?php\n// Silence is golden.\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+
 	$files  = $request->get_file_params();
 	$print  = array();
 	$review = array();
