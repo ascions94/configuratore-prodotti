@@ -13,12 +13,17 @@ defined( 'ABSPATH' ) || exit;
 add_action( 'woocommerce_init', 'sublimami_maybe_setup' );
 
 function sublimami_maybe_setup() {
-	if ( ! get_option( 'sublimami_needs_setup' ) && sublimami_all_products_exist() ) {
+	if (
+		! get_option( 'sublimami_needs_setup' ) &&
+		sublimami_all_products_exist() &&
+		get_option( 'sublimami_legal_pages' )
+	) {
 		return;
 	}
 
 	sublimami_create_missing_products();
 	sublimami_maybe_create_page();
+	sublimami_maybe_create_legal_drafts();
 	sublimami_schedule_cleanup();
 
 	delete_option( 'sublimami_needs_setup' );

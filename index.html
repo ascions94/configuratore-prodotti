@@ -6,7 +6,7 @@
 
     <title>Personalizza il tuo prodotto</title>
 
-    <link rel="stylesheet" href="style.css?v=7276cb3204a0">
+    <link rel="stylesheet" href="style.css?v=0d1c1a09563a">
 </head>
 
 <body>
@@ -284,10 +284,10 @@
     </div>
 
     <nav>
-            <a href="#">Home</a>
-            <a href="#">Cuscini</a>
-            <a href="#">T-Shirt</a>
-            <a href="#">Portachiavi</a>
+            <a href="#" data-nav="home">Home</a>
+            <a href="#" data-product="cushion">Cuscini</a>
+            <a href="#" data-product="tshirt">T-Shirt</a>
+            <a href="#" data-product="keychain">Portachiavi</a>
         </nav>
 
         <button
@@ -1058,6 +1058,19 @@
         </aside>
 
     </main>
+
+    <!-- =========================================
+     INFORMAZIONI LEGALI
+     Dati del venditore e link compilati da
+     script.js con i dati del plugin WordPress.
+     ========================================= -->
+    <footer class="site-legal-footer">
+        <p class="site-legal-seller" data-seller-info>SubliMaMi</p>
+        <nav class="site-legal-links" aria-label="Informazioni legali">
+            <a href="#" data-legal-link="terms" hidden>Condizioni di vendita</a>
+            <a href="#" data-legal-link="privacy" hidden>Privacy e cookie</a>
+        </nav>
+    </footer>
 
     <!-- =========================================
      PANNELLO INFERIORE MOBILE
@@ -1970,6 +1983,13 @@
         Vai al checkout
     </button>
 
+    <p class="cart-legal-seller" data-seller-info>SubliMaMi</p>
+
+    <p class="cart-legal-links">
+        <a href="#" data-legal-link="terms" hidden>Condizioni di vendita</a>
+        <a href="#" data-legal-link="privacy" hidden>Privacy</a>
+    </p>
+
 </div>
 
 </aside>
@@ -1984,7 +2004,7 @@
 -->
 <script
     src="storage.js?v=d50ff04e43df"
-    data-app-src="script.js?v=6ffb95756f2a">
+    data-app-src="script.js?v=6f65abd143cf">
 </script>
 
 </body>

@@ -54,7 +54,8 @@ function sublimami_get_app_config( WP_Post $post ) {
 		'homeUrl'        => esc_url_raw( home_url( '/' ) ),
 		'pageUrl'        => esc_url_raw( get_permalink( $post ) ),
 		'privacyUrl'     => esc_url_raw( get_privacy_policy_url() ),
-		'termsUrl'       => esc_url_raw( wc_terms_and_conditions_page_id() ? get_permalink( wc_terms_and_conditions_page_id() ) : '' ),
+		'termsUrl'       => esc_url_raw( sublimami_get_published_page_url( wc_terms_and_conditions_page_id() ) ),
+		'seller'         => sublimami_get_seller_line(),
 		'prices'         => sublimami_get_display_prices(),
 		'maxUploadBytes' => min( (int) wp_max_upload_size(), (int) SUBLIMAMI_MAX_FILE_BYTES ),
 	);

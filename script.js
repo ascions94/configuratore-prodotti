@@ -1314,8 +1314,8 @@ const products = {
         title: "T-Shirt personalizzabile",
         name: "T-Shirt personalizzata",
         dimensions: "Taglie disponibili: S, M, L, XL, XXL",
-        print: "Area massima di stampa: 30x40 cm",
-        printInfo: "Area stampabile massima 30x40 cm",
+        print: "Formati di stampa: 20x30 cm (verticale) o 30x20 cm (orizzontale)",
+        printInfo: "Area stampabile 20x30 cm o 30x20 cm",
         price: 19.90
     },
 
@@ -9775,6 +9775,89 @@ window.addEventListener(
         checkoutInProgress = false;
     }
 );
+
+
+/*
+    ============================
+    LINK DEL NEGOZIO
+    ============================
+
+    Dati del venditore, link legali e "Home"
+    arrivano dal plugin WordPress. Senza plugin
+    i link legali restano nascosti.
+    I link prodotto del menu cambiano prodotto.
+*/
+function applyShopLinks() {
+
+    const config =
+        window.SUBLIMAMI_CONFIG || {};
+
+    const legalUrls = {
+        terms: config.termsUrl,
+        privacy: config.privacyUrl
+    };
+
+
+    document
+        .querySelectorAll("[data-legal-link]")
+        .forEach(function (link) {
+
+            const url =
+                legalUrls[link.dataset.legalLink];
+
+            if (url) {
+                link.href = url;
+                link.hidden = false;
+            }
+        });
+
+
+    if (config.seller) {
+
+        document
+            .querySelectorAll("[data-seller-info]")
+            .forEach(function (element) {
+                element.textContent = config.seller;
+            });
+    }
+
+
+    const homeLink =
+        document.querySelector(
+            '.site-header nav a[data-nav="home"]'
+        );
+
+    if (homeLink && config.homeUrl) {
+        homeLink.href = config.homeUrl;
+    }
+
+
+    document
+        .querySelectorAll(".site-header nav a[data-product]")
+        .forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    if (productSelect.value === link.dataset.product) {
+                        return;
+                    }
+
+                    productSelect.value =
+                        link.dataset.product;
+
+                    productSelect.dispatchEvent(
+                        new Event("change", { bubbles: true })
+                    );
+                }
+            );
+        });
+}
+
+applyShopLinks();
 
 /*
     ============================

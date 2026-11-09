@@ -2009,6 +2009,58 @@ height: auto;
    SUPPORTO TOUCH CONFIGURATORE
    ========================================= */
 
+/* Informazioni legali: dati venditore e link */
+.site-legal-footer {
+    padding: 20px 20px 28px;
+    color: #666666;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.site-legal-seller {
+    margin: 0 0 6px;
+}
+
+.site-legal-links,
+.cart-legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 16px;
+}
+
+.site-legal-links a,
+.cart-legal-links a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.cart-legal-links {
+    margin: 10px 0 0;
+    color: #666666;
+    font-size: 12px;
+}
+
+.cart-legal-seller {
+    margin: 10px 0 0;
+    color: #666666;
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/*
+    Su mobile l'editor occupa tutto lo schermo con
+    la barra comandi fissa: il footer resterebbe
+    sotto la barra. Dati e link sono nel carrello.
+*/
+@media (max-width: 600px) {
+    .site-legal-footer {
+        display: none;
+    }
+}
+
 /* Messaggio di errore sotto "Vai al checkout" */
 .checkout-message {
     margin: 10px 0 0;

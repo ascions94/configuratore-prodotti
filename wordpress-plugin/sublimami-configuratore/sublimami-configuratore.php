@@ -48,6 +48,7 @@ function sublimami_products() {
 }
 
 require_once SUBLIMAMI_DIR . 'includes/products.php';
+require_once SUBLIMAMI_DIR . 'includes/legal.php';
 require_once SUBLIMAMI_DIR . 'includes/app-page.php';
 require_once SUBLIMAMI_DIR . 'includes/uploads.php';
 require_once SUBLIMAMI_DIR . 'includes/rest-api.php';
