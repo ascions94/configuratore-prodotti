@@ -6,7 +6,7 @@
 
     <title>Personalizza il tuo prodotto</title>
 
-    <link rel="stylesheet" href="style.css?v=0cefa53f5227">
+    <link rel="stylesheet" href="style.css?v=cd061adab94b">
 </head>
 
 <body>
@@ -457,11 +457,24 @@
                     Carica una foto
                 </label>
 
+                <!--
+                    Il campo file resta (lo usano anche i pulsanti mobile),
+                    ma è nascosto: si apre dal pulsante qui sotto.
+                -->
                 <input
                     type="file"
                     id="imageUpload"
+                    class="image-upload-input"
                     accept="image/*"
                 >
+
+                <label
+                    for="imageUpload"
+                    class="image-upload-button"
+                >
+                    <svg class="image-upload-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 16V4M7 9l5-5 5 5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                    Scegli una foto
+                </label>
 
             </div>
 
@@ -628,8 +641,9 @@
             id="textAlignLeft"
             class="text-align-button"
             title="Allinea a sinistra"
+            aria-label="Allinea a sinistra"
         >
-            ≡
+            <svg class="text-align-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h18M3 10h11M3 15h18M3 20h11"/></svg>
         </button>
 
         <button
@@ -637,8 +651,9 @@
             id="textAlignCenter"
             class="text-align-button active"
             title="Allinea al centro"
+            aria-label="Allinea al centro"
         >
-            ≡
+            <svg class="text-align-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h18M6.5 10h11M3 15h18M6.5 20h11"/></svg>
         </button>
 
         <button
@@ -646,8 +661,9 @@
             id="textAlignRight"
             class="text-align-button"
             title="Allinea a destra"
+            aria-label="Allinea a destra"
         >
-            ≡
+            <svg class="text-align-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h18M10 10h11M3 15h18M10 20h11"/></svg>
         </button>
 
     </div>

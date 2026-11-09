@@ -1376,23 +1376,87 @@ z-index: 100;
 }
 
 
-/* Sinistra */
-#textAlignLeft {
-    text-align: left;
-    padding-left: 9px;
+/* Icone sinistra / centro / destra */
+.text-align-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-align-icon {
+    width: 22px;
+    height: 22px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
 }
 
 
-/* Centro */
-#textAlignCenter {
-    text-align: center;
+/* =========================================
+   CARICA UNA FOTO (desktop)
+   ========================================= */
+
+/* Nascosto ma raggiungibile da tastiera e da imageUpload.click(). */
+input[type="file"].image-upload-input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+    overflow: hidden;
+
+    clip-path: inset(50%);
 }
 
+.tool-section .image-upload-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-/* Destra */
-#textAlignRight {
-    text-align: right;
-    padding-right: 9px;
+    gap: 8px;
+
+    width: 100%;
+    margin: 0;
+    padding: 12px 14px;
+
+    border: 2px dashed #9fd3db;
+    border-radius: 10px;
+
+    background: #f3fbfc;
+    color: #247f8e;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.tool-section .image-upload-button:hover {
+    background: #e3f5f7;
+    border-color: #55b4c1;
+}
+
+.image-upload-input:focus-visible + .image-upload-button {
+    outline: 3px solid #55b4c1;
+    outline-offset: 2px;
+}
+
+.image-upload-icon {
+    width: 20px;
+    height: 20px;
+
+    flex-shrink: 0;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 /* =========================================
