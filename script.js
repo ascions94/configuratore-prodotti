@@ -5187,6 +5187,13 @@ printArea.style.transform = "";
     }
 
 
+    /*
+        Pulsanti che dipendono dal prodotto: taglia
+        (desktop e mobile) e Fronte/Retro - formato mobile.
+    */
+    updateSizeButtons();
+    updateMobileQuickControls();
+
     renderCurrentState();
 }
 
@@ -6591,23 +6598,48 @@ document
         });
     });
 
+    /*
+        Evidenzia la taglia scelta sia nei pulsanti desktop
+        sia nel pannello taglia mobile (anche dopo un
+        ricaricamento o un annulla).
+    */
+    function updateSizeButtons() {
+
+        document
+            .querySelectorAll(".size-button")
+            .forEach(function (item) {
+
+                item.classList.toggle(
+                    "active",
+                    item.dataset.size === tshirtSize
+                );
+            });
+
+        document
+            .querySelectorAll("[data-mobile-size]")
+            .forEach(function (item) {
+
+                const isActive =
+                    item.dataset.mobileSize === tshirtSize;
+
+                item.classList.toggle("active", isActive);
+
+                item.setAttribute(
+                    "aria-pressed",
+                    isActive ? "true" : "false"
+                );
+            });
+    }
+
     document
     .querySelectorAll(".size-button")
     .forEach(function (button) {
 
         button.addEventListener("click", function () {
 
-            document
-                .querySelectorAll(".size-button")
-                .forEach(function (item) {
-
-                    item.classList.remove("active");
-
-                });
-
-            this.classList.add("active");
-
             tshirtSize = this.dataset.size;
+
+            updateSizeButtons();
 
             statusMessage.textContent =
                 `Taglia selezionata: ${tshirtSize}`;
@@ -10310,8 +10342,108 @@ mobileAddToCartButton.addEventListener(
     "click",
     function () {
 
+        /*
+            Su mobile i pulsanti taglia del desktop non si vedono:
+            per la T-Shirt chiediamo la taglia prima di aggiungere.
+        */
+        if (currentProduct === "tshirt") {
+
+            openMobileSizeSheet();
+            return;
+        }
+
         addToCartButton.click();
     }
+);
+
+
+/* =========================================
+   MOBILE - SCELTA TAGLIA T-SHIRT
+   ========================================= */
+
+const mobileSizeSheet =
+    document.getElementById(
+        "mobileSizeSheet"
+    );
+
+const mobileSizeOverlay =
+    document.getElementById(
+        "mobileSizeOverlay"
+    );
+
+const mobileSizeSubtitle =
+    document.getElementById(
+        "mobileSizeSubtitle"
+    );
+
+
+function openMobileSizeSheet() {
+
+    mobileSizeSubtitle.textContent =
+        `T-Shirt Cotone 100% · ${
+            tshirtColor === "black" ? "Nera" : "Bianca"
+        }`;
+
+    updateSizeButtons();
+
+    mobileSizeSheet.classList.add("open");
+    mobileSizeOverlay.classList.add("open");
+}
+
+
+function closeMobileSizeSheet() {
+
+    mobileSizeSheet.classList.remove("open");
+    mobileSizeOverlay.classList.remove("open");
+}
+
+
+document
+    .querySelectorAll("[data-mobile-size]")
+    .forEach(function (mobileButton) {
+
+        mobileButton.addEventListener(
+            "click",
+            function () {
+
+                /* Riusa la logica dei pulsanti taglia desktop. */
+                const originalButton =
+                    document.querySelector(
+                        `.size-button[data-size="${mobileButton.dataset.mobileSize}"]`
+                    );
+
+                if (originalButton) {
+                    originalButton.click();
+                }
+            }
+        );
+    });
+
+
+document
+    .getElementById("mobileSizeConfirm")
+    .addEventListener(
+        "click",
+        function () {
+
+            closeMobileSizeSheet();
+
+            addToCartButton.click();
+        }
+    );
+
+
+document
+    .getElementById("mobileSizeClose")
+    .addEventListener(
+        "click",
+        closeMobileSizeSheet
+    );
+
+
+mobileSizeOverlay.addEventListener(
+    "click",
+    closeMobileSizeSheet
 );
 
 closeCartButton.addEventListener(
@@ -11072,14 +11204,24 @@ const mobileTshirtQuickControls =
 
 function updateMobileQuickControls() {
 
-    if (!mobileTshirtQuickControls) {
+    /*
+        Cerchiamo l'elemento qui dentro: la funzione viene
+        chiamata anche da updateProductPreview, prima che
+        la costante qui sopra sia inizializzata.
+    */
+    const quickControls =
+        document.getElementById(
+            "mobileTshirtQuickControls"
+        );
+
+    if (!quickControls) {
         return;
     }
 
 
     /* Mostra i controlli solo sulla T-Shirt */
 
-    mobileTshirtQuickControls.classList.toggle(
+    quickControls.classList.toggle(
         "visible",
         currentProduct === "tshirt"
     );
@@ -11111,7 +11253,7 @@ function updateMobileQuickControls() {
             button.classList.toggle(
                 "active",
                 button.dataset.mobileQuickFormat ===
-                    tshirtPrintFormat
+                    tshirtPrintFormat[tshirtSide]
             );
         });
 }

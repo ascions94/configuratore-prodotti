@@ -6,7 +6,7 @@
 
     <title>Personalizza il tuo prodotto</title>
 
-    <link rel="stylesheet" href="style.css?v=21127dc2f6d5">
+    <link rel="stylesheet" href="style.css?v=0cefa53f5227">
 </head>
 
 <body>
@@ -1616,6 +1616,61 @@
 </div>
 
 <!-- =========================================
+     MOBILE - TAGLIA T-SHIRT
+     (si apre da "Aggiungi al carrello")
+     ========================================= -->
+
+<div
+    class="mobile-sheet-overlay"
+    id="mobileSizeOverlay"
+></div>
+
+<div
+    class="mobile-bottom-sheet mobile-size-sheet"
+    id="mobileSizeSheet"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="mobileSizeTitle"
+>
+
+    <div class="mobile-sheet-header">
+
+        <h2 id="mobileSizeTitle">Scegli la taglia</h2>
+
+        <button
+            type="button"
+            class="mobile-sheet-close"
+            id="mobileSizeClose"
+            aria-label="Chiudi"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <p class="mobile-sheet-subtitle" id="mobileSizeSubtitle">
+        T-Shirt Cotone 100%
+    </p>
+
+    <div class="mobile-size-options" role="group" aria-label="Taglia">
+        <button type="button" class="mobile-size-option" data-mobile-size="S">S</button>
+        <button type="button" class="mobile-size-option" data-mobile-size="M">M</button>
+        <button type="button" class="mobile-size-option" data-mobile-size="L">L</button>
+        <button type="button" class="mobile-size-option" data-mobile-size="XL">XL</button>
+        <button type="button" class="mobile-size-option" data-mobile-size="XXL">XXL</button>
+    </div>
+
+    <button
+        type="button"
+        class="mobile-size-confirm"
+        id="mobileSizeConfirm"
+    >
+        Aggiungi al carrello
+    </button>
+
+</div>
+
+<!-- =========================================
      MOBILE - FRONTE / RETRO
      ========================================= -->
 
@@ -2004,7 +2059,7 @@
 -->
 <script
     src="storage.js?v=d50ff04e43df"
-    data-app-src="script.js?v=6f65abd143cf">
+    data-app-src="script.js?v=429e4e2976c0">
 </script>
 
 </body>

@@ -5078,3 +5078,65 @@ nav a {
         font-weight: 700;
     }
 }
+
+/* =========================================
+   MOBILE - SCELTA TAGLIA T-SHIRT
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .mobile-size-options {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+
+        gap: 8px;
+
+        margin-bottom: 16px;
+    }
+
+    .mobile-size-option {
+        min-width: 0;
+        height: 52px;
+
+        border: 2px solid #e2e2e2;
+        border-radius: 14px;
+
+        background: #f6f6f6;
+
+        color: #333333;
+
+        font-size: 15px;
+        font-weight: 800;
+
+        cursor: pointer;
+    }
+
+    .mobile-size-option.active {
+        border-color: #58b6c5;
+
+        background: #eaf8fa;
+
+        color: #247f8e;
+    }
+
+    .mobile-size-confirm {
+        width: 100%;
+        min-height: 52px;
+
+        border: none;
+        border-radius: 16px;
+
+        background: #b91f4a;
+
+        color: #ffffff;
+
+        font-size: 16px;
+        font-weight: 800;
+
+        cursor: pointer;
+    }
+
+    .mobile-size-confirm:active {
+        background: #9c1a3f;
+    }
+}
