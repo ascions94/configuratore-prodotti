@@ -5204,3 +5204,115 @@ nav a {
         background: #9c1a3f;
     }
 }
+
+/* =========================================
+   MOBILE - COMANDI DI SELEZIONE PIÙ PICCOLI
+   I comandi stanno dentro l'anteprima, che viene ingrandita
+   dallo zoom: --ui vale 1 pixel di schermo, così pulsanti,
+   maniglie e misure restano piccoli a ogni livello di zoom.
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    #selectionControls {
+        --ui: calc(1px / var(--preview-scale, 1));
+    }
+
+    #selectionControls .direct-control-button {
+        width: calc(30 * var(--ui));
+        height: calc(30 * var(--ui));
+
+        font-size: calc(15 * var(--ui));
+
+        box-shadow:
+            0 calc(2 * var(--ui)) calc(6 * var(--ui))
+            rgba(0, 0, 0, 0.22);
+    }
+
+    /* Area di tocco più ampia del cerchio visibile. */
+    #selectionControls .direct-control-button::before {
+        content: "";
+
+        position: absolute;
+        inset: calc(-5 * var(--ui));
+
+        border-radius: 50%;
+    }
+
+    /* Fila superiore: porta davanti, elimina, porta dietro */
+    #selectionControls #bringForwardButton {
+        left: calc(50% - 40 * var(--ui));
+        top: calc(-60 * var(--ui));
+    }
+
+    #selectionControls #directDeleteButton {
+        left: 50%;
+        top: calc(-60 * var(--ui));
+    }
+
+    #selectionControls #sendBackwardButton {
+        left: calc(50% + 40 * var(--ui));
+        top: calc(-60 * var(--ui));
+    }
+
+    /* Fila inferiore: ruota, sposta, capovolgi */
+    #selectionControls #directRotateButton {
+        left: calc(50% - 40 * var(--ui));
+        bottom: calc(-42 * var(--ui));
+    }
+
+    #selectionControls #directMoveButton {
+        left: 50%;
+        bottom: calc(-42 * var(--ui));
+    }
+
+    #selectionControls #directFlipButton {
+        left: calc(50% + 40 * var(--ui));
+        bottom: calc(-42 * var(--ui));
+    }
+
+    /* Maniglie agli angoli */
+    #selectionControls .resize-handle {
+        width: calc(12 * var(--ui));
+        height: calc(12 * var(--ui));
+
+        border-width: calc(2 * var(--ui));
+    }
+
+    #selectionControls .resize-top-left {
+        left: calc(-7 * var(--ui));
+        top: calc(-7 * var(--ui));
+    }
+
+    #selectionControls .resize-top-right {
+        right: calc(-7 * var(--ui));
+        top: calc(-7 * var(--ui));
+    }
+
+    #selectionControls .resize-bottom-left {
+        left: calc(-7 * var(--ui));
+        bottom: calc(-7 * var(--ui));
+    }
+
+    #selectionControls .resize-bottom-right {
+        right: calc(-7 * var(--ui));
+        bottom: calc(-7 * var(--ui));
+    }
+
+    /* Misure in cm */
+    #selectionControls .selection-size-label {
+        padding: calc(2 * var(--ui)) calc(5 * var(--ui));
+
+        border-radius: calc(4 * var(--ui));
+
+        font-size: calc(10 * var(--ui));
+    }
+
+    #selectionControls .selection-width-label {
+        top: calc(-21 * var(--ui));
+    }
+
+    #selectionControls .selection-height-label {
+        right: calc(-44 * var(--ui));
+    }
+}

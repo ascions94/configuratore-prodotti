@@ -6913,6 +6913,15 @@ function updatePreviewZoom() {
     productPreview.style.transformOrigin =
         "center center";
 
+    /*
+        Su mobile i comandi di selezione usano questa scala per
+        restare della stessa misura sullo schermo a ogni zoom.
+    */
+    productPreview.style.setProperty(
+        "--preview-scale",
+        String(scale)
+    );
+
     previewZoomRange.value = previewZoom;
 
     previewZoomValue.textContent =
