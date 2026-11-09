@@ -27,6 +27,11 @@ const productDimensions = document.getElementById("productDimensions");
 const printDimensions = document.getElementById("printDimensions");
 
 const tshirtOptions = document.getElementById("tshirtOptions");
+const variantOptions = document.getElementById("variantOptions");
+const variantButtons = document.getElementById("variantButtons");
+const printShapeMask = document.getElementById("printShapeMask");
+const orientationOptions = document.getElementById("orientationOptions");
+const mobileOrientationToggle = document.getElementById("mobileOrientationToggle");
 const printFormatOptions =
     document.getElementById("printFormatOptions");
 
@@ -1292,6 +1297,8 @@ let currentProduct = productSelect.value;
 
 let tshirtColor = "white";
 let tshirtSize = "M";
+let tshirtFabric = "cotton"; // "cotton" (100% cotone) oppure "polyester"
+let tshirtFit = "adult";     // "adult" (adulto unisex) oppure "kids" (bambino)
 let tshirtSide = "front";
 let tshirtPrintFormat = {
     front: "vertical",
@@ -1302,21 +1309,21 @@ let tshirtPrintFormat = {
 const products = {
 
     cushion: {
-        title: "Cuscino 40x40 cm",
+        title: "Cuscino grande",
         name: "Cuscino personalizzato",
         dimensions: "Dimensione: 40x40 cm",
         print: "Area di stampa: 30x30 cm",
         printInfo: "Area stampabile 30x30 cm",
-        price: 19.90
+        price: 15.00
     },
 
     tshirt: {
         title: "T-Shirt personalizzabile",
         name: "T-Shirt personalizzata",
         dimensions: "Taglie disponibili: S, M, L, XL, XXL",
-        print: "Formati di stampa: 20x30 cm (verticale) o 30x20 cm (orizzontale)",
-        printInfo: "Area stampabile 20x30 cm o 30x20 cm",
-        price: 19.90
+        print: "Area massima di stampa: 30x40 cm",
+        printInfo: "Area stampabile massima 30x40 cm",
+        price: 15.00
     },
 
     keychain: {
@@ -1325,32 +1332,587 @@ const products = {
         dimensions: "Dimensione: 4,5x4,5 cm",
         print: "Superficie interamente stampabile",
         printInfo: "Area stampabile 4,5x4,5 cm",
-        price: 14.90
+        price: 10.00
     }
 
 };
 
 
+/* =========================================
+   NUOVI PRODOTTI
+   -----------------------------------------
+   Funzionano come il cuscino (un solo lato).
+   - printCm: area reale di stampa in cm, presa dai
+     modelli a 300 dpi (comprende il margine di taglio).
+   - layout: aspetto dell'anteprima (vedi style.css).
+   - price: null = prezzo ancora da definire
+     (il prodotto si personalizza ma non va nel carrello).
+   ========================================= */
+
+Object.assign(products, {
+
+    "cushion-small": {
+        title: "Cuscino quadrato piccolo",
+        name: "Cuscino piccolo personalizzato",
+        dimensions: "Formato: quadrato piccolo",
+        print: "Area di stampa: 16x16 cm",
+        printInfo: "Area stampabile 16x16 cm",
+        printCm: { width: 16, height: 16 },
+        layout: "cushion",
+        price: 10.00
+    },
+
+    "heart-small": {
+        title: "Cuscino a cuore piccolo",
+        name: "Cuscino a cuore personalizzato",
+        dimensions: "Dimensione: circa 15x15 cm",
+        print: "Superficie del cuore interamente stampabile",
+        printInfo: "Area stampabile circa 14,5x14,5 cm",
+        printCm: { width: 14.4, height: 14.7 },
+        layout: "heart",
+        shape: "heart-small",
+        price: 10.00
+    },
+
+    "heart-large": {
+        title: "Cuscino a cuore grande",
+        name: "Cuscino a cuore personalizzato",
+        dimensions: "Dimensione: circa 35x30 cm",
+        print: "Superficie del cuore interamente stampabile",
+        printInfo: "Area stampabile circa 35x30 cm",
+        printCm: { width: 35, height: 30.2 },
+        layout: "heart",
+        shape: "heart-large",
+        price: 15.00
+    },
+
+    "canvas-s": {
+        title: "Tela 18x24 cm",
+        name: "Tela personalizzata",
+        dimensions: "Dimensione: 18x24 cm",
+        print: "Area di stampa: 18x24 cm + 0,5 cm di margine per lato",
+        printInfo: "Area stampabile 18x24 cm (con margine)",
+        printCm: { width: 19, height: 25 },
+        nominal: { width: 18, height: 24 },
+        orientable: true,
+        marginNote: "canvas",
+        layout: "canvas",
+        price: null // DA DEFINIRE
+    },
+
+    "canvas-m": {
+        title: "Tela 20x30 cm",
+        name: "Tela personalizzata",
+        dimensions: "Dimensione: 20x30 cm",
+        print: "Area di stampa: 20x30 cm + 0,5 cm di margine per lato",
+        printInfo: "Area stampabile 20x30 cm (con margine)",
+        printCm: { width: 21, height: 31 },
+        nominal: { width: 20, height: 30 },
+        orientable: true,
+        marginNote: "canvas",
+        layout: "canvas",
+        price: null // DA DEFINIRE
+    },
+
+    "canvas-l": {
+        title: "Tela 30x40 cm",
+        name: "Tela personalizzata",
+        dimensions: "Dimensione: 30x40 cm",
+        print: "Area di stampa: 30x40 cm + 0,5 cm di margine per lato",
+        printInfo: "Area stampabile 30x40 cm (con margine)",
+        printCm: { width: 31, height: 41 },
+        nominal: { width: 30, height: 40 },
+        orientable: true,
+        marginNote: "canvas",
+        layout: "canvas",
+        price: null // DA DEFINIRE
+    },
+
+    "tile-square": {
+        title: "Mattonella 20x20 cm",
+        name: "Mattonella personalizzata",
+        dimensions: "Dimensione: 20x20 cm",
+        print: "Area di stampa: 20x20 cm + margine di taglio",
+        printInfo: "Area stampabile 20x20 cm (con margine)",
+        printCm: { width: 20.5, height: 20.5 },
+        layout: "tile",
+        price: null // DA DEFINIRE
+    },
+
+    "tile-rect": {
+        title: "Mattonella 15x20 cm",
+        name: "Mattonella personalizzata",
+        dimensions: "Dimensione: 15x20 cm",
+        print: "Area di stampa: 15x20 cm + margine di taglio",
+        printInfo: "Area stampabile 15x20 cm (con margine)",
+        printCm: { width: 20.5, height: 15.5 },
+        nominal: { width: 20, height: 15 },
+        orientable: true,
+        marginNote: "tile",
+        layout: "tile",
+        price: null // DA DEFINIRE
+    },
+
+    mousepad: {
+        title: "Tappetino mouse 22x18 cm",
+        name: "Tappetino mouse personalizzato",
+        dimensions: "Dimensione: 22x18 cm",
+        print: "Area di stampa: 22x18 cm + margine di taglio",
+        printInfo: "Area stampabile 22x18 cm (con margine)",
+        printCm: { width: 22.5, height: 18.5 },
+        layout: "mousepad",
+        price: 10.00
+    },
+
+    /* PORTACHIAVI IN LEGNO MDF
+       printCm = area di stampa (bordo esterno del modello),
+       la linea tratteggiata è la linea di taglio (0,2 cm più interna). */
+
+    "keychain-round": {
+        title: "Portachiavi tondo",
+        name: "Portachiavi in legno personalizzato",
+        dimensions: "Formato: tondo, diametro 5 cm",
+        print: "Area di stampa: diametro 5,2 cm (0,2 cm di scarto oltre il tratteggio)",
+        printInfo: "Tratteggio = linea di taglio · stampa fino a 5,2 cm",
+        printCm: { width: 5.2, height: 5.2 },
+        layout: "keychain-mdf",
+        shape: "keychain-round",
+        price: 10.00
+    },
+
+    "keychain-square": {
+        title: "Portachiavi quadrato",
+        name: "Portachiavi in legno personalizzato",
+        dimensions: "Formato: quadrato 5x5 cm",
+        print: "Area di stampa: 5,2x5,2 cm (0,2 cm di scarto oltre il tratteggio)",
+        printInfo: "Tratteggio = linea di taglio · stampa fino a 5,2x5,2 cm",
+        printCm: { width: 5.2, height: 5.2 },
+        layout: "keychain-mdf",
+        shape: "keychain-square",
+        price: 10.00
+    },
+
+    "keychain-rect": {
+        title: "Portachiavi rettangolare",
+        name: "Portachiavi in legno personalizzato",
+        dimensions: "Formato: rettangolare 4x6 cm",
+        print: "Area di stampa: 4,2x6,2 cm (0,2 cm di scarto oltre il tratteggio)",
+        printInfo: "Tratteggio = linea di taglio · stampa fino a 4,2x6,2 cm",
+        printCm: { width: 4.2, height: 6.2 },
+        nominal: { width: 4, height: 6 },
+        orientable: true,
+        marginNote: "keychain",
+        layout: "keychain-mdf",
+        shape: "keychain-rect",
+        price: 10.00
+    },
+
+    "keychain-heart": {
+        title: "Portachiavi cuore",
+        name: "Portachiavi in legno personalizzato",
+        dimensions: "Formato: cuore, circa 5 cm",
+        print: "Area di stampa: circa 5,2 cm (0,2 cm di scarto oltre il tratteggio)",
+        printInfo: "Tratteggio = linea di taglio · stampa fino a 5,2 cm",
+        printCm: { width: 5.2, height: 4.84 },
+        layout: "keychain-mdf",
+        shape: "keychain-heart",
+        price: 10.00
+    }
+});
+
+
 /*
-    Sul sito WordPress i prezzi arrivano dai
-    prodotti WooCommerce, così configuratore
-    e negozio mostrano sempre lo stesso prezzo.
+   Famiglie di prodotti e relative varianti
+   (servono per i pulsanti "Formato" nel pannello).
 */
-if (
-    window.SUBLIMAMI_CONFIG &&
-    window.SUBLIMAMI_CONFIG.prices
-) {
+const productVariants = {
+    cushion:         { group: "cuscini",  label: "Quadrato grande" },
+    "cushion-small": { group: "cuscini",  label: "Quadrato piccolo" },
+    "heart-small":   { group: "cuscini",  label: "Cuore piccolo" },
+    "heart-large":   { group: "cuscini",  label: "Cuore grande" },
+    tshirt:          { group: "tshirt",   label: "T-Shirt" },
+    keychain:        { group: "keychain-old", label: "Quadrato 4,5×4,5" }, // non più in vendita
+    "keychain-round":  { group: "keychain", label: "Tondo" },
+    "keychain-square": { group: "keychain", label: "Quadrato" },
+    "keychain-rect":   { group: "keychain", label: "Rettangolo" },
+    "keychain-heart":  { group: "keychain", label: "Cuore" },
+    "canvas-s":      { group: "tele",     label: "18×24" },
+    "canvas-m":      { group: "tele",     label: "20×30" },
+    "canvas-l":      { group: "tele",     label: "30×40" },
+    "tile-square":   { group: "mattonelle", label: "20×20" },
+    "tile-rect":     { group: "mattonelle", label: "15×20" },
+    mousepad:        { group: "tappetini", label: "22×18" }
+};
 
-    Object.keys(products).forEach(function (productKey) {
 
-        const shopPrice =
-            Number(window.SUBLIMAMI_CONFIG.prices[productKey]);
+/* =========================================
+   CATEGORIE DI PRODOTTO
+   -----------------------------------------
+   Ogni categoria raggruppa i prodotti con lo stesso
+   "group" in productVariants. L'ordine qui è l'ordine
+   dei pulsanti nel pannello.
+   variantLabel = titolo dei pulsanti dei tipi.
+   ========================================= */
+const productCategories = [
+    { key: "cuscini",    label: "Cuscini",         icon: "▢", variantLabel: "Tipo di cuscino" },
+    { key: "tshirt",     label: "T-Shirt",         icon: "👕" },
+    { key: "keychain",   label: "Portachiavi",     icon: "○", variantLabel: "Forma del portachiavi" },
+    { key: "tele",       label: "Tele",            icon: "▭", variantLabel: "Misura della tela" },
+    { key: "mattonelle", label: "Mattonelle",      icon: "◻", variantLabel: "Misura della mattonella" },
+    { key: "tappetini",  label: "Tappetino mouse", icon: "▬" }
+];
 
-        if (shopPrice > 0) {
-            products[productKey].price = shopPrice;
-        }
+/* Ultimo tipo scelto in ogni categoria (per riaprirlo al ritorno) */
+const lastProductByCategory = {};
+
+function getProductCategory(productKey) {
+    return productVariants[productKey]
+        ? productVariants[productKey].group
+        : null;
+}
+
+function getCategoryProducts(categoryKey) {
+    return Object.keys(productVariants).filter(function (key) {
+        return (
+            productVariants[key].group === categoryKey &&
+            products[key]
+        );
     });
 }
+
+
+/* =========================================
+   T-SHIRT: TESSUTO, MODELLO E PREZZI
+   -----------------------------------------
+   Il disegno è condiviso tra cotone e poliestere
+   e tra adulto e bambino: cambiano solo le opzioni
+   dell'ordine (stati separati restano per Bianca/Nera).
+   ========================================= */
+const TSHIRT_FABRICS = {
+    cotton:    { label: "100% cotone", colors: ["white", "black"] },
+    polyester: { label: "Poliestere",  colors: ["white"] }
+};
+
+const TSHIRT_FITS = {
+    adult: { label: "Adulto unisex" },
+    kids:  { label: "Bambino" }
+};
+
+/* TAGLIE: dipendono da modello (adulto/bambino) e tessuto.
+   La taglia "default" è quella proposta quando si cambia modello. */
+const TSHIRT_SIZES = {
+    adult: {
+        cotton:    { sizes: ["S", "M", "L", "XL", "XXL"], default: "M" },
+        polyester: { sizes: ["S", "M", "L", "XL", "XXL"], default: "M" }
+    },
+    kids: {
+        cotton: {
+            sizes: ["3-4 anni", "5-6 anni", "7-8 anni", "9-11 anni", "12-13 anni"],
+            default: "7-8 anni"
+        },
+        polyester: {
+            sizes: ["4-5 anni", "6-8 anni", "10-12 anni"],
+            default: "6-8 anni"
+        }
+    }
+};
+
+function getTshirtSizeInfo(fabric, fit) {
+    return TSHIRT_SIZES[normalizeTshirtFit(fit)][normalizeTshirtFabric(fabric)];
+}
+
+/* AREA DI STAMPA MASSIMA (cm), lato corto × lato lungo.
+   Bambino: per ora 15x20 per tutte le taglie. */
+const TSHIRT_PRINT_CM = {
+    adult: { short: 20, long: 30 },
+    kids:  { short: 15, long: 20 }
+};
+
+/* Misure in cm dell'area di stampa per formato verticale/orizzontale */
+function getTshirtPrintCm(format, fit) {
+
+    const size = TSHIRT_PRINT_CM[normalizeTshirtFit(fit || tshirtFit)];
+
+    return format === "horizontal"
+        ? { width: size.long, height: size.short }
+        : { width: size.short, height: size.long };
+}
+
+/* Misure in px del riquadro tratteggiato.
+   Adulto: valori originali (desktop 95x142, mobile 70x105).
+   Bambino: stessa scala px/cm dell'adulto, così i cm restano reali. */
+function getTshirtPrintAreaPx(format, isMobile, fit) {
+
+    const base = isMobile
+        ? { short: 70, long: 105 }
+        : { short: 95, long: 142 };
+
+    let shortPx = base.short;
+    let longPx = base.long;
+
+    if (normalizeTshirtFit(fit || tshirtFit) !== "adult") {
+
+        const cm = TSHIRT_PRINT_CM[normalizeTshirtFit(fit || tshirtFit)];
+        const pxPerCm = base.short / TSHIRT_PRINT_CM.adult.short;
+
+        shortPx = cm.short * pxPerCm;
+        longPx = cm.long * pxPerCm;
+    }
+
+    return format === "horizontal"
+        ? { width: longPx, height: shortPx, baseWidth: base.long, baseHeight: base.short }
+        : { width: shortPx, height: longPx, baseWidth: base.short, baseHeight: base.long };
+}
+
+function formatTshirtPrintCm(format, fit) {
+    const cm = getTshirtPrintCm(format, fit);
+    return cm.width + "x" + cm.height;
+}
+
+/* PREZZI T-SHIRT: scrivi il prezzo (es. 12.50).
+   null = "Prezzo da definire" (non si può ancora aggiungere al carrello) */
+const TSHIRT_PRICES = {
+    cotton:    { adult: 15.00, kids: 15.00 },
+    polyester: { adult: 15.00, kids: 15.00 }
+};
+
+function normalizeTshirtFabric(value) {
+    return TSHIRT_FABRICS[value] ? value : "cotton";
+}
+
+function normalizeTshirtFit(value) {
+    return TSHIRT_FITS[value] ? value : "adult";
+}
+
+function getTshirtPrice(fabric, fit) {
+
+    const row = TSHIRT_PRICES[normalizeTshirtFabric(fabric)];
+    const price = row ? row[normalizeTshirtFit(fit)] : null;
+
+    return typeof price === "number" ? price : null;
+}
+
+/* Prezzo "a partire da" di un tessuto (per le schede su mobile) */
+function getTshirtPriceFrom(fabric) {
+
+    const prices = Object.keys(TSHIRT_FITS)
+        .map(function (fit) {
+            return getTshirtPrice(fabric, fit);
+        })
+        .filter(function (price) {
+            return typeof price === "number";
+        });
+
+    return prices.length ? Math.min.apply(null, prices) : null;
+}
+
+function getTshirtVariantLabel(fabric, fit) {
+    return (
+        "T-Shirt " +
+        TSHIRT_FABRICS[normalizeTshirtFabric(fabric)].label +
+        " · " +
+        TSHIRT_FITS[normalizeTshirtFit(fit)].label
+    );
+}
+
+/* Prezzo del prodotto attualmente in modifica */
+function getCurrentUnitPrice() {
+
+    if (currentProduct === "tshirt") {
+        return getTshirtPrice(tshirtFabric, tshirtFit);
+    }
+
+    const price = products[currentProduct].price;
+
+    return typeof price === "number" ? price : null;
+}
+
+
+/* Prodotti "semplici" (un solo lato), compresi cuscino e portachiavi */
+function isSingleSideProduct(productKey) {
+    return productKey !== "tshirt";
+}
+
+
+/* Prezzo formattato; se manca mostra "Prezzo da definire" */
+function formatProductPrice(price) {
+
+    if (typeof price !== "number") {
+        return "Prezzo da definire";
+    }
+
+    return `€${price.toFixed(2).replace(".", ",")}`;
+}
+
+
+/* =========================================
+   ORIENTAMENTO (tele e mattonella 15x20)
+   -----------------------------------------
+   L'orientamento scelto è salvato nello stato
+   del prodotto (state.orientation), così resta
+   anche dopo il ricaricamento e con annulla/ripristina.
+   ========================================= */
+
+function getBaseOrientation(product) {
+    return product.printCm.height >= product.printCm.width
+        ? "vertical"
+        : "horizontal";
+}
+
+function getProductOrientation(productKey) {
+
+    const product = products[productKey];
+
+    if (!product || !product.orientable) {
+        return null;
+    }
+
+    const state =
+        productStates[productKey] &&
+        productStates[productKey].front;
+
+    if (
+        state &&
+        (state.orientation === "vertical" ||
+            state.orientation === "horizontal")
+    ) {
+        return state.orientation;
+    }
+
+    return getBaseOrientation(product);
+}
+
+/* Misure orientate: se serve scambia larghezza e altezza */
+function orientSize(size, product, orientation) {
+
+    if (
+        !orientation ||
+        orientation === getBaseOrientation(product)
+    ) {
+        return { width: size.width, height: size.height };
+    }
+
+    return { width: size.height, height: size.width };
+}
+
+function getOrientedPrintCm(productKey) {
+
+    const product = products[productKey];
+
+    return orientSize(
+        product.printCm,
+        product,
+        getProductOrientation(productKey)
+    );
+}
+
+function formatCm(value) {
+    return String(value).replace(".", ",");
+}
+
+/* Testi dell'area di stampa aggiornati con l'orientamento */
+function getOrientedPrintTexts(productKey) {
+
+    const product = products[productKey];
+
+    /* T-Shirt bambino: area di stampa più piccola */
+    if (productKey === "tshirt" && tshirtFit !== "adult") {
+
+        const cm = TSHIRT_PRINT_CM[normalizeTshirtFit(tshirtFit)];
+
+        return {
+            print: `Area massima di stampa: ${cm.short}x${cm.long} cm`,
+            printInfo: `Area stampabile massima ${cm.short}x${cm.long} cm`
+        };
+    }
+
+    if (!product.orientable || !product.nominal) {
+        return {
+            print: product.print,
+            printInfo: product.printInfo
+        };
+    }
+
+    const size = orientSize(
+        product.nominal,
+        product,
+        getProductOrientation(productKey)
+    );
+
+    const label =
+        `${formatCm(size.width)}x${formatCm(size.height)} cm`;
+
+    if (product.marginNote === "keychain") {
+
+        const printSize = getOrientedPrintCm(productKey);
+
+        const printLabel =
+            `${formatCm(printSize.width)}x${formatCm(printSize.height)} cm`;
+
+        return {
+            print: `Area di stampa: ${printLabel} (0,2 cm di scarto oltre il tratteggio)`,
+            printInfo: `Tratteggio = linea di taglio · stampa fino a ${printLabel}`
+        };
+    }
+
+    const margin =
+        product.marginNote === "canvas"
+            ? " + 0,5 cm di margine per lato"
+            : " + margine di taglio";
+
+    return {
+        print: `Area di stampa: ${label}${margin}`,
+        printInfo: `Area stampabile ${label} (con margine)`
+    };
+}
+
+
+/*
+    Sul sito WordPress i prezzi arrivano dai prodotti WooCommerce,
+    così configuratore e negozio mostrano sempre lo stesso prezzo.
+    - prices: chiave prodotto -> prezzo (un prodotto senza prezzo
+      nel negozio resta "Prezzo da definire").
+    - tshirtPrices: tessuto -> modello -> prezzo.
+*/
+(function applyShopPrices() {
+
+    const config =
+        window.SUBLIMAMI_CONFIG;
+
+    if (!config) {
+        return;
+    }
+
+    if (config.prices) {
+
+        Object.keys(products).forEach(function (productKey) {
+
+            const shopPrice =
+                Number(config.prices[productKey]);
+
+            products[productKey].price =
+                shopPrice > 0 ? shopPrice : null;
+        });
+    }
+
+    if (config.tshirtPrices) {
+
+        Object.keys(TSHIRT_PRICES).forEach(function (fabric) {
+
+            Object.keys(TSHIRT_PRICES[fabric]).forEach(function (fit) {
+
+                const shopPrice =
+                    Number(
+                        config.tshirtPrices[fabric] &&
+                        config.tshirtPrices[fabric][fit]
+                    );
+
+                TSHIRT_PRICES[fabric][fit] =
+                    shopPrice > 0 ? shopPrice : null;
+            });
+        });
+    }
+})();
 
 
 function createImageState(src) {
@@ -1762,6 +2324,12 @@ function saveConfiguratorState() {
         tshirtSize:
             tshirtSize,
 
+        tshirtFabric:
+            tshirtFabric,
+
+        tshirtFit:
+            tshirtFit,
+
         tshirtSide:
             tshirtSide,
 
@@ -1845,6 +2413,15 @@ let productStates = {
 
 };
 
+/* Uno stato indipendente per ogni nuovo prodotto */
+Object.keys(products).forEach(function (productKey) {
+    if (!productStates[productKey]) {
+        productStates[productKey] = {
+            front: createEmptyState()
+        };
+    }
+});
+
 /*
     Recuperiamo un eventuale
     progetto salvato.
@@ -1874,6 +2451,20 @@ if (savedProductStates.keychain) {
     productStates.keychain =
         savedProductStates.keychain;
 }
+
+/* Nuovi prodotti salvati in precedenza */
+Object.keys(products).forEach(function (productKey) {
+    if (
+        productKey !== "tshirt" &&
+        productKey !== "cushion" &&
+        productKey !== "keychain" &&
+        savedProductStates[productKey] &&
+        savedProductStates[productKey].front
+    ) {
+        productStates[productKey] =
+            savedProductStates[productKey];
+    }
+});
 
 /*
     T-SHIRT
@@ -1917,6 +2508,11 @@ if (savedProductStates.tshirt) {
             savedConfigurator.currentProduct;
     }
 
+    /* Il portachiavi 4,5x4,5 non è più in vendita */
+    if (currentProduct === "keychain") {
+        currentProduct = "keychain-square";
+    }
+
     if (savedConfigurator.tshirtColor) {
         tshirtColor =
             savedConfigurator.tshirtColor;
@@ -1926,6 +2522,14 @@ if (savedProductStates.tshirt) {
         tshirtSize =
             savedConfigurator.tshirtSize;
     }
+
+    /* Tessuto e modello (i vecchi salvataggi non li hanno:
+       restano 100% cotone e adulto) */
+    tshirtFabric =
+        normalizeTshirtFabric(savedConfigurator.tshirtFabric);
+
+    tshirtFit =
+        normalizeTshirtFit(savedConfigurator.tshirtFit);
 
     if (savedConfigurator.tshirtSide) {
         tshirtSide =
@@ -1981,6 +2585,8 @@ function createHistorySnapshot() {
         currentProduct: currentProduct,
         tshirtColor: tshirtColor,
         tshirtSize: tshirtSize,
+        tshirtFabric: tshirtFabric,
+        tshirtFit: tshirtFit,
         tshirtSide: tshirtSide,
         tshirtPrintFormat: tshirtPrintFormat
     });
@@ -2082,6 +2688,12 @@ function restoreHistorySnapshot(snapshot) {
 
     tshirtSize =
         data.tshirtSize;
+
+    tshirtFabric =
+        normalizeTshirtFabric(data.tshirtFabric);
+
+    tshirtFit =
+        normalizeTshirtFit(data.tshirtFit);
 
     tshirtSide =
         data.tshirtSide;
@@ -3920,17 +4532,41 @@ function getCurrentPrintAreaCm() {
         currentProduct,
         currentProduct === "tshirt"
             ? tshirtPrintFormat[tshirtSide]
-            : null
+            : null,
+        {
+            fit: tshirtFit,
+            orientation: getProductOrientation(currentProduct)
+        }
     );
 }
 
 
 /*
-    Misure reali di stampa di un prodotto.
-    format serve solo per la T-shirt
-    ("vertical" o "horizontal").
+    Misure reali di stampa di un prodotto: servono all'editor e ai
+    file di stampa degli articoli nel carrello.
+    - format: solo T-shirt ("vertical" o "horizontal")
+    - options.fit: modello T-shirt (adulto / bambino)
+    - options.orientation: prodotti orientabili (tele, mattonelle)
 */
-function getPrintAreaCm(product, format) {
+function getPrintAreaCm(product, format, options) {
+
+    const settings =
+        options || {};
+
+    const definition =
+        products[product];
+
+    /* Nuovi prodotti: misure prese dalla definizione */
+    if (
+        definition &&
+        definition.printCm
+    ) {
+        return orientSize(
+            definition.printCm,
+            definition,
+            settings.orientation || null
+        );
+    }
 
     if (product === "cushion") {
 
@@ -3952,23 +4588,8 @@ function getPrintAreaCm(product, format) {
 
     if (product === "tshirt") {
 
-        if (
-            format ===
-            "vertical"
-        ) {
-
-            return {
-                width: 20,
-                height: 30
-            };
-
-        } else {
-
-            return {
-                width: 30,
-                height: 20
-            };
-        }
+        /* Adulto 20x30 / 30x20, bambino 15x20 / 20x15 */
+        return getTshirtPrintCm(format, settings.fit);
     }
 
 
@@ -4164,6 +4785,7 @@ function updateImageSizeInfo() {
     ) {
 
         imageSizeValue.textContent = "—";
+        updateImageCropNote(false);
         return;
     }
 
@@ -4209,16 +4831,111 @@ function updateImageSizeInfo() {
         state.scale;
 
 
-    const widthCm =
-        imageWidthPx / pixelsPerCmX;
-
-    const heightCm =
-        imageHeightPx / pixelsPerCmY;
-
+    /*
+        Mostriamo solo la parte della foto che cade
+        dentro l'area di stampa: è quella che verrà
+        stampata davvero.
+    */
+    const visible =
+        getVisibleImageSizeCm(
+            state,
+            imageWidthPx,
+            imageHeightPx,
+            pixelsPerCmX,
+            pixelsPerCmY
+        );
 
     imageSizeValue.textContent =
-        `${widthCm.toFixed(1)} × ` +
-        `${heightCm.toFixed(1)} cm`;
+        `${visible.width.toFixed(1)} × ` +
+        `${visible.height.toFixed(1)} cm`;
+
+    updateImageCropNote(visible.cropped);
+}
+
+
+/*
+   Parte visibile (stampata) di una foto dentro l'area di stampa.
+   La foto è centrata nell'area e spostata di state.x / state.y;
+   se è ruotata si usa il rettangolo che la contiene.
+*/
+function getVisibleImageSizeCm(
+    state,
+    imageWidthPx,
+    imageHeightPx,
+    pixelsPerCmX,
+    pixelsPerCmY
+) {
+
+    const areaWidth = printArea.clientWidth;
+    const areaHeight = printArea.clientHeight;
+
+    const angle =
+        ((Number(state.rotation) || 0) * Math.PI) / 180;
+
+    const boxWidth =
+        Math.abs(imageWidthPx * Math.cos(angle)) +
+        Math.abs(imageHeightPx * Math.sin(angle));
+
+    const boxHeight =
+        Math.abs(imageWidthPx * Math.sin(angle)) +
+        Math.abs(imageHeightPx * Math.cos(angle));
+
+    const centerX = areaWidth / 2 + (Number(state.x) || 0);
+    const centerY = areaHeight / 2 + (Number(state.y) || 0);
+
+    const visibleWidthPx = Math.max(
+        0,
+        Math.min(areaWidth, centerX + boxWidth / 2) -
+        Math.max(0, centerX - boxWidth / 2)
+    );
+
+    const visibleHeightPx = Math.max(
+        0,
+        Math.min(areaHeight, centerY + boxHeight / 2) -
+        Math.max(0, centerY - boxHeight / 2)
+    );
+
+    /* Senza rotazione il risultato è esatto; con rotazione è un'approssimazione */
+    const isRotated = Math.abs(Math.sin(angle)) > 0.001;
+
+    const fullWidthCm = imageWidthPx / pixelsPerCmX;
+    const fullHeightCm = imageHeightPx / pixelsPerCmY;
+
+    const visibleWidthCm = isRotated
+        ? Math.min(fullWidthCm, visibleWidthPx / pixelsPerCmX)
+        : visibleWidthPx / pixelsPerCmX;
+
+    const visibleHeightCm = isRotated
+        ? Math.min(fullHeightCm, visibleHeightPx / pixelsPerCmY)
+        : visibleHeightPx / pixelsPerCmY;
+
+    return {
+        width: visibleWidthCm,
+        height: visibleHeightCm,
+        cropped:
+            visibleWidthPx + 1 < boxWidth ||
+            visibleHeightPx + 1 < boxHeight
+    };
+}
+
+
+/* Nota sotto "Dimensione stampa" quando la foto esce dall'area */
+function updateImageCropNote(isCropped) {
+
+    let note = document.getElementById("imageCropNote");
+
+    if (!note && imageSizeValue.parentElement) {
+        note = document.createElement("small");
+        note.id = "imageCropNote";
+        note.className = "image-crop-note";
+        note.textContent =
+            "La foto esce dall'area: la parte esterna non verrà stampata.";
+        imageSizeValue.parentElement.appendChild(note);
+    }
+
+    if (note) {
+        note.hidden = !isCropped;
+    }
 }
 
 function getTextSizeCm() {
@@ -4326,19 +5043,17 @@ function updateSelectionSizeLabels() {
             printSize.height;
 
 
-        widthCm =
-            (
-                uploadedImage.offsetWidth *
-                state.scale
-            ) /
-            pixelsPerCmX;
+        const visible =
+            getVisibleImageSizeCm(
+                state,
+                uploadedImage.offsetWidth * state.scale,
+                uploadedImage.offsetHeight * state.scale,
+                pixelsPerCmX,
+                pixelsPerCmY
+            );
 
-        heightCm =
-            (
-                uploadedImage.offsetHeight *
-                state.scale
-            ) /
-            pixelsPerCmY;
+        widthCm = visible.width;
+        heightCm = visible.height;
 
     } else if (
         selectedElementType === "text"
@@ -4438,7 +5153,8 @@ function getMinimumImageScale() {
 
 
     const minimumSizeCm =
-    currentProduct === "keychain"
+    (currentProduct === "keychain" ||
+        String(currentProduct).startsWith("keychain-"))
         ? MIN_KEYCHAIN_IMAGE_SIZE_CM
         : MIN_IMAGE_SIZE_CM;
 
@@ -5128,15 +5844,27 @@ function updateProductPreview() {
 
     const product = products[currentProduct];
 
-    productTitle.textContent = product.title;
+    const unitPrice = getCurrentUnitPrice();
+
+    productTitle.textContent =
+        currentProduct === "tshirt"
+            ? getTshirtVariantLabel(tshirtFabric, tshirtFit)
+            : product.title;
     productName.textContent = product.name;
     productPrice.textContent =
-    `€${product.price.toFixed(2).replace(".", ",")}`;
+    formatProductPrice(unitPrice);
 
-    productDimensions.textContent = product.dimensions;
-    printDimensions.textContent = product.print;
+    productPrice.classList.toggle(
+        "price-pending",
+        typeof unitPrice !== "number"
+    );
 
-    printAreaInfo.textContent = product.printInfo;
+    productDimensions.textContent = getProductDimensionsText();
+    const printTexts = getOrientedPrintTexts(currentProduct);
+
+    printDimensions.textContent = printTexts.print;
+
+    printAreaInfo.textContent = printTexts.printInfo;
 
 
     productPreview.className = "product-preview";
@@ -5174,6 +5902,7 @@ printArea.style.transform = "";
     tshirtOptions.style.display = "block";
     printFormatOptions.style.display = "block";
 
+    syncTshirtOptionButtons();
     updateTshirtPrintFormat();
     updateTshirtMockup();
 }
@@ -5190,14 +5919,607 @@ printArea.style.transform = "";
     }
 
 
-    /*
-        Pulsanti che dipendono dal prodotto: taglia
-        (desktop e mobile) e Fronte/Retro - formato mobile.
-    */
-    updateSizeButtons();
+    /* Nuovi prodotti */
+    productPreview.style.width = "";
+    productPreview.style.height = "";
+    productPreview.style.marginTop = "";
+    productPreview.style.removeProperty("--ring-image");
+    productPreview.style.removeProperty("--ring-offset");
+    printShapeMask.style.display = "none";
+    printShapeMask.style.backgroundImage = "";
+
+    if (product.layout) {
+        applyGenericProductPreview(product);
+
+        tshirtOptions.style.display = "none";
+        printFormatOptions.style.display = "none";
+    }
+
+    updateVariantButtons();
+    updateOrientationButtons();
+
+    /* Fronte/Retro e formato su mobile seguono il prodotto scelto */
     updateMobileQuickControls();
 
     renderCurrentState();
+}
+
+
+/* =========================================
+   PULSANTI ORIENTAMENTO
+   ========================================= */
+
+function updateOrientationButtons() {
+
+    const orientation =
+        getProductOrientation(currentProduct);
+
+    document.body.classList.toggle(
+        "product-orientable",
+        Boolean(orientation)
+    );
+
+    if (orientationOptions) {
+        orientationOptions.style.display =
+            orientation ? "block" : "none";
+    }
+
+    document
+        .querySelectorAll("[data-orientation]")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.orientation === orientation
+            );
+        });
+
+    if (mobileOrientationToggle && orientation) {
+        mobileOrientationToggle.querySelector(
+            ".mobile-orientation-label"
+        ).textContent =
+            orientation === "vertical"
+                ? "Verticale"
+                : "Orizzontale";
+    }
+}
+
+function setProductOrientation(orientation) {
+
+    if (
+        !getProductOrientation(currentProduct) ||
+        getProductOrientation(currentProduct) === orientation
+    ) {
+        return;
+    }
+
+    saveHistoryState();
+
+    productStates[currentProduct].front.orientation =
+        orientation;
+
+    selectionControls.style.display = "none";
+
+    updateProductPreview();
+
+    statusMessage.textContent =
+        orientation === "vertical"
+            ? "Area di stampa in verticale."
+            : "Area di stampa in orizzontale.";
+}
+
+document
+    .querySelectorAll("[data-orientation]")
+    .forEach(function (button) {
+        button.addEventListener("click", function () {
+            setProductOrientation(button.dataset.orientation);
+        });
+    });
+
+if (mobileOrientationToggle) {
+    mobileOrientationToggle.addEventListener("click", function () {
+        setProductOrientation(
+            getProductOrientation(currentProduct) === "vertical"
+                ? "horizontal"
+                : "vertical"
+        );
+    });
+}
+
+
+/* =========================================
+   ANTEPRIMA DEI NUOVI PRODOTTI
+   -----------------------------------------
+   L'area di stampa viene dimensionata in pixel
+   mantenendo le proporzioni reali in cm: così le
+   misure mostrate restano quelle di stampa.
+   ========================================= */
+
+const GENERIC_PREVIEW_PADDING = {
+    cushion: 0.12,
+    heart: 0.06, // uguale al margine delle immagini assets/products/*-body.png
+    canvas: 0,
+    tile: 0.025,
+    mousepad: 0.02,
+    "keychain-mdf": 0.12 // uguale al margine delle immagini keychain-*-body.png
+};
+
+/* Margine dell'immagine dell'anello (keychain-*-ring.png) rispetto all'area di stampa */
+const KEYCHAIN_RING_PAD = 0.75;
+
+function applyGenericProductPreview(product) {
+
+    const isMobile = window.innerWidth <= 600;
+
+    /* I portachiavi sono più piccoli per lasciare spazio all'anello */
+    const maxBox =
+        product.layout === "keychain-mdf"
+            ? (isMobile ? 220 : 320)
+            : (isMobile ? 290 : 430);
+
+    const paddingRatio =
+        GENERIC_PREVIEW_PADDING[product.layout] || 0;
+
+    const printCm = getOrientedPrintCm(currentProduct);
+
+    const ratio =
+        printCm.width / printCm.height;
+
+    const available = maxBox / (1 + paddingRatio * 2);
+
+    let printWidth = available;
+    let printHeight = available / ratio;
+
+    if (printHeight > available) {
+        printHeight = available;
+        printWidth = available * ratio;
+    }
+
+    printWidth = Math.round(printWidth);
+    printHeight = Math.round(printHeight);
+
+    const padding = Math.round(
+        Math.max(printWidth, printHeight) * paddingRatio
+    );
+
+    productPreview.classList.add(
+        "generic-preview",
+        `generic-${product.layout}`
+    );
+
+    printArea.classList.add(
+        "generic-print-area",
+        `generic-print-${product.layout}`
+    );
+
+    productPreview.style.width =
+        printWidth + padding * 2 + "px";
+
+    productPreview.style.height =
+        printHeight + padding * 2 + "px";
+
+    printArea.style.width = printWidth + "px";
+    printArea.style.height = printHeight + "px";
+
+    if (product.shape) {
+
+        /* Rettangolo in orizzontale: sagoma ruotata (file "-h") */
+        const shapeName =
+            product.orientable &&
+            getProductOrientation(currentProduct) !==
+                getBaseOrientation(product)
+                ? product.shape + "-h"
+                : product.shape;
+
+        productPreview.style.backgroundImage =
+            `url("assets/products/${shapeName}-body.png")`;
+
+        printShapeMask.style.backgroundImage =
+            `url("assets/products/${shapeName}-mask.png")`;
+
+        /* Portachiavi: anello e fascetta in un livello sopra, più grande */
+        if (product.layout === "keychain-mdf") {
+
+            const longSide = Math.max(printWidth, printHeight);
+            const ringPad = Math.round(longSide * KEYCHAIN_RING_PAD);
+
+            productPreview.style.setProperty(
+                "--ring-image",
+                `url("assets/products/${shapeName}-ring.png")`
+            );
+
+            productPreview.style.setProperty(
+                "--ring-offset",
+                ringPad - padding + "px"
+            );
+
+            /* Abbassa un po' il portachiavi così si vede anche l'anello */
+            const pxPerCm =
+                longSide / Math.max(printCm.width, printCm.height);
+
+            productPreview.style.marginTop =
+                Math.round(pxPerCm * 1.6) + "px";
+        }
+
+        printShapeMask.style.display = "block";
+    }
+}
+
+
+/* Se si passa da computer a smartphone (o viceversa) ricalcola le misure */
+let genericPreviewIsMobile = window.innerWidth <= 600;
+
+window.addEventListener("resize", function () {
+
+    const isMobile = window.innerWidth <= 600;
+
+    if (
+        isMobile !== genericPreviewIsMobile &&
+        products[currentProduct] &&
+        products[currentProduct].layout
+    ) {
+        updateProductPreview();
+    }
+
+    genericPreviewIsMobile = isMobile;
+});
+
+
+/* =========================================
+   PULSANTI "FORMATO" (varianti dello stesso prodotto)
+   ========================================= */
+
+/* Pulsanti delle categorie (Cuscini, T-Shirt, Portachiavi...) */
+function updateCategoryButtons() {
+
+    const container =
+        document.getElementById("categoryButtons");
+
+    if (!container) {
+        return;
+    }
+
+    const activeCategory = getProductCategory(currentProduct);
+
+    if (!container.dataset.built) {
+
+        productCategories.forEach(function (category) {
+
+            const productsInCategory =
+                getCategoryProducts(category.key);
+
+            if (!productsInCategory.length) {
+                return;
+            }
+
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.className = "category-button";
+            button.dataset.category = category.key;
+
+            const icon = document.createElement("span");
+            icon.className = "category-button-icon";
+            icon.setAttribute("aria-hidden", "true");
+            icon.textContent = category.icon;
+
+            const label = document.createElement("span");
+            label.className = "category-button-label";
+            label.textContent = category.label;
+
+            button.appendChild(icon);
+            button.appendChild(label);
+
+            button.addEventListener("click", function () {
+                selectProductCategory(category.key);
+            });
+
+            container.appendChild(button);
+        });
+
+        container.dataset.built = "1";
+    }
+
+    container
+        .querySelectorAll(".category-button")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.category === activeCategory
+            );
+        });
+}
+
+/* Apre una categoria: riprende l'ultimo tipo scelto, altrimenti il primo */
+function selectProductCategory(categoryKey) {
+
+    const productsInCategory = getCategoryProducts(categoryKey);
+
+    if (!productsInCategory.length) {
+        return;
+    }
+
+    if (getProductCategory(currentProduct) === categoryKey) {
+        return;
+    }
+
+    const remembered = lastProductByCategory[categoryKey];
+
+    const target =
+        productsInCategory.indexOf(remembered) !== -1
+            ? remembered
+            : productsInCategory[0];
+
+    productSelect.value = target;
+    productSelect.dispatchEvent(
+        new Event("change", { bubbles: true })
+    );
+}
+
+function updateVariantButtons() {
+
+    if (getProductCategory(currentProduct)) {
+        lastProductByCategory[getProductCategory(currentProduct)] =
+            currentProduct;
+    }
+
+    updateCategoryButtons();
+
+    if (!variantOptions) {
+        return;
+    }
+
+    const current = productVariants[currentProduct];
+
+    const category = productCategories.find(function (item) {
+        return current && item.key === current.group;
+    });
+
+    const variantLabel =
+        document.getElementById("variantOptionsLabel");
+
+    if (variantLabel) {
+        variantLabel.textContent =
+            (category && category.variantLabel) || "Tipo";
+    }
+
+    const siblings = Object.keys(productVariants).filter(
+        function (key) {
+            return (
+                current &&
+                productVariants[key].group === current.group &&
+                products[key]
+            );
+        }
+    );
+
+    variantButtons.innerHTML = "";
+
+    if (siblings.length < 2) {
+        variantOptions.style.display = "none";
+        return;
+    }
+
+    siblings.forEach(function (key) {
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "variant-button";
+        button.textContent = productVariants[key].label;
+        button.dataset.variant = key;
+
+        if (key === currentProduct) {
+            button.classList.add("active");
+        }
+
+        button.addEventListener("click", function () {
+
+            if (productSelect.value === key) {
+                return;
+            }
+
+            productSelect.value = key;
+            productSelect.dispatchEvent(
+                new Event("change", { bubbles: true })
+            );
+        });
+
+        variantButtons.appendChild(button);
+    });
+
+    variantOptions.style.display = "block";
+}
+
+
+/* =========================================
+   T-SHIRT: TESSUTO E MODELLO
+   ========================================= */
+
+function setTshirtVariant(fabric, fit) {
+
+    fabric = normalizeTshirtFabric(fabric);
+    fit = normalizeTshirtFit(fit);
+
+    tshirtFabric = fabric;
+    tshirtFit = fit;
+
+    /* Il poliestere esiste solo bianco */
+    if (TSHIRT_FABRICS[fabric].colors.indexOf(tshirtColor) === -1) {
+
+        const whiteButton =
+            document.querySelector('.color-button[data-color="white"]');
+
+        if (whiteButton && currentProduct === "tshirt") {
+            /* stesso percorso del pulsante "Bianca":
+               salva il colore attuale e passa al bianco */
+            whiteButton.click();
+        } else {
+            tshirtColor = "white";
+        }
+    }
+
+    /* Taglia non disponibile per il modello: usa quella predefinita */
+    const sizeInfo = getTshirtSizeInfo(fabric, fit);
+
+    if (sizeInfo.sizes.indexOf(tshirtSize) === -1) {
+        tshirtSize = sizeInfo.default;
+    }
+
+    syncTshirtOptionButtons();
+
+    if (currentProduct === "tshirt") {
+        refreshProductHeader();
+
+        /* Adulto e bambino hanno aree di stampa diverse */
+        updateTshirtPrintFormat();
+    }
+}
+
+/* Aggiorna titolo e prezzo senza ridisegnare l'anteprima */
+function refreshProductHeader() {
+
+    const unitPrice = getCurrentUnitPrice();
+
+    productTitle.textContent =
+        currentProduct === "tshirt"
+            ? getTshirtVariantLabel(tshirtFabric, tshirtFit)
+            : products[currentProduct].title;
+
+    productPrice.textContent = formatProductPrice(unitPrice);
+
+    productPrice.classList.toggle(
+        "price-pending",
+        typeof unitPrice !== "number"
+    );
+
+    productDimensions.textContent = getProductDimensionsText();
+
+    const printTexts = getOrientedPrintTexts(currentProduct);
+    printDimensions.textContent = printTexts.print;
+    printAreaInfo.textContent = printTexts.printInfo;
+}
+
+/* Testo "Dimensione / Taglie" del riquadro prodotto */
+function getProductDimensionsText() {
+
+    if (currentProduct !== "tshirt") {
+        return products[currentProduct].dimensions;
+    }
+
+    const sizes = getTshirtSizeInfo(tshirtFabric, tshirtFit).sizes;
+
+    if (tshirtFit === "kids") {
+        return "Taglie disponibili: " +
+            sizes
+                .map(function (size) {
+                    return size.replace(" anni", "");
+                })
+                .join(", ") +
+            " anni";
+    }
+
+    return "Taglie disponibili: " + sizes.join(", ");
+}
+
+/* Mette in evidenza i pulsanti giusti (tessuto, modello, colore, taglia) */
+function syncTshirtOptionButtons() {
+
+    tshirtFabric = normalizeTshirtFabric(tshirtFabric);
+    tshirtFit = normalizeTshirtFit(tshirtFit);
+
+    /* Taglia non valida (es. salvataggio vecchio): usa quella proposta */
+    const sizeInfo = getTshirtSizeInfo(tshirtFabric, tshirtFit);
+
+    if (sizeInfo.sizes.indexOf(tshirtSize) === -1) {
+        tshirtSize = sizeInfo.default;
+    }
+
+    document
+        .querySelectorAll("[data-tshirt-fabric]")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.tshirtFabric === tshirtFabric
+            );
+        });
+
+    document
+        .querySelectorAll("[data-tshirt-fit]")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.tshirtFit === tshirtFit
+            );
+        });
+
+    const onlyWhite =
+        TSHIRT_FABRICS[tshirtFabric].colors.length < 2;
+
+    const colorRow = document.getElementById("tshirtColorRow");
+    const colorNote = document.getElementById("tshirtColorNote");
+
+    if (colorRow) {
+        colorRow.style.display = onlyWhite ? "none" : "";
+    }
+
+    if (colorNote) {
+        colorNote.style.display = onlyWhite ? "block" : "none";
+    }
+
+    document
+        .querySelectorAll(".color-button")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.color === tshirtColor
+            );
+        });
+
+    document
+        .querySelectorAll(".size-buttons[data-size-group]")
+        .forEach(function (group) {
+            group.style.display =
+                group.dataset.sizeGroup ===
+                    (tshirtFit === "adult" ? "adult" : tshirtFit + "-" + tshirtFabric)
+                    ? "grid"
+                    : "none";
+        });
+
+    document
+        .querySelectorAll(".size-button")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.size === tshirtSize
+            );
+        });
+
+    /* Testo dei pulsanti Verticale / Orizzontale con le misure giuste */
+    document
+        .querySelectorAll(".print-format-button[data-format]")
+        .forEach(function (button) {
+            button.textContent =
+                (button.dataset.format === "horizontal"
+                    ? "Orizzontale "
+                    : "Verticale ") +
+                formatTshirtPrintCm(button.dataset.format);
+        });
+
+    const sizeLabel = document.getElementById("tshirtSizeLabel");
+
+    if (sizeLabel) {
+        sizeLabel.textContent =
+            tshirtFit === "kids" ? "Taglia (età)" : "Taglia";
+    }
+
+    const mobileSizeValue =
+        document.getElementById("mobileTshirtSizeActionValue");
+
+    if (mobileSizeValue) {
+        mobileSizeValue.textContent =
+            "Taglia attuale: " + tshirtSize +
+            " · " + TSHIRT_FITS[tshirtFit].label;
+    }
 }
 
 
@@ -6601,54 +7923,51 @@ document
         });
     });
 
-    /*
-        Evidenzia la taglia scelta sia nei pulsanti desktop
-        sia nel pannello taglia mobile (anche dopo un
-        ricaricamento o un annulla).
-    */
-    function updateSizeButtons() {
-
-        document
-            .querySelectorAll(".size-button")
-            .forEach(function (item) {
-
-                item.classList.toggle(
-                    "active",
-                    item.dataset.size === tshirtSize
-                );
-            });
-
-        document
-            .querySelectorAll("[data-mobile-size]")
-            .forEach(function (item) {
-
-                const isActive =
-                    item.dataset.mobileSize === tshirtSize;
-
-                item.classList.toggle("active", isActive);
-
-                item.setAttribute(
-                    "aria-pressed",
-                    isActive ? "true" : "false"
-                );
-            });
-    }
-
     document
     .querySelectorAll(".size-button")
     .forEach(function (button) {
 
         button.addEventListener("click", function () {
 
-            tshirtSize = this.dataset.size;
+            document
+                .querySelectorAll(".size-button")
+                .forEach(function (item) {
 
-            updateSizeButtons();
+                    item.classList.remove("active");
+
+                });
+
+            this.classList.add("active");
+
+            tshirtSize = this.dataset.size;
 
             statusMessage.textContent =
                 `Taglia selezionata: ${tshirtSize}`;
 
+            syncTshirtOptionButtons();
+
         });
 
+    });
+
+
+/* T-Shirt: pulsanti Tessuto (cotone/poliestere) e Modello (adulto/bambino) */
+document
+    .querySelectorAll("[data-tshirt-fabric]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+            setTshirtVariant(this.dataset.tshirtFabric, tshirtFit);
+        });
+    });
+
+document
+    .querySelectorAll("[data-tshirt-fit]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+            setTshirtVariant(tshirtFabric, this.dataset.tshirtFit);
+        });
     });
 
 
@@ -6754,26 +8073,15 @@ function updateTshirtPrintFormat() {
     DIMENSIONI AREA DI STAMPA
     Desktop invariato - Mobile più compatto
 */
-if (window.innerWidth <= 600) {
+const printAreaPx = getTshirtPrintAreaPx(
+    tshirtPrintFormat[tshirtSide],
+    window.innerWidth <= 600
+);
 
-    if (isVertical) {
-        printArea.style.width = "70px";
-        printArea.style.height = "105px";
-    } else {
-        printArea.style.width = "105px";
-        printArea.style.height = "70px";
-    }
-
-} else {
-
-    if (isVertical) {
-        printArea.style.width = "95px";
-        printArea.style.height = "142px";
-    } else {
-        printArea.style.width = "142px";
-        printArea.style.height = "95px";
-    }
-}
+printArea.style.width = printAreaPx.width + "px";
+printArea.style.height = printAreaPx.height + "px";
+/* Il riquadro è centrato con translate(-50%, -50%) dal CSS:
+   quello del bambino, più piccolo, resta centrato nello stesso punto */
 
 
     /*
@@ -7241,13 +8549,16 @@ preview.style.pointerEvents =
         tshirtPrintFormat[side];
 
 
+    const copyAreaPx =
+        getTshirtPrintAreaPx(format, false);
+
     if (format === "vertical") {
 
         printAreaCopy.style.width =
-            "95px";
+            copyAreaPx.width + "px";
 
         printAreaCopy.style.height =
-            "142px";
+            copyAreaPx.height + "px";
 
         printAreaCopy.style.top =
             side === "back"
@@ -7257,10 +8568,10 @@ preview.style.pointerEvents =
     } else {
 
         printAreaCopy.style.width =
-            "142px";
+            copyAreaPx.width + "px";
 
         printAreaCopy.style.height =
-            "95px";
+            copyAreaPx.height + "px";
 
         printAreaCopy.style.top =
             side === "back"
@@ -8155,6 +9466,10 @@ async function createTshirtCartCanvas(side) {
         tshirtPrintFormat[side];
 
 
+    /* Misure del riquadro (bambino più piccolo, vedi getTshirtPrintAreaPx) */
+    const cartAreaPx =
+        getTshirtPrintAreaPx(format, false);
+
     let areaWidth;
     let areaHeight;
     let areaTopPercent;
@@ -8165,10 +9480,10 @@ async function createTshirtCartCanvas(side) {
     ) {
 
         areaWidth =
-            95;
+            cartAreaPx.width;
 
         areaHeight =
-            142;
+            cartAreaPx.height;
 
         areaTopPercent =
             side === "back"
@@ -8178,10 +9493,10 @@ async function createTshirtCartCanvas(side) {
     } else {
 
         areaWidth =
-            142;
+            cartAreaPx.width;
 
         areaHeight =
-            95;
+            cartAreaPx.height;
 
         areaTopPercent =
             side === "back"
@@ -8423,6 +9738,24 @@ function getCartItemSideFormat(cartItem, side) {
 }
 
 
+/*
+    Misure reali di stampa di un articolo del carrello:
+    formato del lato, modello T-shirt e orientamento
+    salvati nell'articolo.
+*/
+function getCartItemPrintAreaCm(cartItem, side) {
+
+    return getPrintAreaCm(
+        cartItem.product,
+        getCartItemSideFormat(cartItem, side),
+        {
+            fit: cartItem.tshirtFit || "adult",
+            orientation: cartItem.orientation || null
+        }
+    );
+}
+
+
 function getCartItemPrintAreaPx(cartItem, side) {
 
     if (
@@ -8485,10 +9818,7 @@ async function createPrintFileCanvas(cartItem, side) {
         getCartItemSideState(cartItem, side);
 
     const areaCm =
-        getPrintAreaCm(
-            cartItem.product,
-            getCartItemSideFormat(cartItem, side)
-        );
+        getCartItemPrintAreaCm(cartItem, side);
 
     const areaPx =
         getCartItemPrintAreaPx(cartItem, side);
@@ -8656,10 +9986,7 @@ async function createPrintFiles(cartItem) {
             });
 
         const areaCm =
-            getPrintAreaCm(
-                cartItem.product,
-                getCartItemSideFormat(cartItem, side)
-            );
+            getCartItemPrintAreaCm(cartItem, side);
 
         files.push({
             side: side,
@@ -9205,22 +10532,40 @@ function renderCart() {
 
 
     const frontFormat =
-        item.printFormat.front === "horizontal"
-            ? "30x20"
-            : "20x30";
+        formatTshirtPrintCm(item.printFormat.front, normalizeTshirtFit(item.tshirtFit));
 
 
     const backFormat =
-        item.printFormat.back === "horizontal"
-            ? "30x20"
-            : "20x30";
+        formatTshirtPrintCm(item.printFormat.back, normalizeTshirtFit(item.tshirtFit));
 
+
+    /* I vecchi articoli nel carrello non hanno tessuto/modello:
+       erano T-Shirt 100% cotone adulto */
+    const fabricLabel =
+        TSHIRT_FABRICS[normalizeTshirtFabric(item.tshirtFabric)].label;
+
+    const fitLabel =
+        TSHIRT_FITS[normalizeTshirtFit(item.tshirtFit)].label;
 
     details =
-    `${color}` +
+    `${fabricLabel} · ${fitLabel}` +
+    `<br>Colore: ${color}` +
     `<br>Taglia: ${item.tshirtSize || "Non specificata"}` +
     `<br>Fronte: ${frontFormat}` +
     `<br>Retro: ${backFormat}`;
+} else if (product && product.dimensions) {
+
+    /* Altri prodotti: mostriamo misura/formato per distinguerli
+       (es. cuscino a cuore piccolo o grande) */
+    details = product.dimensions;
+
+    if (item.orientation) {
+        details +=
+            "<br>Orientamento: " +
+            (item.orientation === "vertical"
+                ? "verticale"
+                : "orizzontale");
+    }
 }
 
 
@@ -9366,6 +10711,12 @@ function updateCartCount() {
 
 addToCartButton.addEventListener("click", async function () {
 
+    if (typeof getCurrentUnitPrice() !== "number") {
+        statusMessage.textContent =
+            "Questo prodotto sarà presto acquistabile: il prezzo non è ancora disponibile.";
+        return;
+    }
+
     const quantity = Math.max(
         1,
         Number(quantityInput.value) || 1
@@ -9413,7 +10764,7 @@ if (currentProduct === "tshirt") {
     product: currentProduct,
 
     unitPrice:
-        products[currentProduct].price,
+        getCurrentUnitPrice(),
 
     quantity: quantity,
     
@@ -9430,6 +10781,19 @@ if (currentProduct === "tshirt") {
         ? tshirtSize
         : null,
 
+    tshirtFabric:
+        currentProduct === "tshirt"
+            ? tshirtFabric
+            : null,
+
+    tshirtFit:
+        currentProduct === "tshirt"
+            ? tshirtFit
+            : null,
+
+
+    orientation:
+        getProductOrientation(currentProduct),
 
     printFormat:
         currentProduct === "tshirt"
@@ -9483,8 +10847,17 @@ if (currentProduct === "tshirt") {
 item.tshirtSize ===
     cartItem.tshirtSize &&
 
+(item.tshirtFabric || null) ===
+    (cartItem.tshirtFabric || null) &&
+
+(item.tshirtFit || null) ===
+    (cartItem.tshirtFit || null) &&
+
 JSON.stringify(item.printFormat) ===
                 JSON.stringify(cartItem.printFormat) &&
+
+            (item.orientation || null) ===
+                (cartItem.orientation || null) &&
 
             JSON.stringify(item.customization) ===
                 JSON.stringify(cartItem.customization)
@@ -9882,31 +11255,6 @@ function applyShopLinks() {
     if (homeLink && config.homeUrl) {
         homeLink.href = config.homeUrl;
     }
-
-
-    document
-        .querySelectorAll(".site-header nav a[data-product]")
-        .forEach(function (link) {
-
-            link.addEventListener(
-                "click",
-                function (event) {
-
-                    event.preventDefault();
-
-                    if (productSelect.value === link.dataset.product) {
-                        return;
-                    }
-
-                    productSelect.value =
-                        link.dataset.product;
-
-                    productSelect.dispatchEvent(
-                        new Event("change", { bubbles: true })
-                    );
-                }
-            );
-        });
 }
 
 applyShopLinks();
@@ -10362,108 +11710,8 @@ mobileAddToCartButton.addEventListener(
     "click",
     function () {
 
-        /*
-            Su mobile i pulsanti taglia del desktop non si vedono:
-            per la T-Shirt chiediamo la taglia prima di aggiungere.
-        */
-        if (currentProduct === "tshirt") {
-
-            openMobileSizeSheet();
-            return;
-        }
-
         addToCartButton.click();
     }
-);
-
-
-/* =========================================
-   MOBILE - SCELTA TAGLIA T-SHIRT
-   ========================================= */
-
-const mobileSizeSheet =
-    document.getElementById(
-        "mobileSizeSheet"
-    );
-
-const mobileSizeOverlay =
-    document.getElementById(
-        "mobileSizeOverlay"
-    );
-
-const mobileSizeSubtitle =
-    document.getElementById(
-        "mobileSizeSubtitle"
-    );
-
-
-function openMobileSizeSheet() {
-
-    mobileSizeSubtitle.textContent =
-        `T-Shirt Cotone 100% · ${
-            tshirtColor === "black" ? "Nera" : "Bianca"
-        }`;
-
-    updateSizeButtons();
-
-    mobileSizeSheet.classList.add("open");
-    mobileSizeOverlay.classList.add("open");
-}
-
-
-function closeMobileSizeSheet() {
-
-    mobileSizeSheet.classList.remove("open");
-    mobileSizeOverlay.classList.remove("open");
-}
-
-
-document
-    .querySelectorAll("[data-mobile-size]")
-    .forEach(function (mobileButton) {
-
-        mobileButton.addEventListener(
-            "click",
-            function () {
-
-                /* Riusa la logica dei pulsanti taglia desktop. */
-                const originalButton =
-                    document.querySelector(
-                        `.size-button[data-size="${mobileButton.dataset.mobileSize}"]`
-                    );
-
-                if (originalButton) {
-                    originalButton.click();
-                }
-            }
-        );
-    });
-
-
-document
-    .getElementById("mobileSizeConfirm")
-    .addEventListener(
-        "click",
-        function () {
-
-            closeMobileSizeSheet();
-
-            addToCartButton.click();
-        }
-    );
-
-
-document
-    .getElementById("mobileSizeClose")
-    .addEventListener(
-        "click",
-        closeMobileSizeSheet
-    );
-
-
-mobileSizeOverlay.addEventListener(
-    "click",
-    closeMobileSizeSheet
 );
 
 closeCartButton.addEventListener(
@@ -10512,7 +11760,65 @@ const mobileProductsClose =
     );
 
 
+/* Su mobile la scheda Prodotti ha due passi:
+   1) categorie  2) tipi della categoria scelta */
+const mobileProductsBack =
+    document.getElementById("mobileProductsBack");
+
+const mobileProductsTitle =
+    document.getElementById("mobileProductsTitle");
+
+const mobileProductsSubtitle =
+    document.getElementById("mobileProductsSubtitle");
+
+const mobileProductOptions =
+    document.getElementById("mobileProductOptions");
+
+
+function showMobileCategories() {
+
+    mobileProductsSheet.classList.remove("showing-products");
+
+    mobileProductsTitle.textContent = "Prodotti";
+    mobileProductsSubtitle.textContent = "Scegli la categoria";
+}
+
+
+function showMobileCategoryProducts(categoryKey) {
+
+    const category = productCategories.find(function (item) {
+        return item.key === categoryKey;
+    });
+
+    mobileProductsSheet
+        .querySelectorAll("[data-mobile-category]")
+        .forEach(function (button) {
+            button.hidden =
+                button.dataset.mobileCategory !== categoryKey;
+
+            button.classList.toggle(
+                "active",
+                button.dataset.mobileProductChoice === currentProduct
+            );
+        });
+
+    mobileProductsSheet.classList.add("showing-products");
+
+    mobileProductsTitle.textContent =
+        category ? category.label : "Prodotti";
+
+    mobileProductsSubtitle.textContent =
+        (category && category.variantLabel) || "Scegli il tipo";
+
+    if (mobileProductOptions) {
+        mobileProductOptions.scrollTop = 0;
+    }
+}
+
+
 function openMobileProducts() {
+
+    showMobileCategories();
 
     mobileProductsSheet.classList.add(
         "open"
@@ -10554,6 +11860,24 @@ mobileProductsOverlay.addEventListener(
 );
 
 
+mobileProductsBack.addEventListener(
+    "click",
+    showMobileCategories
+);
+
+
+/* Passa da un pannello mobile all'altro */
+function openMobileSheet(sheet, overlay) {
+    sheet.classList.add("open");
+    overlay.classList.add("open");
+}
+
+function closeMobileSheet(sheet, overlay) {
+    sheet.classList.remove("open");
+    overlay.classList.remove("open");
+}
+
+
 const mobileTshirtSheet =
     document.getElementById(
         "mobileTshirtSheet"
@@ -10574,36 +11898,97 @@ const mobileTshirtBack =
         "mobileTshirtBack"
     );
 
-const mobileClassicTshirt =
-    document.getElementById(
-        "mobileClassicTshirt"
-    );
+const mobileTshirtFitSheet =
+    document.getElementById("mobileTshirtFitSheet");
+
+const mobileTshirtFitOverlay =
+    document.getElementById("mobileTshirtFitOverlay");
+
+const mobileTshirtSizeSheet =
+    document.getElementById("mobileTshirtSizeSheet");
+
+const mobileTshirtSizeOverlay =
+    document.getElementById("mobileTshirtSizeOverlay");
+
+
+/* Scelte fatte nei passi della T-Shirt su mobile:
+   vengono applicate tutte insieme alla fine */
+const mobileTshirtDraft = {
+    fabric: "cotton",
+    fit: "adult",
+    color: "white"
+};
+
+/* Da dove si è aperta la scelta taglia: "flow" o "more" */
+let mobileSizeOpenedFrom = "flow";
 
 
 function openMobileTshirtModels() {
 
     closeMobileProducts();
 
-    mobileTshirtSheet.classList.add(
-        "open"
-    );
+    /* Prezzo "da" sulle schede dei tessuti */
+    document
+        .querySelectorAll("[data-tshirt-price-from]")
+        .forEach(function (element) {
 
-    mobileTshirtOverlay.classList.add(
-        "open"
-    );
+            const price =
+                getTshirtPriceFrom(element.dataset.tshirtPriceFrom);
+
+            element.textContent =
+                typeof price === "number"
+                    ? "da " + formatProductPrice(price)
+                    : "Prezzo da definire";
+        });
+
+    openMobileSheet(mobileTshirtSheet, mobileTshirtOverlay);
 }
 
 
 function closeMobileTshirtModels() {
-
-    mobileTshirtSheet.classList.remove(
-        "open"
-    );
-
-    mobileTshirtOverlay.classList.remove(
-        "open"
-    );
+    closeMobileSheet(mobileTshirtSheet, mobileTshirtOverlay);
 }
+
+
+document
+    .querySelectorAll(
+        "[data-mobile-category-open]"
+    )
+    .forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const categoryKey =
+                    button.dataset.mobileCategoryOpen;
+
+                /* T-Shirt: tessuto → modello → colore → taglia */
+                if (categoryKey === "tshirt") {
+                    openMobileTshirtModels();
+                    return;
+                }
+
+                const productsInCategory =
+                    getCategoryProducts(categoryKey);
+
+                /* Un solo tipo (es. tappetino): si entra subito */
+                if (productsInCategory.length === 1) {
+
+                    productSelect.value = productsInCategory[0];
+
+                    productSelect.dispatchEvent(
+                        new Event("change", { bubbles: true })
+                    );
+
+                    closeMobileProducts();
+                    return;
+                }
+
+                showMobileCategoryProducts(categoryKey);
+            }
+        );
+    });
 
 
 document
@@ -10620,19 +12005,6 @@ document
                     button.dataset
                         .mobileProductChoice;
 
-
-                /* T-Shirt:
-                   prima scegliamo il modello */
-                if (product === "tshirt") {
-
-                    openMobileTshirtModels();
-
-                    return;
-                }
-
-
-                /* Cuscino e Portachiavi:
-                   entrano direttamente nell'editor */
                 productSelect.value =
                     product;
 
@@ -10676,6 +12048,106 @@ mobileTshirtOverlay.addEventListener(
 );
 
 
+/* PASSO TESSUTO → apre Adulto / Bambino */
+document
+    .querySelectorAll("[data-mobile-tshirt-fabric]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            mobileTshirtDraft.fabric =
+                normalizeTshirtFabric(button.dataset.mobileTshirtFabric);
+
+            document.getElementById("mobileTshirtFitSubtitle").textContent =
+                "T-Shirt " + TSHIRT_FABRICS[mobileTshirtDraft.fabric].label;
+
+            const kidsSizes =
+                getTshirtSizeInfo(mobileTshirtDraft.fabric, "kids").sizes;
+
+            document.getElementById("mobileKidsSizesText").textContent =
+                "Taglie da " +
+                kidsSizes[0].replace(" anni", "") +
+                " a " +
+                kidsSizes[kidsSizes.length - 1];
+
+            closeMobileTshirtModels();
+            openMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+        });
+    });
+
+
+document
+    .getElementById("mobileTshirtFitBack")
+    .addEventListener("click", function () {
+        closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+        openMobileTshirtModels();
+    });
+
+document
+    .getElementById("mobileTshirtFitClose")
+    .addEventListener("click", function () {
+        closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+    });
+
+mobileTshirtFitOverlay.addEventListener("click", function () {
+    closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+});
+
+
+/* PASSO ADULTO / BAMBINO → colore (solo cotone) oppure taglia */
+document
+    .querySelectorAll("[data-mobile-tshirt-fit]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            mobileTshirtDraft.fit =
+                normalizeTshirtFit(button.dataset.mobileTshirtFit);
+
+            closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+
+            if (TSHIRT_FABRICS[mobileTshirtDraft.fabric].colors.length > 1) {
+                openMobileTshirtColors();
+                return;
+            }
+
+            /* Poliestere: solo bianca */
+            mobileTshirtDraft.color = "white";
+            applyMobileTshirtDraft();
+            openMobileTshirtSizes("flow");
+        });
+    });
+
+
+/* Entra nella T-Shirt con tessuto, modello e colore scelti */
+function applyMobileTshirtDraft() {
+
+    if (productSelect.value !== "tshirt") {
+
+        productSelect.value = "tshirt";
+
+        productSelect.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+    }
+
+    setTshirtVariant(mobileTshirtDraft.fabric, mobileTshirtDraft.fit);
+
+    if (tshirtColor !== mobileTshirtDraft.color) {
+
+        /* Utilizziamo i pulsanti colore originali del configuratore */
+        const originalColorButton =
+            document.querySelector(
+                `.color-button[data-color="${mobileTshirtDraft.color}"]`
+            );
+
+        if (originalColorButton) {
+            originalColorButton.click();
+        }
+    }
+}
+
+
 const mobileTshirtColorSheet =
     document.getElementById(
         "mobileTshirtColorSheet"
@@ -10701,32 +12173,16 @@ function openMobileTshirtColors() {
 
     closeMobileTshirtModels();
 
-    mobileTshirtColorSheet.classList.add(
-        "open"
-    );
+    document.getElementById("mobileTshirtColorSubtitle").textContent =
+        getTshirtVariantLabel(mobileTshirtDraft.fabric, mobileTshirtDraft.fit);
 
-    mobileTshirtColorOverlay.classList.add(
-        "open"
-    );
+    openMobileSheet(mobileTshirtColorSheet, mobileTshirtColorOverlay);
 }
 
 
 function closeMobileTshirtColors() {
-
-    mobileTshirtColorSheet.classList.remove(
-        "open"
-    );
-
-    mobileTshirtColorOverlay.classList.remove(
-        "open"
-    );
+    closeMobileSheet(mobileTshirtColorSheet, mobileTshirtColorOverlay);
 }
-
-
-mobileClassicTshirt.addEventListener(
-    "click",
-    openMobileTshirtColors
-);
 
 
 mobileTshirtColorBack.addEventListener(
@@ -10735,7 +12191,7 @@ mobileTshirtColorBack.addEventListener(
 
         closeMobileTshirtColors();
 
-        openMobileTshirtModels();
+        openMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
     }
 );
 
@@ -10765,47 +12221,99 @@ document
             "click",
             function () {
 
-                const selectedColor =
+                mobileTshirtDraft.color =
                     button.dataset
                         .tshirtMobileColor;
 
+                applyMobileTshirtDraft();
 
-                /* Entriamo nella T-Shirt */
-                productSelect.value =
-                    "tshirt";
-
-
-                productSelect.dispatchEvent(
-                    new Event(
-                        "change",
-                        {
-                            bubbles: true
-                        }
-                    )
-                );
-
-
-                /*
-                   Utilizziamo i pulsanti colore
-                   originali del configuratore.
-                */
-                const originalColorButton =
-                    document.querySelector(
-                        `.color-button[data-color="${selectedColor}"]`
-                    );
-
-
-                if (originalColorButton) {
-
-                    originalColorButton.click();
-                }
-
-
-                /* Chiude la scelta colore */
+                /* Chiude la scelta colore e passa alla taglia */
                 closeMobileTshirtColors();
+
+                openMobileTshirtSizes("flow");
             }
         );
     });
+
+
+/* =========================================
+   MOBILE - SCELTA TAGLIA T-SHIRT
+   ========================================= */
+
+function openMobileTshirtSizes(openedFrom) {
+
+    mobileSizeOpenedFrom = openedFrom || "flow";
+
+    const container =
+        document.getElementById("mobileTshirtSizeOptions");
+
+    container.innerHTML = "";
+
+    getTshirtSizeInfo(tshirtFabric, tshirtFit).sizes.forEach(function (size) {
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "mobile-size-option";
+        button.textContent = size;
+        button.dataset.mobileSize = size;
+
+        if (size === tshirtSize) {
+            button.classList.add("active");
+        }
+
+        button.addEventListener("click", function () {
+
+            /* Usiamo i pulsanti taglia originali del configuratore */
+            const originalSizeButton =
+                document.querySelector(
+                    `.size-button[data-size="${size}"]`
+                );
+
+            if (originalSizeButton) {
+                originalSizeButton.click();
+            }
+
+            closeMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+        });
+
+        container.appendChild(button);
+    });
+
+    document.getElementById("mobileTshirtSizeSubtitle").textContent =
+        getTshirtVariantLabel(tshirtFabric, tshirtFit);
+
+    openMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+}
+
+
+document
+    .getElementById("mobileTshirtSizeBack")
+    .addEventListener("click", function () {
+
+        closeMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+
+        if (mobileSizeOpenedFrom === "more") {
+            openMobileSheet(mobileMoreSheet, mobileMoreOverlay);
+            return;
+        }
+
+        if (TSHIRT_FABRICS[tshirtFabric].colors.length > 1) {
+            openMobileTshirtColors();
+        } else {
+            openMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
+        }
+    });
+
+document
+    .getElementById("mobileTshirtSizeClose")
+    .addEventListener("click", function () {
+        closeMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+    });
+
+mobileTshirtSizeOverlay.addEventListener("click", function () {
+    closeMobileSheet(mobileTshirtSizeSheet, mobileTshirtSizeOverlay);
+});
 
     /* =========================================
    MOBILE - ALTRE AZIONI
@@ -10889,6 +12397,12 @@ mobileMoreOverlay.addEventListener(
     "click",
     closeMobileMore
 );
+
+/* Altre azioni → Taglia (solo T-Shirt) */
+document.getElementById("mobileTshirtSizeAction").addEventListener("click", function () {
+    closeMobileMore();
+    openMobileTshirtSizes("more");
+});
 
 document.getElementById("mobileResetAction").addEventListener("click", function () {
     resetButton.click();
@@ -12031,67 +13545,131 @@ mobileTshirtZoomOut.addEventListener("click", function () {
 
 
 /* =========================================
-   COLONNA SINISTRA - OPZIONI DEL CONTESTO
-   Le opzioni del testo (e la misura della foto) si vedono
-   solo con una scritta (o una foto) selezionata. Seguiamo
-   i cambi di selectionControls invece di toccare i molti
-   punti che cambiano la selezione.
+   RESTYLING - MENU DESKTOP E TRASCINA FOTO
    ========================================= */
 
-(function () {
+/*
+   Le voci del menu in alto (Cuscini, T-Shirt, Portachiavi)
+   cambiano prodotto usando il selettore originale,
+   come già fa il menu mobile.
+*/
+const desktopNavProductLinks =
+    document.querySelectorAll("[data-nav-product]");
 
-    const toolsPanel =
-        document.querySelector(".tools-panel");
-
-    if (!toolsPanel || !selectionControls) {
-        return;
-    }
-
-    let updateScheduled = false;
-
-
-    function updateToolsPanelContext() {
-
-        updateScheduled = false;
-
-        const hasSelection =
-            selectionControls.style.display === "block";
-
-        toolsPanel.classList.toggle(
-            "has-text-selected",
-            hasSelection && selectedElementType === "text"
+function updateDesktopNavActive() {
+    desktopNavProductLinks.forEach(function (link) {
+        link.classList.toggle(
+            "active",
+            link.dataset.navProduct === productSelect.value
         );
+    });
+}
 
-        toolsPanel.classList.toggle(
-            "has-image-selected",
-            hasSelection && selectedElementType === "image"
-        );
-    }
+desktopNavProductLinks.forEach(function (link) {
+    link.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        if (productSelect.value !== link.dataset.navProduct) {
+            productSelect.value = link.dataset.navProduct;
+            productSelect.dispatchEvent(
+                new Event("change", { bubbles: true })
+            );
+        }
+
+        updateDesktopNavActive();
+    });
+});
+
+productSelect.addEventListener("change", updateDesktopNavActive);
+updateDesktopNavActive();
 
 
-    function scheduleToolsPanelContext() {
+/*
+   Trascina e rilascia una foto sul riquadro "Carica una foto".
+   Il file viene passato all'input originale, così il resto
+   del caricamento (controlli, livelli, undo) resta identico.
+*/
+const imageUploadDropzone =
+    document.getElementById("imageUploadDropzone");
 
-        if (updateScheduled) {
+if (imageUploadDropzone) {
+
+    ["dragenter", "dragover"].forEach(function (type) {
+        imageUploadDropzone.addEventListener(type, function (event) {
+            event.preventDefault();
+            imageUploadDropzone.classList.add("is-dragover");
+        });
+    });
+
+    ["dragleave", "dragend", "drop"].forEach(function (type) {
+        imageUploadDropzone.addEventListener(type, function () {
+            imageUploadDropzone.classList.remove("is-dragover");
+        });
+    });
+
+    imageUploadDropzone.addEventListener("drop", function (event) {
+        event.preventDefault();
+
+        const files = event.dataTransfer && event.dataTransfer.files;
+
+        if (!files || !files.length) {
             return;
         }
 
-        updateScheduled = true;
+        const transfer = new DataTransfer();
+        transfer.items.add(files[0]);
+        imageUpload.files = transfer.files;
 
-        /* Dopo il codice in corso, che imposta anche selectedElementType. */
-        queueMicrotask(updateToolsPanelContext);
+        imageUpload.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+    });
+}
+
+
+
+/* =========================================
+   APERTURA DIRETTA DI UN PRODOTTO DALLA HOME
+   es. personalizza.html?prodotto=tshirt
+   ========================================= */
+
+(function openProductFromUrl() {
+
+    let requestedProduct =
+        new URLSearchParams(window.location.search).get("prodotto");
+
+    /* Vecchi link al portachiavi 4,5x4,5 */
+    if (requestedProduct === "keychain") {
+        requestedProduct = "keychain-round";
     }
 
+    const exists = [...productSelect.options].some(function (option) {
+        return option.value === requestedProduct;
+    });
 
-    new MutationObserver(scheduleToolsPanelContext).observe(
-        selectionControls,
-        {
-            attributes: true,
-            attributeFilter: ["style"]
-        }
-    );
+    if (!requestedProduct || !exists) {
+        return;
+    }
 
-    updateToolsPanelContext();
+    if (productSelect.value !== requestedProduct) {
+        productSelect.value = requestedProduct;
+        productSelect.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+    }
+
+    updateDesktopNavActive();
 })();
+
+
+/* Apertura diretta del carrello: personalizza.html?carrello=1 */
+if (new URLSearchParams(window.location.search).get("carrello") === "1") {
+    if (window.innerWidth <= 600) {
+        mobileCartButton.click();
+    } else {
+        cartButton.click();
+    }
+}
 
 
 /* =========================================
@@ -12136,9 +13714,26 @@ function getLayoutPxPerCm() {
     const isKeychainArea =
         printArea.classList.contains("keychain-print-area");
 
+    /* Nuovi prodotti (tele, cuori, portachiavi sagomati...) */
+    const definition =
+        products[currentProduct];
+
+    const genericLayout =
+        definition && definition.layout
+            ? definition.layout
+            : null;
+
+    const isGenericArea =
+        printArea.classList.contains("generic-print-area");
+
     if (
         (currentProduct === "tshirt") !== isTshirtArea ||
-        (currentProduct === "keychain") !== isKeychainArea
+        (currentProduct === "keychain") !== isKeychainArea ||
+        Boolean(genericLayout) !== isGenericArea ||
+        (
+            genericLayout &&
+            !printArea.classList.contains(`generic-print-${genericLayout}`)
+        )
     ) {
         return 0;
     }
@@ -12153,6 +13748,19 @@ function getLayoutPxPerCm() {
 
     const sidesCm =
         [areaCm.width, areaCm.height].sort(function (a, b) { return a - b; });
+
+    /*
+        Proporzioni diverse da quelle in cm: l'area non è ancora
+        stata adattata al prodotto (es. due tele dello stesso tipo).
+    */
+    if (
+        Math.abs(
+            (sidesPx[0] / sidesPx[1]) /
+            (sidesCm[0] / sidesCm[1]) - 1
+        ) > 0.05
+    ) {
+        return 0;
+    }
 
     return (
         sidesPx[0] / sidesCm[0] +
