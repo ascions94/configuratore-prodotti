@@ -3894,7 +3894,23 @@ function getCurrentState() {
 
 function getCurrentPrintAreaCm() {
 
-    if (currentProduct === "cushion") {
+    return getPrintAreaCm(
+        currentProduct,
+        currentProduct === "tshirt"
+            ? tshirtPrintFormat[tshirtSide]
+            : null
+    );
+}
+
+
+/*
+    Misure reali di stampa di un prodotto.
+    format serve solo per la T-shirt
+    ("vertical" o "horizontal").
+*/
+function getPrintAreaCm(product, format) {
+
+    if (product === "cushion") {
 
         return {
             width: 30,
@@ -3903,7 +3919,7 @@ function getCurrentPrintAreaCm() {
     }
 
 
-    if (currentProduct === "keychain") {
+    if (product === "keychain") {
 
         return {
             width: 4.5,
@@ -3912,10 +3928,10 @@ function getCurrentPrintAreaCm() {
     }
 
 
-    if (currentProduct === "tshirt") {
+    if (product === "tshirt") {
 
         if (
-            tshirtPrintFormat[tshirtSide] ===
+            format ===
             "vertical"
         ) {
 
@@ -7521,179 +7537,29 @@ function wrapCanvasText(
 
 
 
-async function createTshirtCartCanvas(side) {
+/*
+    Disegna sfondo, foto e testi di un lato
+    dentro l'area di stampa, nell'ordine dei livelli.
 
-    const canvas =
-        document.createElement(
-            "canvas"
-        );
+    area: { left, top, width, height, centerX, centerY }
+    in pixel dell'editor (le coordinate salvate x/y
+    sono relative al centro dell'area).
 
+    Usata sia dall'anteprima Canvas della T-shirt
+    nel carrello sia dai file di stampa.
+*/
+async function drawPrintAreaContent(
+    context,
+    state,
+    area
+) {
 
-    canvas.width =
-        420;
-
-    canvas.height =
-        420;
-
-
-    const context =
-        canvas.getContext(
-            "2d"
-        );
-
-
-    const state =
-    productStates
-        .tshirt[tshirtColor][side];
-
-
-    /*
-        =========================
-        MOCKUP T-SHIRT
-        =========================
-    */
-    let mockupPath = "";
-
-
-    if (tshirtColor === "black") {
-
-        mockupPath =
-            side === "front"
-                ? "assets/tshirt-black-front.png"
-                : "assets/tshirt-black-back.png";
-
-    } else {
-
-        mockupPath =
-            side === "front"
-                ? "assets/tshirt-white-front.png"
-                : "assets/tshirt-white-back.png";
-    }
-
-
-    const mockupImage =
-        await loadCanvasImage(
-            mockupPath
-        );
-
-
-    /*
-        Equivalente a:
-        background-size: contain;
-    */
-    const mockupScale =
-        Math.min(
-            canvas.width /
-                mockupImage.naturalWidth,
-
-            canvas.height /
-                mockupImage.naturalHeight
-        );
-
-
-    const mockupWidth =
-        mockupImage.naturalWidth *
-        mockupScale;
-
-
-    const mockupHeight =
-        mockupImage.naturalHeight *
-        mockupScale;
-
-
-    const mockupX =
-        (
-            canvas.width -
-            mockupWidth
-        ) / 2;
-
-
-    const mockupY =
-        (
-            canvas.height -
-            mockupHeight
-        ) / 2;
-
-
-    context.drawImage(
-        mockupImage,
-        mockupX,
-        mockupY,
-        mockupWidth,
-        mockupHeight
-    );
-
-
-    /*
-        =========================
-        AREA DI STAMPA
-        =========================
-    */
-    const format =
-        tshirtPrintFormat[side];
-
-
-    let areaWidth;
-    let areaHeight;
-    let areaTopPercent;
-
-
-    if (
-        format === "vertical"
-    ) {
-
-        areaWidth =
-            95;
-
-        areaHeight =
-            142;
-
-        areaTopPercent =
-            side === "back"
-                ? 47
-                : 50;
-
-    } else {
-
-        areaWidth =
-            142;
-
-        areaHeight =
-            95;
-
-        areaTopPercent =
-            side === "back"
-                ? 44
-                : 47;
-    }
-
-
-    const areaLeftPercent =
-        side === "back"
-            ? 41
-            : 58;
-
-
-    const areaCenterX =
-        canvas.width *
-        areaLeftPercent /
-        100;
-
-
-    const areaCenterY =
-        canvas.height *
-        areaTopPercent /
-        100;
-
-
-    const areaLeft =
-        areaCenterX -
-        areaWidth / 2;
-
-
-    const areaTop =
-        areaCenterY -
-        areaHeight / 2;
+    const areaLeft = area.left;
+    const areaTop = area.top;
+    const areaWidth = area.width;
+    const areaHeight = area.height;
+    const areaCenterX = area.centerX;
+    const areaCenterY = area.centerY;
 
 
     /*
@@ -7863,19 +7729,25 @@ async function createTshirtCartCanvas(side) {
             );
 
 
-            context.rotate(
-                imageState.rotation *
-                Math.PI /
-                180
-            );
-
-
+            /*
+                Stesso ordine dell'editor (CSS):
+                translate → scale → rotate.
+                Con foto specchiata e ruotata
+                l'ordine cambia il risultato.
+            */
             context.scale(
                 imageState.flipped
                     ? -imageState.scale
                     : imageState.scale,
 
                 imageState.scale
+            );
+
+
+            context.rotate(
+                imageState.rotation *
+                Math.PI /
+                180
             );
 
 
@@ -8103,6 +7975,195 @@ async function createTshirtCartCanvas(side) {
         Chiude il clipping.
     */
     context.restore();
+}
+
+async function createTshirtCartCanvas(side) {
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    canvas.width =
+        420;
+
+    canvas.height =
+        420;
+
+
+    const context =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    const state =
+    productStates
+        .tshirt[tshirtColor][side];
+
+
+    /*
+        =========================
+        MOCKUP T-SHIRT
+        =========================
+    */
+    let mockupPath = "";
+
+
+    if (tshirtColor === "black") {
+
+        mockupPath =
+            side === "front"
+                ? "assets/tshirt-black-front.png"
+                : "assets/tshirt-black-back.png";
+
+    } else {
+
+        mockupPath =
+            side === "front"
+                ? "assets/tshirt-white-front.png"
+                : "assets/tshirt-white-back.png";
+    }
+
+
+    const mockupImage =
+        await loadCanvasImage(
+            mockupPath
+        );
+
+
+    /*
+        Equivalente a:
+        background-size: contain;
+    */
+    const mockupScale =
+        Math.min(
+            canvas.width /
+                mockupImage.naturalWidth,
+
+            canvas.height /
+                mockupImage.naturalHeight
+        );
+
+
+    const mockupWidth =
+        mockupImage.naturalWidth *
+        mockupScale;
+
+
+    const mockupHeight =
+        mockupImage.naturalHeight *
+        mockupScale;
+
+
+    const mockupX =
+        (
+            canvas.width -
+            mockupWidth
+        ) / 2;
+
+
+    const mockupY =
+        (
+            canvas.height -
+            mockupHeight
+        ) / 2;
+
+
+    context.drawImage(
+        mockupImage,
+        mockupX,
+        mockupY,
+        mockupWidth,
+        mockupHeight
+    );
+
+
+    /*
+        =========================
+        AREA DI STAMPA
+        =========================
+    */
+    const format =
+        tshirtPrintFormat[side];
+
+
+    let areaWidth;
+    let areaHeight;
+    let areaTopPercent;
+
+
+    if (
+        format === "vertical"
+    ) {
+
+        areaWidth =
+            95;
+
+        areaHeight =
+            142;
+
+        areaTopPercent =
+            side === "back"
+                ? 47
+                : 50;
+
+    } else {
+
+        areaWidth =
+            142;
+
+        areaHeight =
+            95;
+
+        areaTopPercent =
+            side === "back"
+                ? 44
+                : 47;
+    }
+
+
+    const areaLeftPercent =
+        side === "back"
+            ? 41
+            : 58;
+
+
+    const areaCenterX =
+        canvas.width *
+        areaLeftPercent /
+        100;
+
+
+    const areaCenterY =
+        canvas.height *
+        areaTopPercent /
+        100;
+
+
+    const areaLeft =
+        areaCenterX -
+        areaWidth / 2;
+
+
+    const areaTop =
+        areaCenterY -
+        areaHeight / 2;
+
+
+    await drawPrintAreaContent(
+        context,
+        state,
+        {
+            left: areaLeft,
+            top: areaTop,
+            width: areaWidth,
+            height: areaHeight,
+            centerX: areaCenterX,
+            centerY: areaCenterY
+        }
+    );
 
 
     return canvas;
@@ -8190,6 +8251,366 @@ async function captureTshirtPreviews() {
         front: frontPreview,
         back: backPreview
     };
+}
+
+
+/*
+    ============================
+    FILE DI STAMPA
+    ============================
+
+    Per ogni lato personalizzato generiamo un PNG
+    a 300 dpi della sola area stampabile, con le
+    misure reali (es. 20x30 cm = 2362x3543 px).
+    Lo sfondo resta trasparente se non è stato
+    scelto un colore di sfondo.
+*/
+
+const PRINT_FILE_DPI = 300;
+
+
+/*
+    Misure di riserva (desktop, finestra 1024 px)
+    per articoli aggiunti al carrello prima che
+    venisse salvata la misura reale dell'area.
+*/
+const FALLBACK_PRINT_AREA_PX = {
+    cushion: { width: 312, height: 312 },
+    keychain: { width: 322, height: 322 },
+    tshirtVertical: { width: 92, height: 139 }
+};
+
+
+/*
+    Misura in pixel dell'area di stampa così come
+    la vede il cliente quando aggiunge al carrello.
+    Le coordinate salvate (x, y, dimensione testo)
+    sono espresse in questi pixel, come per le
+    misure in cm mostrate nell'editor.
+*/
+function getPrintAreaPxForCart() {
+
+    const current = {
+        width: printArea.clientWidth,
+        height: printArea.clientHeight
+    };
+
+    if (currentProduct !== "tshirt") {
+        return {
+            front: current
+        };
+    }
+
+    /*
+        Il lato non visibile ha la stessa area
+        se ha lo stesso formato, altrimenti
+        larghezza e altezza sono invertite.
+    */
+    const sizes = {};
+
+    ["front", "back"].forEach(function (side) {
+
+        const sameFormat =
+            tshirtPrintFormat[side] ===
+            tshirtPrintFormat[tshirtSide];
+
+        sizes[side] = sameFormat
+            ? {
+                width: current.width,
+                height: current.height
+            }
+            : {
+                width: current.height,
+                height: current.width
+            };
+    });
+
+    return sizes;
+}
+
+
+function getCartItemSideState(cartItem, side) {
+
+    if (cartItem.product === "tshirt") {
+
+        return cartItem.customization
+            ? cartItem.customization[side]
+            : null;
+    }
+
+    return side === "front"
+        ? cartItem.customization
+        : null;
+}
+
+
+function getCartItemSideFormat(cartItem, side) {
+
+    if (
+        cartItem.product === "tshirt" &&
+        cartItem.printFormat
+    ) {
+        return cartItem.printFormat[side];
+    }
+
+    return null;
+}
+
+
+function getCartItemPrintAreaPx(cartItem, side) {
+
+    if (
+        cartItem.printAreaPx &&
+        cartItem.printAreaPx[side]
+    ) {
+        return cartItem.printAreaPx[side];
+    }
+
+    if (cartItem.product === "tshirt") {
+
+        const vertical =
+            FALLBACK_PRINT_AREA_PX.tshirtVertical;
+
+        return getCartItemSideFormat(cartItem, side) === "vertical"
+            ? { width: vertical.width, height: vertical.height }
+            : { width: vertical.height, height: vertical.width };
+    }
+
+    return FALLBACK_PRINT_AREA_PX[cartItem.product];
+}
+
+
+/*
+    Un lato va stampato se ha almeno una foto
+    o un testo visibile, oppure uno sfondo.
+*/
+function hasPrintContent(state) {
+
+    if (!state) {
+        return false;
+    }
+
+    if (state.printBgEnabled) {
+        return true;
+    }
+
+    const hasImage =
+        Array.isArray(state.images) &&
+        state.images.some(function (imageState) {
+            return imageState.visible !== false;
+        });
+
+    const hasText =
+        Array.isArray(state.texts) &&
+        state.texts.some(function (textState) {
+            return (
+                textState.visible !== false &&
+                Boolean(textState.text)
+            );
+        });
+
+    return hasImage || hasText;
+}
+
+
+async function createPrintFileCanvas(cartItem, side) {
+
+    const state =
+        getCartItemSideState(cartItem, side);
+
+    const areaCm =
+        getPrintAreaCm(
+            cartItem.product,
+            getCartItemSideFormat(cartItem, side)
+        );
+
+    const areaPx =
+        getCartItemPrintAreaPx(cartItem, side);
+
+    const pixelsPerCm =
+        PRINT_FILE_DPI / 2.54;
+
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width =
+        Math.round(areaCm.width * pixelsPerCm);
+
+    canvas.height =
+        Math.round(areaCm.height * pixelsPerCm);
+
+
+    const context =
+        canvas.getContext("2d");
+
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+
+
+    /*
+        Disegniamo con le coordinate dell'editor
+        e ingrandiamo fino alla misura di stampa.
+    */
+    context.scale(
+        canvas.width / areaPx.width,
+        canvas.height / areaPx.height
+    );
+
+
+    await drawPrintAreaContent(
+        context,
+        state,
+        {
+            left: 0,
+            top: 0,
+            width: areaPx.width,
+            height: areaPx.height,
+            centerX: areaPx.width / 2,
+            centerY: areaPx.height / 2
+        }
+    );
+
+    return canvas;
+}
+
+
+/*
+    Aggiunge al PNG la risoluzione (chunk pHYs),
+    così i programmi di stampa lo aprono già
+    alla misura reale invece che a 72 dpi.
+*/
+const PNG_CRC_TABLE = (function () {
+
+    const table = new Uint32Array(256);
+
+    for (let n = 0; n < 256; n++) {
+
+        let c = n;
+
+        for (let k = 0; k < 8; k++) {
+            c = c & 1
+                ? 0xedb88320 ^ (c >>> 1)
+                : c >>> 1;
+        }
+
+        table[n] = c >>> 0;
+    }
+
+    return table;
+})();
+
+
+function getPngCrc(bytes) {
+
+    let crc = 0xffffffff;
+
+    for (let i = 0; i < bytes.length; i++) {
+        crc = PNG_CRC_TABLE[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+    }
+
+    return (crc ^ 0xffffffff) >>> 0;
+}
+
+
+async function addPngResolution(pngBlob, dpi) {
+
+    const bytes =
+        new Uint8Array(await pngBlob.arrayBuffer());
+
+    /*
+        Firma PNG (8 byte) + chunk IHDR (25 byte):
+        il chunk pHYs va subito dopo.
+    */
+    const insertAt = 8 + 25;
+
+    const pixelsPerMeter =
+        Math.round(dpi / 0.0254);
+
+    const chunk = new Uint8Array(21);
+    const view = new DataView(chunk.buffer);
+
+    view.setUint32(0, 9);
+    chunk.set([0x70, 0x48, 0x59, 0x73], 4); // "pHYs"
+    view.setUint32(8, pixelsPerMeter);
+    view.setUint32(12, pixelsPerMeter);
+    chunk[16] = 1; // unità: metro
+
+    view.setUint32(
+        17,
+        getPngCrc(chunk.subarray(4, 17))
+    );
+
+    return new Blob(
+        [
+            bytes.subarray(0, insertAt),
+            chunk,
+            bytes.subarray(insertAt)
+        ],
+        { type: "image/png" }
+    );
+}
+
+
+/*
+    Restituisce i file di stampa di un articolo
+    del carrello: un elemento per ogni lato
+    personalizzato.
+*/
+async function createPrintFiles(cartItem) {
+
+    const sides =
+        cartItem.product === "tshirt"
+            ? ["front", "back"]
+            : ["front"];
+
+    const files = [];
+
+    for (const side of sides) {
+
+        const state =
+            getCartItemSideState(cartItem, side);
+
+        if (!hasPrintContent(state)) {
+            continue;
+        }
+
+        const canvas =
+            await createPrintFileCanvas(cartItem, side);
+
+        const pngBlob =
+            await new Promise(function (resolve, reject) {
+                canvas.toBlob(function (blob) {
+                    if (blob) {
+                        resolve(blob);
+                    } else {
+                        reject(new Error("Impossibile creare il file di stampa."));
+                    }
+                }, "image/png");
+            });
+
+        const areaCm =
+            getPrintAreaCm(
+                cartItem.product,
+                getCartItemSideFormat(cartItem, side)
+            );
+
+        files.push({
+            side: side,
+            blob: await addPngResolution(pngBlob, PRINT_FILE_DPI),
+            widthPx: canvas.width,
+            heightPx: canvas.height,
+            widthCm: areaCm.width,
+            heightCm: areaCm.height,
+            dpi: PRINT_FILE_DPI
+        });
+
+        /* Libera subito la memoria del canvas grande. */
+        canvas.width = 0;
+        canvas.height = 0;
+    }
+
+    return files;
 }
 
 async function captureCurrentProductPreview() {
@@ -8943,6 +9364,14 @@ if (currentProduct === "tshirt") {
                 back: tshirtPrintFormat.back
             }
             : null,
+
+
+    /*
+        Misura dell'area vista dal cliente:
+        serve per generare i file di stampa.
+    */
+    printAreaPx:
+        getPrintAreaPxForCart(),
 
 
     customization:
