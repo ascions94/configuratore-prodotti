@@ -6046,6 +6046,17 @@ const GENERIC_PREVIEW_PADDING = {
 /* Margine dell'immagine dell'anello (keychain-*-ring.png) rispetto all'area di stampa */
 const KEYCHAIN_RING_PAD = 0.75;
 
+/*
+    Indirizzo completo di un file in assets/. Su WordPress la pagina usa
+    <base> verso la cartella del plugin, ma html2canvas (anteprime del
+    carrello) risolve i percorsi relativi rispetto all'indirizzo della
+    pagina: con l'indirizzo completo le sagome si caricano sempre.
+*/
+function getAssetUrl(path) {
+    return new URL(path, document.baseURI).href;
+}
+
+
 function applyGenericProductPreview(product) {
 
     const isMobile = window.innerWidth <= 600;
@@ -6111,10 +6122,10 @@ function applyGenericProductPreview(product) {
                 : product.shape;
 
         productPreview.style.backgroundImage =
-            `url("assets/products/${shapeName}-body.png")`;
+            `url("${getAssetUrl(`assets/products/${shapeName}-body.png`)}")`;
 
         printShapeMask.style.backgroundImage =
-            `url("assets/products/${shapeName}-mask.png")`;
+            `url("${getAssetUrl(`assets/products/${shapeName}-mask.png`)}")`;
 
         /* Portachiavi: anello e fascetta in un livello sopra, più grande */
         if (product.layout === "keychain-mdf") {
@@ -6124,7 +6135,7 @@ function applyGenericProductPreview(product) {
 
             productPreview.style.setProperty(
                 "--ring-image",
-                `url("assets/products/${shapeName}-ring.png")`
+                `url("${getAssetUrl(`assets/products/${shapeName}-ring.png`)}")`
             );
 
             productPreview.style.setProperty(
