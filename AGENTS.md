@@ -70,6 +70,8 @@ Le personalizzazioni dei diversi prodotti devono rimanere indipendenti.
 
 - Prima di modifiche importanti verificare lo stato Git.
 - Non eseguire commit, push, reset, checkout o altre operazioni Git distruttive senza esplicita autorizzazione.
+- La conferma dell'utente in chat vale come autorizzazione: dopo la conferma, modificare i file e fare il commit locale senza chiedere altri passaggi.
+- Il push su GitHub si esegue solo quando l'utente lo chiede esplicitamente.
 - Non modificare la cronologia Git.
 
 ## Metodo di lavoro
