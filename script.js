@@ -11030,6 +11030,9 @@ async function createCartItemFormData(item) {
             quantity: item.quantity,
             tshirtColor: item.tshirtColor,
             tshirtSize: item.tshirtSize,
+            tshirtFabric: item.tshirtFabric,
+            tshirtFit: item.tshirtFit,
+            orientation: item.orientation,
             printFormat: item.printFormat
         })
     );

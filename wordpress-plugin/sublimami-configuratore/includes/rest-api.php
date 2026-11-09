@@ -120,6 +120,9 @@ function sublimami_rate_limit_exceeded() {
 
 /*
  * Legge e valida i dati dell'articolo inviati dal configuratore.
+ *
+ * "product" è la chiave di script.js; "wc_product" quella del prodotto
+ * WooCommerce (per la T-shirt dipende da tessuto e modello).
  */
 function sublimami_parse_item( $raw ) {
 	$data = json_decode( (string) $raw, true );
@@ -129,34 +132,54 @@ function sublimami_parse_item( $raw ) {
 	}
 
 	$product_key = isset( $data['product'] ) ? (string) $data['product'] : '';
+	$products    = sublimami_products();
 
-	if ( ! array_key_exists( $product_key, sublimami_products() ) ) {
+	/* Le varianti T-shirt si raggiungono solo da "tshirt", con tessuto e modello controllati. */
+	$is_simple = array_key_exists( $product_key, $products ) && 0 !== strpos( $product_key, 'tshirt-' );
+
+	if ( 'tshirt' !== $product_key && ! $is_simple ) {
 		return new WP_Error( 'sublimami_bad_product', 'Prodotto non valido.', array( 'status' => 400 ) );
 	}
 
 	$item = array(
-		'product'  => $product_key,
-		'quantity' => max( 1, min( 99, (int) ( isset( $data['quantity'] ) ? $data['quantity'] : 1 ) ) ),
-		'sides'    => array( 'front' ),
+		'product'    => $product_key,
+		'wc_product' => $product_key,
+		'quantity'   => max( 1, min( 99, (int) ( isset( $data['quantity'] ) ? $data['quantity'] : 1 ) ) ),
+		'sides'      => array( 'front' ),
 	);
 
+	if ( in_array( $product_key, sublimami_orientable_products(), true ) ) {
+		$orientation         = isset( $data['orientation'] ) ? (string) $data['orientation'] : '';
+		$item['orientation'] = in_array( $orientation, array( 'vertical', 'horizontal' ), true ) ? $orientation : null;
+	}
+
 	if ( 'tshirt' === $product_key ) {
+		$options = sublimami_tshirt_options();
+		$fabric  = isset( $data['tshirtFabric'] ) ? (string) $data['tshirtFabric'] : 'cotton';
+		$fit     = isset( $data['tshirtFit'] ) ? (string) $data['tshirtFit'] : 'adult';
 		$color   = isset( $data['tshirtColor'] ) ? (string) $data['tshirtColor'] : '';
 		$size    = isset( $data['tshirtSize'] ) ? (string) $data['tshirtSize'] : '';
 		$formats = isset( $data['printFormat'] ) && is_array( $data['printFormat'] ) ? $data['printFormat'] : array();
 
-		if ( ! in_array( $color, array( 'white', 'black' ), true ) ) {
+		if ( ! isset( $options['fabrics'][ $fabric ] ) || ! isset( $options['fits'][ $fit ] ) ) {
+			return new WP_Error( 'sublimami_bad_variant', 'Tessuto o modello della T-shirt non valido.', array( 'status' => 400 ) );
+		}
+
+		if ( ! in_array( $color, $options['fabrics'][ $fabric ]['colors'], true ) ) {
 			return new WP_Error( 'sublimami_bad_color', 'Colore della T-shirt non valido.', array( 'status' => 400 ) );
 		}
 
-		if ( ! in_array( $size, array( 'S', 'M', 'L', 'XL', 'XXL' ), true ) ) {
+		if ( ! in_array( $size, $options['sizes'][ $fit ][ $fabric ], true ) ) {
 			return new WP_Error( 'sublimami_bad_size', 'Taglia della T-shirt non valida.', array( 'status' => 400 ) );
 		}
 
-		$item['color']   = $color;
-		$item['size']    = $size;
-		$item['formats'] = array();
-		$item['sides']   = array( 'front', 'back' );
+		$item['wc_product'] = sublimami_tshirt_product_key( $fabric, $fit );
+		$item['fabric']     = $fabric;
+		$item['fit']        = $fit;
+		$item['color']      = $color;
+		$item['size']       = $size;
+		$item['formats']    = array();
+		$item['sides']      = array( 'front', 'back' );
 
 		foreach ( $item['sides'] as $side ) {
 			$format = isset( $formats[ $side ] ) ? (string) $formats[ $side ] : 'vertical';
@@ -185,9 +208,9 @@ function sublimami_rest_add_item( WP_REST_Request $request ) {
 		return $item;
 	}
 
-	$product = sublimami_get_product( $item['product'] );
+	$product = sublimami_get_product( $item['wc_product'] );
 
-	if ( ! $product || ! $product->is_purchasable() ) {
+	if ( ! sublimami_is_on_sale( $product ) || ! $product->is_purchasable() ) {
 		return new WP_Error( 'sublimami_not_purchasable', 'Questo prodotto al momento non è acquistabile.', array( 'status' => 409 ) );
 	}
 
@@ -242,13 +265,16 @@ function sublimami_rest_add_item( WP_REST_Request $request ) {
 
 	$cart_item_data = array(
 		'sublimami' => array(
-			'token'   => $token,
-			'product' => $item['product'],
-			'color'   => isset( $item['color'] ) ? $item['color'] : null,
-			'size'    => isset( $item['size'] ) ? $item['size'] : null,
-			'formats' => isset( $item['formats'] ) ? $item['formats'] : null,
-			'print'   => $print,
-			'preview' => $review,
+			'token'       => $token,
+			'product'     => $item['product'],
+			'fabric'      => isset( $item['fabric'] ) ? $item['fabric'] : null,
+			'fit'         => isset( $item['fit'] ) ? $item['fit'] : null,
+			'color'       => isset( $item['color'] ) ? $item['color'] : null,
+			'size'        => isset( $item['size'] ) ? $item['size'] : null,
+			'formats'     => isset( $item['formats'] ) ? $item['formats'] : null,
+			'orientation' => isset( $item['orientation'] ) ? $item['orientation'] : null,
+			'print'       => $print,
+			'preview'     => $review,
 		),
 	);
 

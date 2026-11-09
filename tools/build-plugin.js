@@ -1,9 +1,9 @@
 /*
     Prepara il plugin WordPress pronto da installare.
 
-    1. Aggiorna le versioni anti-cache in index.html
+    1. Aggiorna le versioni anti-cache nelle pagine HTML
     2. Copia il plugin in dist/sublimami-configuratore/
-    3. Copia il configuratore (index.html, script.js, storage.js,
+    3. Copia il configuratore (personalizza.html, script.js, storage.js,
        style.css, assets/) in dist/sublimami-configuratore/app/
     4. Crea dist/sublimami-configuratore.zip
        (WordPress → Plugin → Aggiungi nuovo → Carica plugin)
@@ -22,7 +22,7 @@ const distDir = path.join(root, "dist");
 const pluginTarget = path.join(distDir, pluginName);
 const zipPath = path.join(distDir, pluginName + ".zip");
 
-const appFiles = ["index.html", "script.js", "storage.js", "style.css"];
+const appFiles = ["personalizza.html", "script.js", "storage.js", "style.css"];
 const appDirs = ["assets"];
 
 execFileSync(process.execPath, [path.join(__dirname, "update-versions.js")], { stdio: "inherit" });

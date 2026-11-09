@@ -42,6 +42,8 @@ function sublimami_maybe_render_app() {
 
 
 function sublimami_get_app_config( WP_Post $post ) {
+	$display_prices = sublimami_get_display_prices();
+
 	return array(
 		'restUrl'        => esc_url_raw( rest_url( 'sublimami/v1/' ) ),
 		/*
@@ -56,17 +58,18 @@ function sublimami_get_app_config( WP_Post $post ) {
 		'privacyUrl'     => esc_url_raw( get_privacy_policy_url() ),
 		'termsUrl'       => esc_url_raw( sublimami_get_published_page_url( wc_terms_and_conditions_page_id() ) ),
 		'seller'         => sublimami_get_seller_line(),
-		'prices'         => sublimami_get_display_prices(),
+		'prices'         => (object) $display_prices['prices'],
+		'tshirtPrices'   => (object) $display_prices['tshirtPrices'],
 		'maxUploadBytes' => min( (int) wp_max_upload_size(), (int) SUBLIMAMI_MAX_FILE_BYTES ),
 	);
 }
 
 
 function sublimami_render_app( WP_Post $post ) {
-	$index_file = SUBLIMAMI_DIR . 'app/index.html';
+	$index_file = SUBLIMAMI_DIR . 'app/personalizza.html';
 
 	if ( ! is_readable( $index_file ) ) {
-		wp_die( esc_html__( 'Il configuratore non è installato correttamente: manca app/index.html.', 'sublimami' ) );
+		wp_die( esc_html__( 'Il configuratore non è installato correttamente: manca app/personalizza.html.', 'sublimami' ) );
 	}
 
 	$html     = file_get_contents( $index_file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
@@ -87,6 +90,16 @@ function sublimami_render_app( WP_Post $post ) {
 
 	/* Con <base> i link "#" porterebbero alla cartella del plugin: restano sulla pagina. */
 	$html = str_replace( 'href="#"', 'href="' . esc_url( $page_url ) . '#"', $html );
+
+	/* I link alla home statica (index.html) portano alla home del sito WordPress. */
+	$home_url = esc_url( home_url( '/' ) );
+	$html     = preg_replace_callback(
+		'/href="index\.html(#[^"]*)?"/',
+		function ( $matches ) use ( $home_url ) {
+			return 'href="' . $home_url . ( isset( $matches[1] ) ? esc_attr( $matches[1] ) : '' ) . '"';
+		},
+		$html
+	);
 
 	$title = wp_strip_all_tags( get_the_title( $post ) . ' – ' . get_bloginfo( 'name' ) );
 	$html  = preg_replace( '/<title>.*?<\/title>/is', '<title>' . esc_html( $title ) . '</title>', $html, 1 );
