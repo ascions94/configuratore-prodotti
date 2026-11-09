@@ -1,0 +1,5 @@
+# Plugin WordPress generato da tools/build-plugin.js
+dist/
+
+# Ambiente WordPress locale di prova
+.wp-local/

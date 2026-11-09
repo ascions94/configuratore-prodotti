@@ -1,0 +1,47 @@
+{
+    "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+    "landingPage": "/personalizza/",
+    "preferredVersions": {
+        "php": "8.2",
+        "wp": "latest"
+    },
+    "features": {
+        "networking": true
+    },
+    "login": false,
+    "plugins": [
+        "woocommerce"
+    ],
+    "steps": [
+        {
+            "step": "setSiteOptions",
+            "options": {
+                "blogname": "SubliMaMi (prova locale)",
+                "permalink_structure": "/%postname%/",
+                "woocommerce_default_country": "IT",
+                "woocommerce_currency": "EUR",
+                "woocommerce_price_thousand_sep": ".",
+                "woocommerce_price_decimal_sep": ",",
+                "woocommerce_store_address": "Via di Prova 1",
+                "woocommerce_store_city": "Roma",
+                "woocommerce_store_postcode": "00100",
+                "woocommerce_coming_soon": "no",
+                "woocommerce_onboarding_profile": {
+                    "skipped": true
+                },
+                "woocommerce_cod_settings": {
+                    "enabled": "yes",
+                    "title": "Pagamento alla consegna (solo prova)",
+                    "description": "Metodo di prova per l'ambiente locale.",
+                    "instructions": "",
+                    "enable_for_methods": [],
+                    "enable_for_virtual": "yes"
+                }
+            }
+        },
+        {
+            "step": "activatePlugin",
+            "pluginPath": "sublimami-configuratore/sublimami-configuratore.php"
+        }
+    ]
+}

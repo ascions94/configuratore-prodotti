@@ -1331,6 +1331,28 @@ const products = {
 };
 
 
+/*
+    Sul sito WordPress i prezzi arrivano dai
+    prodotti WooCommerce, così configuratore
+    e negozio mostrano sempre lo stesso prezzo.
+*/
+if (
+    window.SUBLIMAMI_CONFIG &&
+    window.SUBLIMAMI_CONFIG.prices
+) {
+
+    Object.keys(products).forEach(function (productKey) {
+
+        const shopPrice =
+            Number(window.SUBLIMAMI_CONFIG.prices[productKey]);
+
+        if (shopPrice > 0) {
+            products[productKey].price = shopPrice;
+        }
+    });
+}
+
+
 function createImageState(src) {
 
     return {
@@ -9439,6 +9461,320 @@ updateCartCount();
 statusMessage.textContent =
     `${products[currentProduct].name} aggiunto al carrello.`;
 });
+
+
+/*
+    ============================
+    CHECKOUT WOOCOMMERCE
+    ============================
+
+    Quando il configuratore è servito dal plugin
+    WordPress (window.SUBLIMAMI_CONFIG), "Vai al
+    checkout" genera i file di stampa di ogni
+    articolo, li carica nel carrello WooCommerce
+    e porta il cliente al pagamento.
+*/
+
+const checkoutButton =
+    document.getElementById("checkoutButton");
+
+const checkoutButtonLabel =
+    checkoutButton.textContent.trim();
+
+let checkoutInProgress = false;
+
+
+function getShopConfig() {
+
+    const config =
+        window.SUBLIMAMI_CONFIG;
+
+    return config && config.restUrl
+        ? config
+        : null;
+}
+
+
+function showCheckoutMessage(message) {
+
+    let messageElement =
+        document.getElementById("checkoutMessage");
+
+    if (!messageElement) {
+
+        messageElement =
+            document.createElement("p");
+
+        messageElement.id =
+            "checkoutMessage";
+
+        messageElement.className =
+            "checkout-message";
+
+        messageElement.setAttribute(
+            "role",
+            "alert"
+        );
+
+        cartFooter.appendChild(messageElement);
+    }
+
+    messageElement.textContent =
+        message || "";
+
+    messageElement.hidden =
+        !message;
+}
+
+
+async function dataUrlToBlob(dataUrl) {
+
+    const response =
+        await fetch(dataUrl);
+
+    return response.blob();
+}
+
+
+async function sendShopRequest(config, path, formData) {
+
+    const headers = {};
+
+    if (config.nonce) {
+        headers["X-WP-Nonce"] = config.nonce;
+    }
+
+    let response;
+
+    try {
+
+        response = await fetch(
+            config.restUrl + path,
+            {
+                method: "POST",
+                body: formData,
+                credentials: "same-origin",
+                headers: headers
+            }
+        );
+
+    } catch (error) {
+
+        throw new Error(
+            "Connessione non riuscita. Controlla la rete e riprova."
+        );
+    }
+
+
+    let data = null;
+
+    try {
+        data = await response.json();
+    } catch (error) {
+        data = null;
+    }
+
+
+    if (!response.ok) {
+
+        if (response.status === 413) {
+            throw new Error(
+                "I file sono troppo grandi per il server. Riduci il numero di foto e riprova."
+            );
+        }
+
+        throw new Error(
+            (data && data.message) ||
+            "Il negozio non ha accettato l'ordine. Riprova tra poco."
+        );
+    }
+
+    return data;
+}
+
+
+async function createCartItemFormData(item) {
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "item",
+        JSON.stringify({
+            product: item.product,
+            quantity: item.quantity,
+            tshirtColor: item.tshirtColor,
+            tshirtSize: item.tshirtSize,
+            printFormat: item.printFormat
+        })
+    );
+
+
+    const printFiles =
+        await createPrintFiles(item);
+
+    if (printFiles.length === 0) {
+        throw new Error(
+            `${products[item.product].name}: aggiungi almeno una foto o una scritta prima di ordinare.`
+        );
+    }
+
+    printFiles.forEach(function (printFile) {
+
+        formData.append(
+            "print_" + printFile.side,
+            printFile.blob,
+            `stampa-${printFile.side}.png`
+        );
+    });
+
+
+    /*
+        Anteprime: { front, back } per la T-shirt,
+        una sola immagine per gli altri prodotti.
+    */
+    const previews =
+        typeof item.previews === "string"
+            ? { front: item.previews }
+            : (item.previews || {});
+
+    for (const side of ["front", "back"]) {
+
+        if (
+            typeof previews[side] === "string" &&
+            previews[side].startsWith("data:image/")
+        ) {
+
+            formData.append(
+                "preview_" + side,
+                await dataUrlToBlob(previews[side]),
+                `anteprima-${side}.jpg`
+            );
+        }
+    }
+
+    return formData;
+}
+
+
+async function startShopCheckout() {
+
+    if (checkoutInProgress) {
+        return;
+    }
+
+    showCheckoutMessage("");
+
+
+    if (cartItems.length === 0) {
+
+        showCheckoutMessage(
+            "Il carrello è vuoto."
+        );
+
+        return;
+    }
+
+
+    const config =
+        getShopConfig();
+
+    if (!config) {
+
+        showCheckoutMessage(
+            "Il pagamento sarà disponibile sul sito del negozio."
+        );
+
+        return;
+    }
+
+
+    checkoutInProgress = true;
+    checkoutButton.disabled = true;
+
+    try {
+
+        await sendShopRequest(
+            config,
+            "cart/reset",
+            new FormData()
+        );
+
+
+        for (let index = 0; index < cartItems.length; index++) {
+
+            checkoutButton.textContent =
+                `Preparazione file di stampa ${index + 1}/${cartItems.length}…`;
+
+            const formData =
+                await createCartItemFormData(
+                    cartItems[index]
+                );
+
+            checkoutButton.textContent =
+                `Invio al negozio ${index + 1}/${cartItems.length}…`;
+
+            await sendShopRequest(
+                config,
+                "cart/items",
+                formData
+            );
+        }
+
+
+        checkoutButton.textContent =
+            "Apertura pagamento…";
+
+        window.location.href =
+            config.checkoutUrl;
+
+    } catch (error) {
+
+        console.error(
+            "Checkout non riuscito:",
+            error
+        );
+
+        showCheckoutMessage(
+            error.message ||
+            "Si è verificato un errore. Riprova."
+        );
+
+        checkoutButton.textContent =
+            checkoutButtonLabel;
+
+        checkoutButton.disabled = false;
+        checkoutInProgress = false;
+    }
+}
+
+
+checkoutButton.addEventListener(
+    "click",
+    startShopCheckout
+);
+
+
+/*
+    Se il cliente torna indietro dal pagamento,
+    il browser può mostrare la pagina com'era:
+    riattiviamo il pulsante.
+*/
+window.addEventListener(
+    "pageshow",
+    function (event) {
+
+        if (!event.persisted) {
+            return;
+        }
+
+        checkoutButton.textContent =
+            checkoutButtonLabel;
+
+        checkoutButton.disabled = false;
+        checkoutInProgress = false;
+    }
+);
 
 /*
     ============================

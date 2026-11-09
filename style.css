@@ -2009,6 +2009,14 @@ height: auto;
    SUPPORTO TOUCH CONFIGURATORE
    ========================================= */
 
+/* Messaggio di errore sotto "Vai al checkout" */
+.checkout-message {
+    margin: 10px 0 0;
+    color: #b42318;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
 #uploadedImage,
 #customText,
 .multi-uploaded-image,
