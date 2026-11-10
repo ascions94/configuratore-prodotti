@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=2844e971d59b">
+    <link rel="stylesheet" href="style.css?v=c792e6524c9f">
 </head>
 
 <body>
@@ -1059,6 +1059,12 @@
                         <span>Retro</span>
                     </button>
                 </div>
+
+                <!-- MATTONELLE: foto del prodotto vero, si apre in grande (script.js) -->
+                <button type="button" class="real-photo-thumb" id="realPhotoThumb" title="Guarda il prodotto dal vero">
+                    <img src="" alt="" width="160" height="160">
+                    <span>Dal vero</span>
+                </button>
 
                 <div
                     id="productPreview"
@@ -2662,6 +2668,13 @@
 
 </aside>
 
+<!-- FOTO DEL PRODOTTO VERO IN GRANDE -->
+<dialog class="real-photo-dialog" id="realPhotoDialog" aria-labelledby="realPhotoCaption">
+    <button type="button" class="real-photo-close" id="realPhotoClose" aria-label="Chiudi">×</button>
+    <img id="realPhotoLarge" src="" alt="" width="900" height="900">
+    <p id="realPhotoCaption"></p>
+</dialog>
+
     <script
     src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
 </script>
@@ -2672,7 +2685,7 @@
 -->
 <script
     src="storage.js?v=d50ff04e43df"
-    data-app-src="script.js?v=9ffa697854d2">
+    data-app-src="script.js?v=371bb7a4e6de">
 </script>
 
 </body>

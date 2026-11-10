@@ -2151,3 +2151,97 @@ a.is-missing {
         margin: 0 auto;
     }
 }
+
+
+/* ------------------- PRESTO DISPONIBILI: FOTO DEI PRODOTTI ------------------- */
+
+/* Quattro schede: 4 colonne su desktop, 2 su tablet e smartphone */
+@media (min-width: 1081px) {
+    .soon-grid.soon-grid-photos {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1080px) {
+    .soon-grid.soon-grid-photos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.soon-badge {
+    z-index: 2;
+}
+
+.soon-photo {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: #ffffff;
+    aspect-ratio: 1;
+}
+
+.soon-card .soon-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    object-fit: cover;
+}
+
+/* Versione "Personalizza con la tua foto", sopra la foto */
+.soon-card .soon-photo .soon-photo-alt {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+@media (hover: hover) {
+    .soon-photo:hover .soon-photo-alt {
+        opacity: 1;
+    }
+}
+
+.soon-formats {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.soon-format {
+    padding: 5px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.soon-format:hover {
+    border-color: var(--brand);
+}
+
+.soon-format[aria-pressed="true"] {
+    border-color: var(--brand-strong);
+    background: var(--brand-strong);
+    color: #ffffff;
+}
+
+.soon-format:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+    .soon-format {
+        padding: 4px 9px;
+        font-size: 12px;
+    }
+}

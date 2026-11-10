@@ -1545,6 +1545,22 @@ const productVariants = {
 };
 
 
+/* Foto del prodotto vero, mostrate in un angolo dell'anteprima
+   ("Dal vero") e in grande al clic. Solo per i prodotti che le hanno. */
+const productRealPhotos = {
+    "tile-square": {
+        src: "assets/home/mattonella-20x20-foto.jpg",
+        alt: "Mattonella in ceramica stampata con una foto, su cavalletto",
+        caption: "Mattonella quadrata in ceramica, stampata e sul suo cavalletto"
+    },
+    "tile-rect": {
+        src: "assets/home/mattonella-15x20-foto.jpg",
+        alt: "Mattonelle 15×20 in ceramica, una bianca e una stampata con una foto",
+        caption: "Mattonelle 15×20 in ceramica: bianca e stampata con una foto"
+    }
+};
+
+
 /* =========================================
    CATEGORIE DI PRODOTTO
    -----------------------------------------
@@ -5867,6 +5883,8 @@ function updateProductPreview() {
     printDimensions.textContent = printTexts.print;
 
     printAreaInfo.textContent = printTexts.printInfo;
+
+    updateRealPhotoThumb();
 
 
     productPreview.className = "product-preview";
@@ -13026,6 +13044,79 @@ document
             }
         });
     });
+
+
+/* =========================================
+   FOTO DEL PRODOTTO VERO ("Dal vero")
+   ========================================= */
+function updateRealPhotoThumb() {
+
+    const thumb =
+        document.getElementById("realPhotoThumb");
+
+    if (!thumb) {
+        return;
+    }
+
+    const photo =
+        productRealPhotos[currentProduct];
+
+    thumb.classList.toggle("visible", Boolean(photo));
+
+    if (!photo) {
+        return;
+    }
+
+    const image =
+        thumb.querySelector("img");
+
+    if (image.getAttribute("src") !== photo.src) {
+        image.src = photo.src;
+    }
+}
+
+(function () {
+
+    const thumb = document.getElementById("realPhotoThumb");
+    const dialog = document.getElementById("realPhotoDialog");
+
+    if (!thumb || !dialog || typeof dialog.showModal !== "function") {
+        return;
+    }
+
+    const largeImage = document.getElementById("realPhotoLarge");
+    const caption = document.getElementById("realPhotoCaption");
+
+    thumb.addEventListener("click", function () {
+
+        const photo = productRealPhotos[currentProduct];
+
+        if (!photo) {
+            return;
+        }
+
+        largeImage.src = photo.src;
+        largeImage.alt = photo.alt;
+        caption.textContent = photo.caption;
+
+        dialog.showModal();
+    });
+
+    document
+        .getElementById("realPhotoClose")
+        .addEventListener("click", function () {
+            dialog.close();
+        });
+
+    /* Clic sullo sfondo scuro: chiude */
+    dialog.addEventListener("click", function (event) {
+        if (event.target === dialog) {
+            dialog.close();
+        }
+    });
+})();
+
+updateRealPhotoThumb();
 
 
 /* Fine di un trascinamento, testo scritto, colore, annulla... */

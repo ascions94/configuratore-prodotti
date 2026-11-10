@@ -203,3 +203,29 @@ document.querySelectorAll("[data-gallery-tab]").forEach(function (tab, index, ta
         });
     });
 });
+
+
+/* =========================================
+   PRESTO DISPONIBILI: formato della foto (mattonelle, ardesie)
+   ========================================= */
+document.querySelectorAll(".soon-formats").forEach(function (group) {
+
+    const card = group.closest(".soon-card");
+    const mainPhoto = card.querySelector(".soon-photo-main");
+    const altPhoto = card.querySelector(".soon-photo-alt");
+    const buttons = group.querySelectorAll(".soon-format");
+
+    buttons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            mainPhoto.src = button.dataset.foto;
+            mainPhoto.alt = button.dataset.alt;
+            altPhoto.src = button.dataset.scritta;
+
+            buttons.forEach(function (item) {
+                item.setAttribute("aria-pressed", item === button ? "true" : "false");
+            });
+        });
+    });
+});
