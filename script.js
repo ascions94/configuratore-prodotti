@@ -1565,6 +1565,15 @@ const productRealPhotos = {
     }
 };
 
+/* Portachiavi in MDF: stessa foto per tutte le forme */
+["keychain-round", "keychain-square", "keychain-rect", "keychain-heart"].forEach(function (key) {
+    productRealPhotos[key] = {
+        src: "assets/home/portachiavi-dal-vero.jpg",
+        alt: "Portachiavi in MDF quadrato, tondo e rettangolare stampati con grafiche colorate",
+        caption: "Portachiavi in MDF stampati: quadrato, tondo e rettangolare"
+    };
+});
+
 
 /* =========================================
    CATEGORIE DI PRODOTTO

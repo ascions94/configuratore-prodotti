@@ -1964,13 +1964,13 @@ a.is-missing {
 }
 
 
-/* Tre prodotti in evidenza (cuscini, T-shirt, tappetino) */
+/* Quattro prodotti in evidenza (cuscini, T-shirt, portachiavi, tappetino) */
 .tint-mint { background: linear-gradient(160deg, var(--mint-soft), #fbfefc); }
 
 @media (min-width: 1081px) {
 
     .products-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 20px;
     }
 
@@ -2274,7 +2274,7 @@ a.is-missing {
     }
 }
 
-/* Tablet: con tre schede, l'ultima va al centro della seconda riga */
+/* Tablet: se le schede sono dispari, l'ultima va al centro dell'ultima riga */
 @media (min-width: 601px) and (max-width: 1080px) {
     .products-grid > .product-card:last-child:nth-child(odd) {
         grid-column: 1 / -1;
