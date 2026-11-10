@@ -223,6 +223,13 @@ document.querySelectorAll(".photo-formats").forEach(function (group) {
             mainPhoto.alt = button.dataset.alt;
             altPhoto.src = button.dataset.scritta;
 
+            /* I link della scheda aprono il formato scelto */
+            if (button.dataset.prodotto) {
+                card.querySelectorAll('a[href*="prodotto="]').forEach(function (link) {
+                    link.href = "personalizza.html?prodotto=" + button.dataset.prodotto;
+                });
+            }
+
             buttons.forEach(function (item) {
                 item.setAttribute("aria-pressed", item === button ? "true" : "false");
             });

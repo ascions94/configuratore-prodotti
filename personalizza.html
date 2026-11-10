@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=c792e6524c9f">
+    <link rel="stylesheet" href="style.css?v=abdb3460797d">
 </head>
 
 <body>
@@ -354,12 +354,25 @@
                         <option value="canvas-s">Tela 18x24 cm</option>
                         <option value="canvas-m">Tela 20x30 cm</option>
                         <option value="canvas-l">Tela 30x40 cm</option>
+                        <option value="tile-small">Mattonella 10x10 cm</option>
                         <option value="tile-square">Mattonella 20x20 cm</option>
                         <option value="tile-rect">Mattonella 15x20 cm</option>
                         <option value="mousepad">Tappetino mouse 22x18 cm</option>
                     </optgroup>
 
-                    <optgroup label="Portachiavi in legno">
+                    <optgroup label="Ardesie">
+                        <option value="slate-15">Ardesia quadrata 15x15 cm</option>
+                        <option value="slate-20">Ardesia quadrata 20x20 cm</option>
+                        <option value="slate-rect">Ardesia rettangolare 15x20 cm</option>
+                        <option value="slate-heart">Ardesia a cuore</option>
+                    </optgroup>
+
+                    <optgroup label="Puzzle">
+                        <option value="puzzle-a4">Puzzle A4</option>
+                        <option value="puzzle-a3">Puzzle A3</option>
+                    </optgroup>
+
+                    <optgroup label="Portachiavi in MDF">
                         <option value="keychain-round">Portachiavi tondo</option>
                         <option value="keychain-square">Portachiavi quadrato</option>
                         <option value="keychain-rect">Portachiavi rettangolare</option>
@@ -1604,7 +1617,7 @@
             <span class="mobile-product-option-icon">○</span>
 
             <span class="mobile-product-option-text">
-                <strong>Portachiavi in legno</strong>
+                <strong>Portachiavi in MDF</strong>
                 <small>Tondo, quadrato, rettangolo, cuore</small>
             </span>
 
@@ -1635,7 +1648,37 @@
 
             <span class="mobile-product-option-text">
                 <strong>Mattonelle</strong>
-                <small>20 × 20 e 15 × 20</small>
+                <small>10 × 10, 20 × 20 e 15 × 20</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-category-open="ardesie"
+        >
+            <span class="mobile-product-option-icon">⬛</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Ardesie</strong>
+                <small>Quadrate, rettangolare e a cuore</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-category-open="puzzle"
+        >
+            <span class="mobile-product-option-icon">🧩</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Puzzle</strong>
+                <small>A4 e A3</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>
@@ -1736,7 +1779,7 @@
 
             <span class="mobile-product-option-text">
                 <strong>Portachiavi tondo</strong>
-                <small>Legno, diametro 5 cm</small>
+                <small>MDF, diametro 5 cm</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>
@@ -1752,7 +1795,7 @@
 
             <span class="mobile-product-option-text">
                 <strong>Portachiavi quadrato</strong>
-                <small>Legno, 5 × 5 cm</small>
+                <small>MDF, 5 × 5 cm</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>
@@ -1768,7 +1811,7 @@
 
             <span class="mobile-product-option-text">
                 <strong>Portachiavi rettangolare</strong>
-                <small>Legno, 4 × 6 cm</small>
+                <small>MDF, 4 × 6 cm</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>
@@ -1784,7 +1827,7 @@
 
             <span class="mobile-product-option-text">
                 <strong>Portachiavi cuore</strong>
-                <small>Legno, circa 5 cm</small>
+                <small>MDF, circa 5 cm</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>
@@ -1857,6 +1900,22 @@
         <button
             type="button"
             class="mobile-product-option"
+            data-mobile-product-choice="tile-small"
+            data-mobile-category="mattonelle"
+        >
+            <span class="mobile-product-option-icon">◻</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Mattonella 10 × 10</strong>
+                <small>Formato quadrato piccolo</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
             data-mobile-product-choice="tile-square"
             data-mobile-category="mattonelle"
         >
@@ -1881,6 +1940,102 @@
             <span class="mobile-product-option-text">
                 <strong>Mattonella 15 × 20</strong>
                 <small>Verticale o orizzontale</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="slate-15"
+            data-mobile-category="ardesie"
+        >
+            <span class="mobile-product-option-icon">◼</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Ardesia 15 × 15</strong>
+                <small>Quadrata, con supporti</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="slate-20"
+            data-mobile-category="ardesie"
+        >
+            <span class="mobile-product-option-icon">⬛</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Ardesia 20 × 20</strong>
+                <small>Quadrata, con supporti</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="slate-rect"
+            data-mobile-category="ardesie"
+        >
+            <span class="mobile-product-option-icon">▬</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Ardesia 15 × 20</strong>
+                <small>Verticale o orizzontale</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="slate-heart"
+            data-mobile-category="ardesie"
+        >
+            <span class="mobile-product-option-icon">♡</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Ardesia a cuore</strong>
+                <small>Circa 15 × 14 cm</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="puzzle-a4"
+            data-mobile-category="puzzle"
+        >
+            <span class="mobile-product-option-icon">🧩</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Puzzle A4</strong>
+                <small>21 × 29,7 cm, verticale o orizzontale</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="puzzle-a3"
+            data-mobile-category="puzzle"
+        >
+            <span class="mobile-product-option-icon">🧩</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Puzzle A3</strong>
+                <small>29,7 × 42 cm, verticale o orizzontale</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>
@@ -2685,7 +2840,7 @@
 -->
 <script
     src="storage.js?v=d50ff04e43df"
-    data-app-src="script.js?v=a5cdc20e146c">
+    data-app-src="script.js?v=cd676f95fb73">
 </script>
 
 </body>

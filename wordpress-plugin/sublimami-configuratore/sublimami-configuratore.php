@@ -48,6 +48,13 @@ function sublimami_products() {
 		'canvas-l'        => array( 'name' => 'Tela 30x40 cm personalizzata', 'price' => null ),
 		'tile-square'     => array( 'name' => 'Mattonella 20x20 cm personalizzata', 'price' => null ),
 		'tile-rect'       => array( 'name' => 'Mattonella 15x20 cm personalizzata', 'price' => null ),
+		'tile-small'      => array( 'name' => 'Mattonella 10x10 cm personalizzata', 'price' => null ),
+		'slate-15'        => array( 'name' => 'Ardesia quadrata 15x15 cm personalizzata', 'price' => null ),
+		'slate-20'        => array( 'name' => 'Ardesia quadrata 20x20 cm personalizzata', 'price' => null ),
+		'slate-rect'      => array( 'name' => 'Ardesia rettangolare 15x20 cm personalizzata', 'price' => null ),
+		'slate-heart'     => array( 'name' => 'Ardesia a cuore personalizzata', 'price' => null ),
+		'puzzle-a4'       => array( 'name' => 'Puzzle A4 personalizzato', 'price' => null ),
+		'puzzle-a3'       => array( 'name' => 'Puzzle A3 personalizzato', 'price' => null ),
 		'mousepad'        => array( 'name' => 'Tappetino mouse 22x18 cm personalizzato', 'price' => '10.00' ),
 		'keychain-round'  => array( 'name' => 'Portachiavi tondo personalizzato', 'price' => '10.00' ),
 		'keychain-square' => array( 'name' => 'Portachiavi quadrato personalizzato', 'price' => '10.00' ),
@@ -111,7 +118,7 @@ function sublimami_tshirt_product_key( $fabric, $fit ) {
  * Prodotti orientabili (verticale / orizzontale), come "orientable" in script.js.
  */
 function sublimami_orientable_products() {
-	return array( 'canvas-s', 'canvas-m', 'canvas-l', 'tile-rect', 'keychain-rect' );
+	return array( 'canvas-s', 'canvas-m', 'canvas-l', 'tile-rect', 'keychain-rect', 'slate-rect', 'puzzle-a4', 'puzzle-a3' );
 }
 
 require_once SUBLIMAMI_DIR . 'includes/products.php';

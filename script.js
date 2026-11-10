@@ -1453,6 +1453,103 @@ Object.assign(products, {
         price: null // DA DEFINIRE
     },
 
+    "tile-small": {
+        title: "Mattonella 10x10 cm",
+        name: "Mattonella personalizzata",
+        dimensions: "Dimensione: 10x10 cm",
+        print: "Area di stampa: 10x10 cm + margine di taglio",
+        printInfo: "Area stampabile 10x10 cm (con margine)",
+        printCm: { width: 10.5, height: 10.5 },
+        layout: "tile",
+        price: null // DA DEFINIRE
+    },
+
+    /* ARDESIE: area di stampa = misura della pietra; la sagoma
+       (foto vera) copre il bordo in pietra, che non si stampa. */
+
+    "slate-15": {
+        title: "Ardesia quadrata 15x15 cm",
+        name: "Ardesia personalizzata",
+        dimensions: "Dimensione: 15x15 cm, con supporti",
+        print: "Area di stampa: 15x15 cm (il bordo in pietra non si stampa)",
+        printInfo: "Area stampabile 15x15 cm · bordo in pietra",
+        printCm: { width: 15, height: 15 },
+        layout: "slate",
+        shape: "slate-square",
+        price: null // DA DEFINIRE
+    },
+
+    "slate-20": {
+        title: "Ardesia quadrata 20x20 cm",
+        name: "Ardesia personalizzata",
+        dimensions: "Dimensione: 20x20 cm, con supporti",
+        print: "Area di stampa: 20x20 cm (il bordo in pietra non si stampa)",
+        printInfo: "Area stampabile 20x20 cm · bordo in pietra",
+        printCm: { width: 20, height: 20 },
+        layout: "slate",
+        shape: "slate-square",
+        price: null // DA DEFINIRE
+    },
+
+    "slate-rect": {
+        title: "Ardesia rettangolare 15x20 cm",
+        name: "Ardesia personalizzata",
+        dimensions: "Dimensione: 15x20 cm, con supporti",
+        print: "Area di stampa: 20x15 cm (il bordo in pietra non si stampa)",
+        printInfo: "Area stampabile 20x15 cm · bordo in pietra",
+        printCm: { width: 20, height: 15 },
+        nominal: { width: 20, height: 15 },
+        orientable: true,
+        marginNote: "slate",
+        layout: "slate",
+        shape: "slate-rect",
+        price: null // DA DEFINIRE
+    },
+
+    "slate-heart": {
+        title: "Ardesia a cuore",
+        name: "Ardesia a cuore personalizzata",
+        dimensions: "Formato: cuore, circa 15x14 cm, con supporti",
+        print: "Area di stampa: circa 15x14 cm (il bordo in pietra non si stampa)",
+        printInfo: "Area stampabile circa 15x14 cm · bordo in pietra",
+        printCm: { width: 15, height: 13.8 },
+        layout: "slate",
+        shape: "slate-heart",
+        price: null // DA DEFINIRE
+    },
+
+    /* PUZZLE: le linee di taglio sono nella sagoma, sopra il disegno */
+
+    "puzzle-a4": {
+        title: "Puzzle A4",
+        name: "Puzzle personalizzato",
+        dimensions: "Formato: A4, 21x29,7 cm",
+        print: "Area di stampa: 21x29,7 cm",
+        printInfo: "Area stampabile 21x29,7 cm",
+        printCm: { width: 21, height: 29.7 },
+        nominal: { width: 21, height: 29.7 },
+        orientable: true,
+        marginNote: "none",
+        layout: "puzzle",
+        shape: "puzzle",
+        price: null // DA DEFINIRE
+    },
+
+    "puzzle-a3": {
+        title: "Puzzle A3",
+        name: "Puzzle personalizzato",
+        dimensions: "Formato: A3, 29,7x42 cm",
+        print: "Area di stampa: 29,7x42 cm",
+        printInfo: "Area stampabile 29,7x42 cm",
+        printCm: { width: 29.7, height: 42 },
+        nominal: { width: 29.7, height: 42 },
+        orientable: true,
+        marginNote: "none",
+        layout: "puzzle",
+        shape: "puzzle",
+        price: null // DA DEFINIRE
+    },
+
     mousepad: {
         title: "Tappetino mouse 22x18 cm",
         name: "Tappetino mouse personalizzato",
@@ -1539,8 +1636,15 @@ const productVariants = {
     "canvas-s":      { group: "tele",     label: "18×24" },
     "canvas-m":      { group: "tele",     label: "20×30" },
     "canvas-l":      { group: "tele",     label: "30×40" },
+    "tile-small":    { group: "mattonelle", label: "10×10" },
     "tile-square":   { group: "mattonelle", label: "20×20" },
     "tile-rect":     { group: "mattonelle", label: "15×20" },
+    "slate-15":      { group: "ardesie",  label: "15×15" },
+    "slate-20":      { group: "ardesie",  label: "20×20" },
+    "slate-rect":    { group: "ardesie",  label: "15×20" },
+    "slate-heart":   { group: "ardesie",  label: "Cuore" },
+    "puzzle-a4":     { group: "puzzle",   label: "A4" },
+    "puzzle-a3":     { group: "puzzle",   label: "A3" },
     mousepad:        { group: "tappetini", label: "22×18" }
 };
 
@@ -1563,6 +1667,32 @@ const productRealPhotos = {
         alt: "Tappetino mouse stampato con un'iniziale e un nome, con il mouse sopra",
         caption: "Tappetino mouse 22×18 cm stampato, con il mouse sopra"
     }
+};
+
+productRealPhotos["tile-small"] = productRealPhotos["tile-square"];
+
+productRealPhotos["slate-15"] = productRealPhotos["slate-20"] = {
+    src: "assets/home/ardesia-quadrata-foto.jpg",
+    alt: "Ardesia quadrata stampata con una foto di famiglia a Natale",
+    caption: "Ardesia quadrata stampata, sui suoi supporti"
+};
+
+productRealPhotos["slate-rect"] = {
+    src: "assets/home/ardesia-15x20-foto.jpg",
+    alt: "Ardesia rettangolare stampata con una foto, sui suoi supporti",
+    caption: "Ardesia 15x20 stampata, sui suoi supporti"
+};
+
+productRealPhotos["slate-heart"] = {
+    src: "assets/home/ardesia-cuore-foto.jpg",
+    alt: "Ardesia a cuore stampata con la foto di una bambina al mare",
+    caption: "Ardesia a cuore stampata, sui suoi supporti"
+};
+
+productRealPhotos["puzzle-a4"] = productRealPhotos["puzzle-a3"] = {
+    src: "assets/home/puzzle-foto.jpg",
+    alt: "Puzzle stampato con una foto, con alcuni pezzi staccati",
+    caption: "Puzzle stampato con una foto"
 };
 
 /* Portachiavi in MDF: stessa foto per tutte le forme */
@@ -1589,6 +1719,8 @@ const productCategories = [
     { key: "keychain",   label: "Portachiavi",     icon: "○", variantLabel: "Forma del portachiavi" },
     { key: "tele",       label: "Tele",            icon: "▭", variantLabel: "Misura della tela" },
     { key: "mattonelle", label: "Mattonelle",      icon: "◻", variantLabel: "Misura della mattonella" },
+    { key: "ardesie",    label: "Ardesie",         icon: "⬛", variantLabel: "Forma dell'ardesia" },
+    { key: "puzzle",     label: "Puzzle",          icon: "🧩", variantLabel: "Formato del puzzle" },
     { key: "tappetini",  label: "Tappetino mouse", icon: "▬" }
 ];
 
@@ -1882,6 +2014,22 @@ function getOrientedPrintTexts(productKey) {
         return {
             print: `Area di stampa: ${printLabel} (0,2 cm di scarto oltre il tratteggio)`,
             printInfo: `Tratteggio = linea di taglio · stampa fino a ${printLabel}`
+        };
+    }
+
+    /* Ardesia: il bordo in pietra non prende la stampa */
+    if (product.marginNote === "slate") {
+        return {
+            print: `Area di stampa: ${label} (il bordo in pietra non si stampa)`,
+            printInfo: `Area stampabile ${label} · bordo in pietra`
+        };
+    }
+
+    /* Puzzle: nessun margine */
+    if (product.marginNote === "none") {
+        return {
+            print: `Area di stampa: ${label}`,
+            printInfo: `Area stampabile ${label}`
         };
     }
 
@@ -6074,6 +6222,8 @@ const GENERIC_PREVIEW_PADDING = {
     canvas: 0,
     tile: 0.025,
     mousepad: 0.02,
+    slate: 0.12,  // uguale al margine delle immagini assets/products/slate-*-body.png
+    puzzle: 0.03, // uguale al margine delle immagini assets/products/puzzle*-body.png
     "keychain-mdf": 0.12 // uguale al margine delle immagini keychain-*-body.png
 };
 

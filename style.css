@@ -6244,9 +6244,30 @@ a.logo {
     background-color: #f1f4f6;
 }
 
+/* Ardesie: pietra, bordo e supporti sono nelle foto (corpo e maschera) */
+.generic-slate,
+.generic-puzzle {
+    background-color: transparent;
+    overflow: visible;
+}
+
+.generic-print-slate,
+.generic-print-puzzle {
+    border: none;
+}
+
+/* Puzzle: fondo bianco sotto il disegno; le linee di taglio stanno nella maschera */
+.generic-print-puzzle {
+    background-color: #ffffff;
+}
+
+.preview-area:has(.generic-slate) {
+    background-color: #f1f4f6;
+}
+
 /* Su smartphone anche il fondo della pagina segue lo stesso colore */
 @media (max-width: 600px) {
-    body:has(.generic-heart, .generic-keychain-mdf) {
+    body:has(.generic-heart, .generic-keychain-mdf, .generic-slate) {
         background-color: #f1f4f6;
     }
 }
