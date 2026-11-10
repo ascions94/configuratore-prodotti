@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       SubliMaMi Configuratore
- * Description:       Configuratore di prodotti personalizzati (cuscini, T-shirt, portachiavi, tele, mattonelle, tappetini) collegato al carrello WooCommerce, con file di stampa a 300 dpi allegati agli ordini.
+ * Description:       Configuratore di prodotti personalizzati (cuscini, T-shirt, portachiavi, tele, mattonelle, ardesie, puzzle, calamite, tappetini) collegato al carrello WooCommerce, con file di stampa a 300 dpi allegati agli ordini.
  * Version:           1.0.0
  * Author:            SubliMaMi
  * Requires at least: 6.3
@@ -55,6 +55,7 @@ function sublimami_products() {
 		'slate-heart'     => array( 'name' => 'Ardesia a cuore personalizzata', 'price' => null ),
 		'puzzle-a4'       => array( 'name' => 'Puzzle A4 personalizzato', 'price' => null ),
 		'puzzle-a3'       => array( 'name' => 'Puzzle A3 personalizzato', 'price' => null ),
+		'magnet-parchment' => array( 'name' => 'Calamita pergamena personalizzata', 'price' => null ),
 		'mousepad'        => array( 'name' => 'Tappetino mouse 22x18 cm personalizzato', 'price' => '10.00' ),
 		'keychain-round'  => array( 'name' => 'Portachiavi tondo personalizzato', 'price' => '10.00' ),
 		'keychain-square' => array( 'name' => 'Portachiavi quadrato personalizzato', 'price' => '10.00' ),
@@ -118,7 +119,7 @@ function sublimami_tshirt_product_key( $fabric, $fit ) {
  * Prodotti orientabili (verticale / orizzontale), come "orientable" in script.js.
  */
 function sublimami_orientable_products() {
-	return array( 'canvas-s', 'canvas-m', 'canvas-l', 'tile-rect', 'keychain-rect', 'slate-rect', 'puzzle-a4', 'puzzle-a3' );
+	return array( 'canvas-s', 'canvas-m', 'canvas-l', 'tile-rect', 'keychain-rect', 'slate-rect', 'puzzle-a4', 'puzzle-a3', 'magnet-parchment' );
 }
 
 require_once SUBLIMAMI_DIR . 'includes/products.php';

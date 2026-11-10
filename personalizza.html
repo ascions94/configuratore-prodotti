@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=abdb3460797d">
+    <link rel="stylesheet" href="style.css?v=67fd6e24e7ab">
 </head>
 
 <body>
@@ -370,6 +370,10 @@
                     <optgroup label="Puzzle">
                         <option value="puzzle-a4">Puzzle A4</option>
                         <option value="puzzle-a3">Puzzle A3</option>
+                    </optgroup>
+
+                    <optgroup label="Calamite">
+                        <option value="magnet-parchment">Calamita pergamena</option>
                     </optgroup>
 
                     <optgroup label="Portachiavi in MDF">
@@ -1687,6 +1691,21 @@
         <button
             type="button"
             class="mobile-product-option"
+            data-mobile-category-open="calamite"
+        >
+            <span class="mobile-product-option-icon">🧲</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Calamite</strong>
+                <small>Pergamena</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
             data-mobile-category-open="tappetini"
         >
             <span class="mobile-product-option-icon">▬</span>
@@ -2036,6 +2055,22 @@
             <span class="mobile-product-option-text">
                 <strong>Puzzle A3</strong>
                 <small>29,7 × 42 cm, verticale o orizzontale</small>
+            </span>
+
+            <span class="mobile-product-arrow">›</span>
+        </button>
+
+        <button
+            type="button"
+            class="mobile-product-option"
+            data-mobile-product-choice="magnet-parchment"
+            data-mobile-category="calamite"
+        >
+            <span class="mobile-product-option-icon">🧲</span>
+
+            <span class="mobile-product-option-text">
+                <strong>Calamita pergamena</strong>
+                <small>Circa 10 × 7 cm, bordi ondulati</small>
             </span>
 
             <span class="mobile-product-arrow">›</span>
@@ -2840,7 +2875,7 @@
 -->
 <script
     src="storage.js?v=d50ff04e43df"
-    data-app-src="script.js?v=cd676f95fb73">
+    data-app-src="script.js?v=b77563a622cb">
 </script>
 
 </body>

@@ -1550,6 +1550,25 @@ Object.assign(products, {
         price: null // DA DEFINIRE
     },
 
+    /* CALAMITE IN MDF
+       Pergamena: i bordi ondulati sono nella maschera, ricavata dalla
+       foto della calamita bianca. MISURE DA CONFERMARE col fornitore. */
+
+    "magnet-parchment": {
+        title: "Calamita pergamena",
+        name: "Calamita pergamena personalizzata",
+        dimensions: "Formato: pergamena, circa 10x7 cm",
+        print: "Area di stampa: 10x7 cm (i bordi ondulati tagliano un po' l'immagine)",
+        printInfo: "Area stampabile 10x7 cm · bordi a pergamena",
+        printCm: { width: 10, height: 7 },
+        nominal: { width: 10, height: 7 },
+        orientable: true,
+        marginNote: "parchment",
+        layout: "magnet",
+        shape: "magnet-parchment",
+        price: null // DA DEFINIRE
+    },
+
     mousepad: {
         title: "Tappetino mouse 22x18 cm",
         name: "Tappetino mouse personalizzato",
@@ -1645,7 +1664,8 @@ const productVariants = {
     "slate-heart":   { group: "ardesie",  label: "Cuore" },
     "puzzle-a4":     { group: "puzzle",   label: "A4" },
     "puzzle-a3":     { group: "puzzle",   label: "A3" },
-    mousepad:        { group: "tappetini", label: "22×18" }
+    "magnet-parchment": { group: "calamite", label: "Pergamena" },
+    mousepad:       { group: "tappetini", label: "22×18" }
 };
 
 
@@ -1695,14 +1715,55 @@ productRealPhotos["puzzle-a4"] = productRealPhotos["puzzle-a3"] = {
     caption: "Puzzle stampato con una foto"
 };
 
-/* Portachiavi in MDF: stessa foto per tutte le forme */
-["keychain-round", "keychain-square", "keychain-rect", "keychain-heart"].forEach(function (key) {
-    productRealPhotos[key] = {
-        src: "assets/home/portachiavi-dal-vero.jpg",
-        alt: "Portachiavi in MDF quadrato, tondo e rettangolare stampati con grafiche colorate",
-        caption: "Portachiavi in MDF stampati: quadrato, tondo e rettangolare"
-    };
-});
+/* Portachiavi in MDF: la foto della stessa forma */
+productRealPhotos["keychain-round"] = {
+    src: "assets/home/portachiavi-tondo.jpg",
+    alt: "Portachiavi tondo in MDF stampato con una coppia al tramonto",
+    caption: "Portachiavi tondo in MDF stampato, con anello e fascetta"
+};
+
+productRealPhotos["keychain-square"] = {
+    src: "assets/home/portachiavi-quadrato.jpg",
+    alt: "Portachiavi quadrato in MDF stampato con una foto di famiglia",
+    caption: "Portachiavi quadrato in MDF stampato, con anello e fascetta"
+};
+
+productRealPhotos["keychain-rect"] = {
+    src: "assets/home/portachiavi-rettangolo.jpg",
+    alt: "Portachiavi rettangolare in MDF stampato con una foto di famiglia",
+    caption: "Portachiavi rettangolare in MDF stampato, con anello e fascetta"
+};
+
+productRealPhotos["keychain-heart"] = {
+    src: "assets/home/portachiavi-cuore.jpg",
+    alt: "Portachiavi a cuore in MDF stampato con un'illustrazione di una coppia",
+    caption: "Portachiavi a cuore in MDF stampato, con anello e fascetta"
+};
+
+/* Tele: foto della tela vera della stessa misura, con una stampa d'esempio */
+productRealPhotos["canvas-s"] = {
+    src: "assets/home/tela-18x24-foto.jpg",
+    alt: "Tela 18x24 cm su telaio con un'illustrazione natalizia",
+    caption: "Tela 18x24 cm su telaio in legno"
+};
+
+productRealPhotos["canvas-m"] = {
+    src: "assets/home/tela-20x30-foto.jpg",
+    alt: "Tela 20x30 cm su telaio con un paesaggio di montagne al tramonto",
+    caption: "Tela 20x30 cm su telaio in legno"
+};
+
+productRealPhotos["canvas-l"] = {
+    src: "assets/home/tela-30x40-foto.jpg",
+    alt: "Tela 30x40 cm su telaio con il ritratto di un golden retriever",
+    caption: "Tela 30x40 cm su telaio in legno"
+};
+
+productRealPhotos["magnet-parchment"] = {
+    src: "assets/home/calamita-pergamena-foto.jpg",
+    alt: "Calamita a pergamena in MDF con la foto di una famiglia al mare",
+    caption: "Calamita pergamena in MDF, con i bordi ondulati"
+};
 
 
 /* =========================================
@@ -1721,6 +1782,7 @@ const productCategories = [
     { key: "mattonelle", label: "Mattonelle",      icon: "◻", variantLabel: "Misura della mattonella" },
     { key: "ardesie",    label: "Ardesie",         icon: "⬛", variantLabel: "Forma dell'ardesia" },
     { key: "puzzle",     label: "Puzzle",          icon: "🧩", variantLabel: "Formato del puzzle" },
+    { key: "calamite",   label: "Calamite",        icon: "🧲", variantLabel: "Tipo di calamita" },
     { key: "tappetini",  label: "Tappetino mouse", icon: "▬" }
 ];
 
@@ -2022,6 +2084,14 @@ function getOrientedPrintTexts(productKey) {
         return {
             print: `Area di stampa: ${label} (il bordo in pietra non si stampa)`,
             printInfo: `Area stampabile ${label} · bordo in pietra`
+        };
+    }
+
+    /* Calamita pergamena: i bordi ondulati tagliano un po' l'immagine */
+    if (product.marginNote === "parchment") {
+        return {
+            print: `Area di stampa: ${label} (i bordi ondulati tagliano un po' l'immagine)`,
+            printInfo: `Area stampabile ${label} · bordi a pergamena`
         };
     }
 
@@ -6224,6 +6294,7 @@ const GENERIC_PREVIEW_PADDING = {
     mousepad: 0.02,
     slate: 0.12,  // uguale al margine delle immagini assets/products/slate-*-body.png
     puzzle: 0.03, // uguale al margine delle immagini assets/products/puzzle*-body.png
+    magnet: 0.06, // uguale al margine delle immagini assets/products/magnet-*-body.png
     "keychain-mdf": 0.12 // uguale al margine delle immagini keychain-*-body.png
 };
 
@@ -6489,7 +6560,12 @@ function updateVariantButtons() {
 
     variantButtons.innerHTML = "";
 
-    if (siblings.length < 2) {
+    /* Con un solo tipo il pulsante si mostra solo se la categoria
+       ha un nome per i tipi (es. Calamite → Pergamena) */
+    if (
+        siblings.length < 2 &&
+        !(siblings.length === 1 && category && category.variantLabel)
+    ) {
         variantOptions.style.display = "none";
         return;
     }

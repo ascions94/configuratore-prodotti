@@ -1969,13 +1969,14 @@ a.is-missing {
 
 @media (min-width: 1081px) {
 
+    /* Nove prodotti: tre file da tre */
     .products-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
     }
 
     .product-card-image {
-        height: 230px;
+        height: 260px;
     }
 
     .soon-grid {

@@ -6246,13 +6246,15 @@ a.logo {
 
 /* Ardesie: pietra, bordo e supporti sono nelle foto (corpo e maschera) */
 .generic-slate,
-.generic-puzzle {
+.generic-puzzle,
+.generic-magnet {
     background-color: transparent;
     overflow: visible;
 }
 
 .generic-print-slate,
-.generic-print-puzzle {
+.generic-print-puzzle,
+.generic-print-magnet {
     border: none;
 }
 
@@ -6261,13 +6263,14 @@ a.logo {
     background-color: #ffffff;
 }
 
-.preview-area:has(.generic-slate) {
+.preview-area:has(.generic-slate),
+.preview-area:has(.generic-magnet) {
     background-color: #f1f4f6;
 }
 
 /* Su smartphone anche il fondo della pagina segue lo stesso colore */
 @media (max-width: 600px) {
-    body:has(.generic-heart, .generic-keychain-mdf, .generic-slate) {
+    body:has(.generic-heart, .generic-keychain-mdf, .generic-slate, .generic-magnet) {
         background-color: #f1f4f6;
     }
 }
