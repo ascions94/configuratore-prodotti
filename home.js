@@ -206,14 +206,14 @@ document.querySelectorAll("[data-gallery-tab]").forEach(function (tab, index, ta
 
 
 /* =========================================
-   PRESTO DISPONIBILI: formato della foto (mattonelle, ardesie)
+   I NOSTRI PRODOTTI: formato della foto (mattonelle, ardesie)
    ========================================= */
-document.querySelectorAll(".soon-formats").forEach(function (group) {
+document.querySelectorAll(".photo-formats").forEach(function (group) {
 
-    const card = group.closest(".soon-card");
-    const mainPhoto = card.querySelector(".soon-photo-main");
-    const altPhoto = card.querySelector(".soon-photo-alt");
-    const buttons = group.querySelectorAll(".soon-format");
+    const card = group.closest(".product-card");
+    const mainPhoto = card.querySelector(".product-photo-main");
+    const altPhoto = card.querySelector(".product-photo-alt");
+    const buttons = group.querySelectorAll(".photo-format");
 
     buttons.forEach(function (button) {
 

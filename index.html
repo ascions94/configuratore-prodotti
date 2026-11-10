@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
 
-    <link rel="stylesheet" href="home.css?v=8613e28da44b">
+    <link rel="stylesheet" href="home.css?v=03c18b1fc1f3">
 </head>
 
 <body>
@@ -192,11 +192,11 @@
                         <span class="category-image"><img src="assets/home/cuscino-cuore.svg" alt=""></span>
                         Cuscini a cuore
                     </a>
-                    <a href="#prossimamente" class="category category-soon">
+                    <a href="personalizza.html?prodotto=tile-square" class="category">
                         <span class="category-image"><img src="assets/home/mattonella.svg" alt=""></span>
                         Mattonelle
                     </a>
-                    <a href="#prossimamente" class="category category-soon">
+                    <a href="personalizza.html?prodotto=canvas-s" class="category">
                         <span class="category-image"><img src="assets/home/tela.svg" alt=""></span>
                         Tele
                     </a>
@@ -285,6 +285,76 @@
                             <div class="product-card-footer">
                                 <span class="price">€10,00</span>
                                 <a href="personalizza.html?prodotto=mousepad" class="btn btn-primary btn-small">Personalizza</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Foto su fondo bianco: intere, senza ritaglio. I pulsanti di formato
+                         cambiano foto (home.js) -->
+                    <article class="product-card">
+                        <a href="personalizza.html?prodotto=tile-square" class="product-card-image product-card-photo product-card-photo-fit">
+                            <img src="assets/home/mattonella-20x20-foto.jpg" alt="Mattonella in ceramica stampata con una foto, su cavalletto" width="900" height="900" loading="lazy" class="product-photo-main">
+                            <img src="assets/home/mattonella-20x20-scritta.jpg" alt="" width="900" height="900" loading="lazy" class="product-photo-alt">
+                        </a>
+                        <div class="product-card-body">
+                            <h3>Mattonelle</h3>
+                            <p>In ceramica: quadrate 10×10 e 20×20 cm o rettangolari 15×20 cm.</p>
+                            <div class="photo-formats" role="group" aria-label="Formato della mattonella">
+                                <button type="button" class="photo-format" aria-pressed="true" data-foto="assets/home/mattonella-20x20-foto.jpg" data-scritta="assets/home/mattonella-20x20-scritta.jpg" data-alt="Mattonella in ceramica stampata con una foto, su cavalletto">Quadrata</button>
+                                <button type="button" class="photo-format" aria-pressed="false" data-foto="assets/home/mattonella-15x20-foto.jpg" data-scritta="assets/home/mattonella-15x20-scritta.jpg" data-alt="Mattonelle 15×20 in ceramica, una bianca e una stampata con una foto">15×20</button>
+                            </div>
+                            <div class="product-card-footer">
+                                <span class="price price-pending">Prezzo da definire</span>
+                                <a href="personalizza.html?prodotto=tile-square" class="btn btn-primary btn-small">Personalizza</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="product-card">
+                        <a href="contatti.html" class="product-card-image product-card-photo product-card-photo-fit">
+                            <img src="assets/home/ardesia-quadrata-foto.jpg" alt="Ardesia quadrata stampata con una foto di famiglia a Natale" width="900" height="900" loading="lazy" class="product-photo-main">
+                            <img src="assets/home/ardesia-quadrata-scritta.jpg" alt="" width="900" height="900" loading="lazy" class="product-photo-alt">
+                        </a>
+                        <div class="product-card-body">
+                            <h3>Ardesie</h3>
+                            <p>Con supporto: quadrate 15×15 e 20×20 cm, rettangolari 15×20 cm o a cuore.</p>
+                            <div class="photo-formats" role="group" aria-label="Forma dell'ardesia">
+                                <button type="button" class="photo-format" aria-pressed="true" data-foto="assets/home/ardesia-quadrata-foto.jpg" data-scritta="assets/home/ardesia-quadrata-scritta.jpg" data-alt="Ardesia quadrata stampata con una foto di famiglia a Natale">Quadrata</button>
+                                <button type="button" class="photo-format" aria-pressed="false" data-foto="assets/home/ardesia-15x20-foto.jpg" data-scritta="assets/home/ardesia-15x20-scritta.jpg" data-alt="Ardesia rettangolare stampata con una foto, sui suoi supporti">15×20</button>
+                                <button type="button" class="photo-format" aria-pressed="false" data-foto="assets/home/ardesia-cuore-foto.jpg" data-scritta="assets/home/ardesia-cuore-scritta.jpg" data-alt="Ardesia a cuore stampata con la foto di una bambina al mare">Cuore</button>
+                            </div>
+                            <div class="product-card-footer">
+                                <span class="price price-pending">Prezzo da definire</span>
+                                <a href="contatti.html" class="btn btn-primary btn-small">Chiedi info</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="product-card">
+                        <a href="contatti.html" class="product-card-image product-card-photo product-card-photo-fit">
+                            <img src="assets/home/puzzle-foto.jpg" alt="Puzzle stampato con una foto, con alcuni pezzi staccati" width="900" height="900" loading="lazy" class="product-photo-main">
+                            <img src="assets/home/puzzle-scritta.jpg" alt="" width="900" height="900" loading="lazy" class="product-photo-alt">
+                        </a>
+                        <div class="product-card-body">
+                            <h3>Puzzle</h3>
+                            <p>Formato A4 o A3, con la foto che preferisci.</p>
+                            <div class="product-card-footer">
+                                <span class="price price-pending">Prezzo da definire</span>
+                                <a href="contatti.html" class="btn btn-primary btn-small">Chiedi info</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="product-card">
+                        <a href="personalizza.html?prodotto=canvas-s" class="product-card-image tint-teal">
+                            <img src="assets/home/tela.svg" alt="Tela personalizzata" loading="lazy">
+                        </a>
+                        <div class="product-card-body">
+                            <h3>Tele</h3>
+                            <p>18×24, 20×30 o 30×40 cm, in verticale o in orizzontale.</p>
+                            <div class="product-card-footer">
+                                <span class="price price-pending">Prezzo da definire</span>
+                                <a href="personalizza.html?prodotto=canvas-s" class="btn btn-primary btn-small">Personalizza</a>
                             </div>
                         </div>
                     </article>
@@ -462,68 +532,6 @@
 
 
         <!-- =========================================
-             PROSSIMAMENTE
-             ========================================= -->
-        <section class="section soon" id="prossimamente" aria-labelledby="presto-titolo">
-            <div class="container">
-                <div class="section-head">
-                    <div>
-                        <span class="eyebrow">In arrivo</span>
-                        <h2 class="section-title" id="presto-titolo">Presto disponibili</h2>
-                    </div>
-                </div>
-
-                <!-- Foto vere dei prodotti: passando sopra compare la versione
-                     "Personalizza con la tua foto"; i pulsanti cambiano formato (home.js) -->
-                <div class="soon-grid soon-grid-photos">
-                    <article class="soon-card">
-                        <span class="soon-badge">Presto</span>
-                        <div class="soon-photo">
-                            <img src="assets/home/mattonella-20x20-foto.jpg" alt="Mattonella in ceramica stampata con una foto, su cavalletto" width="900" height="900" loading="lazy" class="soon-photo-main">
-                            <img src="assets/home/mattonella-20x20-scritta.jpg" alt="" width="900" height="900" loading="lazy" class="soon-photo-alt">
-                        </div>
-                        <h3>Mattonelle</h3>
-                        <p>10×10, 20×20 e 15×20 cm</p>
-                        <div class="soon-formats" role="group" aria-label="Formato della mattonella">
-                            <button type="button" class="soon-format" aria-pressed="true" data-foto="assets/home/mattonella-20x20-foto.jpg" data-scritta="assets/home/mattonella-20x20-scritta.jpg" data-alt="Mattonella in ceramica stampata con una foto, su cavalletto">Quadrata</button>
-                            <button type="button" class="soon-format" aria-pressed="false" data-foto="assets/home/mattonella-15x20-foto.jpg" data-scritta="assets/home/mattonella-15x20-scritta.jpg" data-alt="Mattonelle 15×20 in ceramica, una bianca e una stampata con una foto">15×20</button>
-                        </div>
-                    </article>
-                    <article class="soon-card">
-                        <span class="soon-badge">Presto</span>
-                        <div class="soon-photo">
-                            <img src="assets/home/ardesia-quadrata-foto.jpg" alt="Ardesia quadrata stampata con una foto di famiglia a Natale" width="900" height="900" loading="lazy" class="soon-photo-main">
-                            <img src="assets/home/ardesia-quadrata-scritta.jpg" alt="" width="900" height="900" loading="lazy" class="soon-photo-alt">
-                        </div>
-                        <h3>Ardesie</h3>
-                        <p>15×15, 20×20, 15×20 cm e cuore</p>
-                        <div class="soon-formats" role="group" aria-label="Forma dell'ardesia">
-                            <button type="button" class="soon-format" aria-pressed="true" data-foto="assets/home/ardesia-quadrata-foto.jpg" data-scritta="assets/home/ardesia-quadrata-scritta.jpg" data-alt="Ardesia quadrata stampata con una foto di famiglia a Natale">Quadrata</button>
-                            <button type="button" class="soon-format" aria-pressed="false" data-foto="assets/home/ardesia-15x20-foto.jpg" data-scritta="assets/home/ardesia-15x20-scritta.jpg" data-alt="Ardesia rettangolare stampata con una foto, sui suoi supporti">15×20</button>
-                            <button type="button" class="soon-format" aria-pressed="false" data-foto="assets/home/ardesia-cuore-foto.jpg" data-scritta="assets/home/ardesia-cuore-scritta.jpg" data-alt="Ardesia a cuore stampata con la foto di una bambina al mare">Cuore</button>
-                        </div>
-                    </article>
-                    <article class="soon-card">
-                        <span class="soon-badge">Presto</span>
-                        <div class="soon-photo">
-                            <img src="assets/home/puzzle-foto.jpg" alt="Puzzle stampato con una foto, con alcuni pezzi staccati" width="900" height="900" loading="lazy" class="soon-photo-main">
-                            <img src="assets/home/puzzle-scritta.jpg" alt="" width="900" height="900" loading="lazy" class="soon-photo-alt">
-                        </div>
-                        <h3>Puzzle</h3>
-                        <p>A4 e A3</p>
-                    </article>
-                    <article class="soon-card">
-                        <span class="soon-badge">Presto</span>
-                        <img src="assets/home/tela.svg" alt="Tela personalizzata" loading="lazy">
-                        <h3>Tele</h3>
-                        <p>18×24, 20×30 e 30×40 cm</p>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- =========================================
              INVITO FINALE
              ========================================= -->
         <section class="section">
@@ -557,7 +565,7 @@
                 <a href="personalizza.html?prodotto=cushion">Cuscini</a>
                 <a href="personalizza.html?prodotto=tshirt">T-Shirt</a>
                 <a href="personalizza.html?prodotto=keychain-round">Portachiavi</a>
-                <a href="index.html#prossimamente">Prossimamente</a>
+                <a href="index.html#prodotti">Tutti i prodotti</a>
             </div>
 
             <div class="footer-col">
@@ -587,6 +595,6 @@
     </footer>
 
     <script src="site-config.js?v=1eb8c7c63106"></script>
-    <script src="home.js?v=667c66547c36"></script>
+    <script src="home.js?v=05f992c71399"></script>
 </body>
 </html>
