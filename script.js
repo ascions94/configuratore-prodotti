@@ -6385,6 +6385,9 @@ function setTshirtVariant(fabric, fit) {
 
         /* Adulto e bambino hanno aree di stampa diverse */
         updateTshirtPrintFormat();
+
+        /* Il poliestere ha la sua sagoma */
+        updateTshirtMockup();
     }
 }
 
@@ -6536,37 +6539,31 @@ function syncTshirtOptionButtons() {
 }
 
 
+/*
+    Sagoma della T-shirt per lato, colore e tessuto.
+    Il poliestere ha la sua sagoma (solo bianca), uguale
+    per adulto e bambino. Tutte le sagome hanno la stessa
+    geometria: area di stampa e calibrazioni non cambiano.
+*/
+function getTshirtMockupPath(side, color, fabric) {
+
+    const sideName =
+        side === "back" ? "back" : "front";
+
+    if (normalizeTshirtFabric(fabric) === "polyester") {
+        return `assets/tshirt-polyester-${sideName}.png`;
+    }
+
+    return color === "black"
+        ? `assets/tshirt-black-${sideName}.png`
+        : `assets/tshirt-white-${sideName}.png`;
+}
+
+
 function updateTshirtMockup() {
 
-    let imagePath = "";
-
-
-    if (tshirtColor === "black") {
-
-        if (tshirtSide === "front") {
-
-            imagePath =
-                "assets/tshirt-black-front.png";
-
-        } else {
-
-            imagePath =
-                "assets/tshirt-black-back.png";
-        }
-
-    } else {
-
-        if (tshirtSide === "front") {
-
-            imagePath =
-                "assets/tshirt-white-front.png";
-
-        } else {
-
-            imagePath =
-                "assets/tshirt-white-back.png";
-        }
-    }
+    const imagePath =
+        getTshirtMockupPath(tshirtSide, tshirtColor, tshirtFabric);
 
 
     productPreview.style.backgroundImage =
@@ -8421,23 +8418,8 @@ function createTshirtSidePreview(
         "cart-side-preview tshirt";
 
 
-    let imagePath = "";
-
-
-    if (item.tshirtColor === "black") {
-
-        imagePath =
-            side === "front"
-                ? "assets/tshirt-black-front.png"
-                : "assets/tshirt-black-back.png";
-
-    } else {
-
-        imagePath =
-            side === "front"
-                ? "assets/tshirt-white-front.png"
-                : "assets/tshirt-white-back.png";
-    }
+    const imagePath =
+        getTshirtMockupPath(side, item.tshirtColor, item.tshirtFabric);
 
 
     preview.style.backgroundImage =
@@ -8516,23 +8498,8 @@ preview.style.pointerEvents =
     /*
         MOCKUP T-SHIRT
     */
-    let mockupPath = "";
-
-
-    if (tshirtColor === "black") {
-
-        mockupPath =
-            side === "front"
-                ? "assets/tshirt-black-front.png"
-                : "assets/tshirt-black-back.png";
-
-    } else {
-
-        mockupPath =
-            side === "front"
-                ? "assets/tshirt-white-front.png"
-                : "assets/tshirt-white-back.png";
-    }
+    const mockupPath =
+        getTshirtMockupPath(side, tshirtColor, tshirtFabric);
 
 
     preview.style.backgroundImage =
@@ -9400,23 +9367,8 @@ async function createTshirtCartCanvas(side, options) {
         MOCKUP T-SHIRT
         =========================
     */
-    let mockupPath = "";
-
-
-    if (tshirtColor === "black") {
-
-        mockupPath =
-            side === "front"
-                ? "assets/tshirt-black-front.png"
-                : "assets/tshirt-black-back.png";
-
-    } else {
-
-        mockupPath =
-            side === "front"
-                ? "assets/tshirt-white-front.png"
-                : "assets/tshirt-white-back.png";
-    }
+    const mockupPath =
+        getTshirtMockupPath(side, tshirtColor, tshirtFabric);
 
 
     const mockupImage =
@@ -12522,15 +12474,11 @@ function updateMobileSideSheet() {
     */
 
     mobileFrontPreview.src =
-        tshirtColor === "black"
-            ? "assets/tshirt-black-front.png"
-            : "assets/tshirt-white-front.png";
+        getTshirtMockupPath("front", tshirtColor, tshirtFabric);
 
 
     mobileBackPreview.src =
-        tshirtColor === "black"
-            ? "assets/tshirt-black-back.png"
-            : "assets/tshirt-white-back.png";
+        getTshirtMockupPath("back", tshirtColor, tshirtFabric);
 }
 
 

@@ -183,3 +183,23 @@ if (announcementBar && freeShippingFrom) {
         "Spedizione gratuita per ordini sopra " + freeShippingFrom +
         " · Ritiro in Locker e InPost Point";
 }
+
+
+/* =========================================
+   T-SHIRT INDOSSATA: galleria cotone / poliestere / bambino
+   ========================================= */
+document.querySelectorAll("[data-gallery-tab]").forEach(function (tab, index, tabs) {
+
+    tab.addEventListener("click", function () {
+
+        const key = tab.dataset.galleryTab;
+
+        document.querySelectorAll("[data-gallery-slide]").forEach(function (slide) {
+            slide.hidden = slide.dataset.gallerySlide !== key;
+        });
+
+        tabs.forEach(function (item) {
+            item.setAttribute("aria-pressed", item === tab ? "true" : "false");
+        });
+    });
+});

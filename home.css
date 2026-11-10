@@ -2005,3 +2005,149 @@ a.is-missing {
         grid-template-columns: repeat(2, minmax(0, 380px));
     }
 }
+
+
+/* ------------------------- T-SHIRT INDOSSATA ------------------------- */
+
+.tshirt-model-inner {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 440px);
+    align-items: center;
+    gap: 56px;
+}
+
+.tshirt-model-text p {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 17px;
+}
+
+.tshirt-model-photo {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background: #dcdddf;
+    box-shadow: 0 30px 60px rgba(16, 24, 40, 0.12);
+    container-type: inline-size;
+}
+
+.tshirt-model-photo[hidden] {
+    display: none;
+}
+
+/* Tutte le foto della galleria sono 4:5 */
+.tshirt-model-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+}
+
+/* Riquadro sul petto: misure in % di ogni foto */
+.tshirt-model-print {
+    position: absolute;
+    left: 37.9%;
+    top: 37.7%;
+    width: 21.8%;
+    height: 23.2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3cqw;
+    padding: 3cqw;
+    border: 2px dashed var(--brand-strong);
+    border-radius: 2.5cqw;
+    background: rgba(230, 247, 249, 0.6);
+    color: var(--brand-strong);
+    font-size: clamp(10px, 3.6cqw, 17px);
+    font-weight: 800;
+    line-height: 1.15;
+    text-align: center;
+}
+
+.tshirt-model-print svg {
+    flex: none;
+    width: 9cqw;
+    height: 9cqw;
+}
+
+[data-gallery-slide="poliestere"] .tshirt-model-print {
+    left: 38%;
+    top: 33.6%;
+    width: 18.7%;
+    height: 20%;
+}
+
+[data-gallery-slide="bambino"] .tshirt-model-print {
+    left: 41%;
+    top: 46%;
+    width: 18.3%;
+    height: 18.7%;
+}
+
+/* Riquadri più piccoli: icona e spazi ridotti */
+[data-gallery-slide="poliestere"] .tshirt-model-print,
+[data-gallery-slide="bambino"] .tshirt-model-print {
+    gap: 1.5cqw;
+    padding: 1.5cqw;
+    font-size: clamp(10px, 3.2cqw, 15px);
+}
+
+[data-gallery-slide="poliestere"] .tshirt-model-print svg,
+[data-gallery-slide="bambino"] .tshirt-model-print svg {
+    width: 6.5cqw;
+    height: 6.5cqw;
+}
+
+.tshirt-gallery-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.tshirt-gallery-tab {
+    padding: 8px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tshirt-gallery-tab:hover {
+    border-color: var(--brand);
+}
+
+.tshirt-gallery-tab[aria-pressed="true"] {
+    border-color: var(--brand-strong);
+    background: var(--brand-strong);
+    color: #ffffff;
+}
+
+.tshirt-gallery-tab:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+
+    .tshirt-model-inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .tshirt-model-visual {
+        order: -1;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+}
