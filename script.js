@@ -1518,12 +1518,13 @@ Object.assign(products, {
         price: null // DA DEFINIRE
     },
 
-    /* PUZZLE: le linee di taglio sono nella sagoma, sopra il disegno */
+    /* PUZZLE: ogni formato ha la sua sagoma (foto del puzzle bianco):
+       linee di taglio sopra il disegno, cornice intorno all’area di stampa */
 
     "puzzle-a4": {
         title: "Puzzle A4",
         name: "Puzzle personalizzato",
-        dimensions: "Formato: A4, 21x29,7 cm",
+        dimensions: "Formato: A4, 21x29,7 cm, 42 tasselli grandi",
         print: "Area di stampa: 21x29,7 cm",
         printInfo: "Area stampabile 21x29,7 cm",
         printCm: { width: 21, height: 29.7 },
@@ -1531,14 +1532,14 @@ Object.assign(products, {
         orientable: true,
         marginNote: "none",
         layout: "puzzle",
-        shape: "puzzle",
+        shape: "puzzle-a4",
         price: null // DA DEFINIRE
     },
 
     "puzzle-a3": {
         title: "Puzzle A3",
         name: "Puzzle personalizzato",
-        dimensions: "Formato: A3, 29,7x42 cm",
+        dimensions: "Formato: A3, 29,7x42 cm, 130 tasselli grandi",
         print: "Area di stampa: 29,7x42 cm",
         printInfo: "Area stampabile 29,7x42 cm",
         printCm: { width: 29.7, height: 42 },
@@ -1546,7 +1547,7 @@ Object.assign(products, {
         orientable: true,
         marginNote: "none",
         layout: "puzzle",
-        shape: "puzzle",
+        shape: "puzzle-a3",
         price: null // DA DEFINIRE
     },
 
@@ -6293,10 +6294,16 @@ const GENERIC_PREVIEW_PADDING = {
     tile: 0.025,
     mousepad: 0.02,
     slate: 0.12,  // uguale al margine delle immagini assets/products/slate-*-body.png
-    puzzle: 0.03, // uguale al margine delle immagini assets/products/puzzle*-body.png
+    puzzle: 0.05, // uguale al margine delle immagini assets/products/puzzle-*-body.png (cornice)
     magnet: 0.06, // uguale al margine delle immagini assets/products/magnet-*-body.png
     "keychain-mdf": 0.12 // uguale al margine delle immagini keychain-*-body.png
 };
+
+/*
+    Versione delle immagini delle sagome (assets/products): va cambiata
+    quando si rifanno, così i browser non usano quelle vecchie in cache.
+*/
+const SHAPE_ASSETS_VERSION = "2";
 
 /* Margine dell'immagine dell'anello (keychain-*-ring.png) rispetto all'area di stampa */
 const KEYCHAIN_RING_PAD = 0.75;
@@ -6377,10 +6384,10 @@ function applyGenericProductPreview(product) {
                 : product.shape;
 
         productPreview.style.backgroundImage =
-            `url("${getAssetUrl(`assets/products/${shapeName}-body.png`)}")`;
+            `url("${getAssetUrl(`assets/products/${shapeName}-body.png?v=${SHAPE_ASSETS_VERSION}`)}")`;
 
         printShapeMask.style.backgroundImage =
-            `url("${getAssetUrl(`assets/products/${shapeName}-mask.png`)}")`;
+            `url("${getAssetUrl(`assets/products/${shapeName}-mask.png?v=${SHAPE_ASSETS_VERSION}`)}")`;
 
         /* Portachiavi: anello e fascetta in un livello sopra, più grande */
         if (product.layout === "keychain-mdf") {
@@ -6390,7 +6397,7 @@ function applyGenericProductPreview(product) {
 
             productPreview.style.setProperty(
                 "--ring-image",
-                `url("${getAssetUrl(`assets/products/${shapeName}-ring.png`)}")`
+                `url("${getAssetUrl(`assets/products/${shapeName}-ring.png?v=${SHAPE_ASSETS_VERSION}`)}")`
             );
 
             productPreview.style.setProperty(
@@ -10357,12 +10364,25 @@ async function captureCurrentProductPreview() {
         );
 
 
+        /*
+            Sagome (cuori, portachiavi, ardesie...): fuori dalla forma
+            le maschere hanno il grigio dell'anteprima, quindi anche il
+            fondo della miniatura è grigio, senza riquadri chiari.
+        */
+        const thumbnailBackground =
+            products[currentProduct] &&
+            products[currentProduct].shape
+                ? getComputedStyle(document.documentElement)
+                    .getPropertyValue("--preview-bg")
+                    .trim() || null
+                : null;
+
         const canvas =
             await html2canvas(
                 productPreview,
                 {
                     backgroundColor:
-                        null,
+                        thumbnailBackground,
 
                     scale: 1,
 

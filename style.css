@@ -207,7 +207,7 @@ input[type="file"] {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #eeeeee;
+    background: var(--preview-bg);
     border-radius: 14px;
     padding: 30px;
     position: relative;
@@ -2274,7 +2274,7 @@ nav a {
 
     /* Pagina editor */
     body {
-        background: #eeeeee;
+        background: var(--preview-bg);
     }
 
 
@@ -2300,7 +2300,7 @@ nav a {
         border-radius: 0;
         box-shadow: none;
 
-        background: #eeeeee;
+        background: var(--preview-bg);
 
         position: relative;
         top: auto;
@@ -2327,7 +2327,7 @@ nav a {
 
         border-radius: 0;
 
-        background: #eeeeee;
+        background: var(--preview-bg);
 
         display: flex;
         align-items: center;
@@ -5024,6 +5024,10 @@ nav a {
    ===================================================================== */
 
 :root {
+    /* Sfondo dell’anteprima: grigio medio, uguale al fondo delle sagome
+       (assets/products/*-mask.png), così i prodotti bianchi si vedono */
+    --preview-bg: #b8bec6;
+
     /* Colori del marchio SubliMaMi (presi dal logo) */
     --brand: #00b0c0;            /* turchese logo: decorazioni, bordi attivi */
     --brand-strong: #00808e;     /* turchese scuro: testo e pulsanti (contrasto AA) */
@@ -5748,10 +5752,10 @@ textarea {
 
     /* Solo sfondo: dimensioni e padding dell'area restano quelli originali */
     .preview-area {
-        background-color: #f1f4f6;
-        background-image: radial-gradient(#dde3e8 1.1px, transparent 1.1px);
-        background-size: 18px 18px;
+        background-color: var(--preview-bg);
         border: 1px solid var(--line);
+        /* lo zoom non deve far uscire il prodotto sopra i pannelli */
+        overflow: hidden;
     }
 
     .preview-toolbar {
@@ -6145,9 +6149,9 @@ a.logo {
 }
 
 /* Cuscini a cuore: lo sfondo dell'anteprima deve avere lo stesso colore
-   della sagoma (#f1f4f6), anche su smartphone */
+   della sagoma (--preview-bg), anche su smartphone */
 .preview-area:has(.generic-heart) {
-    background-color: #f1f4f6;
+    background-color: var(--preview-bg);
 }
 
 /* Nota: la foto esce dall'area di stampa */
@@ -6241,7 +6245,7 @@ a.logo {
 }
 
 .preview-area:has(.generic-keychain-mdf) {
-    background-color: #f1f4f6;
+    background-color: var(--preview-bg);
 }
 
 /* Ardesie: pietra, bordo e supporti sono nelle foto (corpo e maschera) */
@@ -6265,13 +6269,13 @@ a.logo {
 
 .preview-area:has(.generic-slate),
 .preview-area:has(.generic-magnet) {
-    background-color: #f1f4f6;
+    background-color: var(--preview-bg);
 }
 
 /* Su smartphone anche il fondo della pagina segue lo stesso colore */
 @media (max-width: 600px) {
     body:has(.generic-heart, .generic-keychain-mdf, .generic-slate, .generic-magnet) {
-        background-color: #f1f4f6;
+        background-color: var(--preview-bg);
     }
 }
 
