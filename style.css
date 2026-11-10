@@ -6647,3 +6647,92 @@ a.logo {
         right: calc(-44 * var(--ui));
     }
 }
+
+
+/* =========================================
+   T-SHIRT - MINIATURE FRONTE E RETRO
+   -----------------------------------------
+   Sopra l'anteprima, in un angolo: non
+   cambiano misure né posizione della maglia.
+   ========================================= */
+
+.tshirt-side-thumbs {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 30;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tshirt-side-thumbs.visible {
+    display: flex;
+}
+
+.tshirt-side-thumb {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: auto;
+    margin: 0;
+    padding: 4px 4px 5px;
+    border: 2px solid #e3e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
+    color: #5f6670;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.tshirt-side-thumb canvas {
+    display: block;
+    width: 76px;
+    height: 76px;
+}
+
+.tshirt-side-thumb:hover {
+    border-color: #00b0c0;
+}
+
+.tshirt-side-thumb.active {
+    border-color: #00808e;
+    background: #e6f7f9;
+    color: #00808e;
+}
+
+.tshirt-side-thumb:focus-visible {
+    outline: 3px solid #00b0c0;
+    outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+
+    .tshirt-side-thumbs {
+        top: 8px;
+        right: 8px;
+        left: auto;
+        gap: 6px;
+    }
+
+    .tshirt-side-thumb {
+        padding: 3px 3px 4px;
+        border-radius: 10px;
+        font-size: 10px;
+    }
+
+    .tshirt-side-thumb canvas {
+        width: 48px;
+        height: 48px;
+    }
+
+    /* Anteprima compatta durante lo scroll: troppo poco spazio */
+    .preview-panel.mobile-compact .tshirt-side-thumbs {
+        display: none;
+    }
+}

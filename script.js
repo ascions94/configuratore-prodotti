@@ -5690,6 +5690,8 @@ updateImageTransform();
 
 updateMobileCustomizingState();
 updateMobileTextSelectionBar();
+
+scheduleTshirtSideThumbs();
 }
 
 function setTextAlignment(alignment) {
@@ -9365,7 +9367,7 @@ async function drawPrintAreaContent(
     context.restore();
 }
 
-async function createTshirtCartCanvas(side) {
+async function createTshirtCartCanvas(side, options) {
 
     const canvas =
         document.createElement(
@@ -9386,9 +9388,11 @@ async function createTshirtCartCanvas(side) {
         );
 
 
+    /* options.state: copia dello stato (miniature fronte/retro) */
     const state =
-    productStates
-        .tshirt[tshirtColor][side];
+        options && options.state
+            ? options.state
+            : productStates.tshirt[tshirtColor][side];
 
 
     /*
@@ -9609,6 +9613,18 @@ async function captureTshirtSide(side) {
         smallCanvas.getContext(
             "2d"
         );
+
+
+    /* Il JPEG non ha trasparenza: fondo bianco, non nero */
+    context.fillStyle =
+        "#ffffff";
+
+    context.fillRect(
+        0,
+        0,
+        smallCanvas.width,
+        smallCanvas.height
+    );
 
 
     context.drawImage(
@@ -12921,6 +12937,162 @@ document
 /* Stato iniziale */
 
 updateMobileQuickControls();
+
+
+/* =========================================
+   T-SHIRT - MINIATURE FRONTE E RETRO
+   -----------------------------------------
+   Due miniature nell'anteprima mostrano
+   insieme i due lati; un clic passa a quel
+   lato (stesso pulsante Fronte/Retro).
+   Il disegno è quello delle anteprime del
+   carrello (createTshirtCartCanvas).
+   "var": queste variabili servono anche a
+   renderCurrentState, che può essere
+   chiamata prima di arrivare qui.
+   ========================================= */
+
+var tshirtThumbsTimer = null;
+var tshirtThumbsRun = 0;
+
+
+function scheduleTshirtSideThumbs() {
+
+    clearTimeout(tshirtThumbsTimer);
+
+    tshirtThumbsTimer =
+        setTimeout(renderTshirtSideThumbs, 200);
+}
+
+
+/*
+    Copia dello stato di un lato, alle misure
+    desktop usate da createTshirtCartCanvas.
+    Lo stato vero non viene modificato.
+*/
+function getTshirtThumbState(side) {
+
+    const live =
+        productStates.tshirt[tshirtColor][side];
+
+    const copy =
+        Object.assign({}, live, {
+            images: (live.images || []).map(function (image) {
+                return Object.assign({}, image);
+            }),
+            texts: (live.texts || []).map(function (text) {
+                return Object.assign({}, text);
+            })
+        });
+
+    if (window.innerWidth <= 600) {
+
+        const format =
+            tshirtPrintFormat[side];
+
+        scaleStateLengths(
+            copy,
+            getTshirtPrintAreaPx(format, false).baseWidth /
+                getTshirtPrintAreaPx(format, true).baseWidth
+        );
+    }
+
+    return copy;
+}
+
+
+async function renderTshirtSideThumbs() {
+
+    const box =
+        document.getElementById("tshirtSideThumbs");
+
+    if (!box) {
+        return;
+    }
+
+    const visible =
+        currentProduct === "tshirt";
+
+    box.classList.toggle("visible", visible);
+
+    if (!visible) {
+        return;
+    }
+
+    box.querySelectorAll("[data-thumb-side]").forEach(function (button) {
+        button.classList.toggle(
+            "active",
+            button.dataset.thumbSide === tshirtSide
+        );
+    });
+
+    /* Ultima modifica alla foto o alla scritta selezionata */
+    syncSelectedImageFromLegacyState();
+    syncSelectedTextFromLegacyState();
+
+    const run =
+        ++tshirtThumbsRun;
+
+    for (const side of ["front", "back"]) {
+
+        const target =
+            box.querySelector(`[data-thumb-side="${side}"] canvas`);
+
+        let canvas;
+
+        try {
+            canvas = await createTshirtCartCanvas(side, {
+                state: getTshirtThumbState(side)
+            });
+        } catch (error) {
+            continue;
+        }
+
+        /* Nel frattempo è partito un disegno più recente */
+        if (run !== tshirtThumbsRun) {
+            return;
+        }
+
+        const context =
+            target.getContext("2d");
+
+        context.clearRect(0, 0, target.width, target.height);
+        context.drawImage(canvas, 0, 0, target.width, target.height);
+    }
+}
+
+
+document
+    .querySelectorAll("[data-thumb-side]")
+    .forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const sideButton =
+                document.querySelector(
+                    `.side-button[data-side="${button.dataset.thumbSide}"]`
+                );
+
+            if (sideButton) {
+                sideButton.click();
+            }
+        });
+    });
+
+
+/* Fine di un trascinamento, testo scritto, colore, annulla... */
+["pointerup", "input", "change", "keyup", "click"].forEach(function (type) {
+
+    document.addEventListener(type, function () {
+
+        if (currentProduct === "tshirt") {
+            scheduleTshirtSideThumbs();
+        }
+    }, true);
+});
+
+scheduleTshirtSideThumbs();
+
 
 /* =========================================
    MOBILE - MENU FORMATO TESTO
