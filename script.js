@@ -1557,6 +1557,11 @@ const productRealPhotos = {
         src: "assets/home/mattonella-15x20-foto.jpg",
         alt: "Mattonelle 15×20 in ceramica, una bianca e una stampata con una foto",
         caption: "Mattonelle 15×20 in ceramica: bianca e stampata con una foto"
+    },
+    mousepad: {
+        src: "assets/home/tappetino-dal-vero.jpg",
+        alt: "Tappetino mouse stampato con un'iniziale e un nome, con il mouse sopra",
+        caption: "Tappetino mouse 22×18 cm stampato, con il mouse sopra"
     }
 };
 

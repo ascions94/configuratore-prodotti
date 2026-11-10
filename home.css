@@ -1964,13 +1964,13 @@ a.is-missing {
 }
 
 
-/* Quattro prodotti in evidenza e tre "presto disponibili" */
+/* Tre prodotti in evidenza (cuscini, T-shirt, tappetino) */
 .tint-mint { background: linear-gradient(160deg, var(--mint-soft), #fbfefc); }
 
 @media (min-width: 1081px) {
 
     .products-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
     }
 
@@ -2243,5 +2243,42 @@ a.is-missing {
     .soon-format {
         padding: 4px 9px;
         font-size: 12px;
+    }
+}
+
+
+/* ------------------- I NOSTRI PRODOTTI: FOTO VERE ------------------- */
+
+/* La foto riempie il riquadro; passando sopra la scheda compare
+   la versione "Personalizza con la tua foto" */
+.product-card-photo {
+    overflow: hidden;
+    padding: 0;
+    background: #ffffff;
+}
+
+.product-card-photo > img {
+    object-fit: cover;
+}
+
+.product-card-photo > .product-photo-alt {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.35s ease, transform 0.3s ease;
+}
+
+@media (hover: hover) {
+    .product-card:hover .product-photo-alt {
+        opacity: 1;
+    }
+}
+
+/* Tablet: con tre schede, l'ultima va al centro della seconda riga */
+@media (min-width: 601px) and (max-width: 1080px) {
+    .products-grid > .product-card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc(50% - 12px);
     }
 }
