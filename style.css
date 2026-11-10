@@ -6079,16 +6079,18 @@ a.logo {
         0 10px 26px rgba(0, 0, 0, 0.16);
 }
 
-/* Tappetino mouse: bordo scuro arrotondato */
+/* Tappetino mouse: fondo bianco arrotondato
+   (il filo grigio è un'ombra, così non cambia le misure) */
 .generic-mousepad {
-    background: #2b3137;
+    background: #ffffff;
     border-radius: 22px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+    box-shadow:
+        0 0 0 1px #dde2e6,
+        0 12px 28px rgba(0, 0, 0, 0.16);
 }
 
 .generic-print-mousepad {
     border-radius: 16px;
-    border-color: rgba(255, 255, 255, 0.7);
     background-color: #ffffff;
 }
 

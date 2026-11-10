@@ -10262,6 +10262,23 @@ async function captureCurrentProductPreview() {
             );
 
 
+        /*
+            Il JPEG non ha trasparenza: senza
+            questo fondo bianco gli angoli
+            arrotondati e l'esterno delle
+            sagome diventerebbero neri.
+        */
+        context.fillStyle =
+            "#ffffff";
+
+        context.fillRect(
+            0,
+            0,
+            smallCanvas.width,
+            smallCanvas.height
+        );
+
+
         context.drawImage(
             canvas,
             0,
