@@ -1907,6 +1907,49 @@ function getTshirtPrintAreaPx(format, isMobile, fit, fabric) {
     };
 }
 
+/*
+    Posizione verticale del riquadro: il bordo alto sta sotto il collo,
+    a 9 cm sull'adulto e 8 cm sul bambino (fronte e retro).
+    Collo misurato sulle sagome 768x512 (px dall'alto, al centro):
+    fronte cotone 46, fronte poliestere 39, retro 12 (bordo del colletto).
+    Restituisce il "top" in % del contenitore (il riquadro è centrato
+    con translate(-50%, -50%)).
+*/
+const TSHIRT_MOCKUP_PX = { width: 768, height: 512, torso: 239 };
+const TSHIRT_NECK_Y_PX = {
+    cotton:    { front: 46, back: 12 },
+    polyester: { front: 39, back: 12 }
+};
+const TSHIRT_COLLAR_GAP_CM = { adult: 9, kids: 8 };
+
+function getTshirtPrintCenterPercent(side, boxWidth, boxHeight, areaHeightPx, fit, fabric) {
+
+    const fitKey = normalizeTshirtFit(fit || tshirtFit);
+    const fabricKey = normalizeTshirtFabric(fabric || tshirtFabric);
+
+    /* La sagoma è disegnata con background-size: contain, centrata */
+    const scale = Math.min(
+        boxWidth / TSHIRT_MOCKUP_PX.width,
+        boxHeight / TSHIRT_MOCKUP_PX.height
+    );
+
+    const imageTop =
+        (boxHeight - TSHIRT_MOCKUP_PX.height * scale) / 2;
+
+    const neckY =
+        imageTop +
+        TSHIRT_NECK_Y_PX[fabricKey][side === "back" ? "back" : "front"] * scale;
+
+    /* Stessa scala del riquadro: larghezza reale della maglia */
+    const pxPerCm =
+        (TSHIRT_MOCKUP_PX.torso * scale) /
+        TSHIRT_REFERENCE_WIDTH_CM[fitKey];
+
+    const top = neckY + TSHIRT_COLLAR_GAP_CM[fitKey] * pxPerCm;
+
+    return ((top + areaHeightPx / 2) / boxHeight) * 100;
+}
+
 function formatTshirtPrintCm(format, fit, fabric) {
     const cm = getTshirtPrintCm(format, fit, fabric);
     return formatCm(cm.width) + "x" + formatCm(cm.height);
@@ -8400,22 +8443,6 @@ printArea.style.height = printAreaPx.height + printAreaBorderY + "px";
 printArea.style.transform =
     "translate(-50%, -50%)";
 
-        /*
-            Manteniamo per ora l'altezza
-            che avevamo già impostato.
-        */
-        if (isVertical) {
-            printArea.style.top =
-                tshirtSide === "back"
-                    ? "47%"
-                    : "50%";
-        } else {
-            printArea.style.top =
-                tshirtSide === "back"
-                    ? "44%"
-                    : "47%";
-        }
-
     } else {
 
         /*
@@ -8428,22 +8455,18 @@ printArea.style.transform =
         } else {
             printArea.style.left = "58%";
         }
-
-        if (isVertical) {
-
-            printArea.style.top =
-                tshirtSide === "back"
-                    ? "47%"
-                    : "50%";
-
-        } else {
-
-            printArea.style.top =
-                tshirtSide === "back"
-                    ? "44%"
-                    : "47%";
-        }
     }
+
+    /* Altezza: bordo alto a 8-10 cm sotto il collo (computer e smartphone) */
+    printArea.style.top =
+        getTshirtPrintCenterPercent(
+            tshirtSide,
+            productPreview.clientWidth || 460,
+            productPreview.clientHeight || 480,
+            printAreaPx.height + printAreaBorderY,
+            tshirtFit,
+            tshirtFabric
+        ) + "%";
 
 
     requestAnimationFrame(function () {
@@ -8827,32 +8850,14 @@ preview.style.pointerEvents =
     const copyAreaPx =
         getTshirtPrintAreaPx(format, false);
 
-    if (format === "vertical") {
+    printAreaCopy.style.width =
+        copyAreaPx.width + "px";
 
-        printAreaCopy.style.width =
-            copyAreaPx.width + "px";
+    printAreaCopy.style.height =
+        copyAreaPx.height + "px";
 
-        printAreaCopy.style.height =
-            copyAreaPx.height + "px";
-
-        printAreaCopy.style.top =
-            side === "back"
-                ? "47%"
-                : "50%";
-
-    } else {
-
-        printAreaCopy.style.width =
-            copyAreaPx.width + "px";
-
-        printAreaCopy.style.height =
-            copyAreaPx.height + "px";
-
-        printAreaCopy.style.top =
-            side === "back"
-                ? "44%"
-                : "47%";
-    }
+    printAreaCopy.style.top =
+        getTshirtPrintCenterPercent(side, 420, 420, copyAreaPx.height) + "%";
 
 
     /*
@@ -9748,9 +9753,12 @@ async function createTshirtCartCanvas(side, options) {
             cartAreaPx.height;
 
         areaTopPercent =
-            side === "back"
-                ? 47
-                : 50;
+            getTshirtPrintCenterPercent(
+                side,
+                canvas.width,
+                canvas.height,
+                cartAreaPx.height
+            );
 
     } else {
 
@@ -9761,9 +9769,12 @@ async function createTshirtCartCanvas(side, options) {
             cartAreaPx.height;
 
         areaTopPercent =
-            side === "back"
-                ? 44
-                : 47;
+            getTshirtPrintCenterPercent(
+                side,
+                canvas.width,
+                canvas.height,
+                cartAreaPx.height
+            );
     }
 
 

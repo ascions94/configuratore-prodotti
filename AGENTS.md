@@ -39,6 +39,8 @@ Le personalizzazioni dei diversi prodotti devono rimanere indipendenti.
   bambino verticale 15x20 cm o orizzontale 20x15 cm.
 - Il riquadro di stampa è in scala con la larghezza reale della maglia
   (tabella taglie Roly: adulto M 51 cm, bambino 7/8 anni 38 cm).
+- Il bordo alto del riquadro sta sotto il collo: 9 cm sull'adulto e 8 cm sul
+  bambino, fronte e retro (getTshirtPrintCenterPercent in script.js).
 - Lo zoom dell'anteprima non deve modificare le dimensioni reali della personalizzazione.
 - Non alterare la relazione geometrica tra mockup, area stampabile, immagini e testi.
 

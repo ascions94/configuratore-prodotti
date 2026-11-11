@@ -621,6 +621,20 @@ button:focus-visible {
     object-fit: contain;
 }
 
+/* Foto vera del prodotto: riempie tutto il cerchio */
+.category-image .category-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Le foto hanno il fondo bianco: bordo e ombra per vedere il cerchio */
+.category-image:has(.category-photo) {
+    background: #fff;
+    box-shadow: 0 0 0 1px var(--line), 0 4px 14px rgba(16, 24, 40, 0.08);
+}
+
 .category-image .category-tshirt {
     width: 92%;
 }
