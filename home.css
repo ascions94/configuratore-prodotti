@@ -591,6 +591,18 @@ button:focus-visible {
     display: none;
 }
 
+/* Dieci categorie: su computer e tablet due file da cinque */
+@media (min-width: 601px) {
+    .categories {
+        flex-wrap: wrap;
+        row-gap: 24px;
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+        overflow: visible;
+    }
+}
+
 .category {
     flex: 0 0 auto;
     display: flex;
@@ -1300,6 +1312,8 @@ button:focus-visible {
         margin: 0 -16px;
         padding-left: 16px;
         padding-right: 16px;
+        /* riga che scorre: parte da sinistra, così si vede il primo cerchio */
+        justify-content: flex-start;
     }
 
     .products-grid,
