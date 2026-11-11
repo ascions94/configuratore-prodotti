@@ -9,9 +9,9 @@
  * POST /wp-json/sublimami/v1/cart/items   (multipart/form-data)
  *      item:          JSON { product, quantity, tshirtColor, tshirtSize, printFormat }
  *      print_front:   PNG del file di stampa (fronte)
- *      print_back:    PNG del file di stampa (retro, solo T-shirt)
+ *      print_back:    PNG del file di stampa (retro: T-shirt e portachiavi)
  *      preview_front: JPEG/PNG anteprima (fronte)
- *      preview_back:  JPEG/PNG anteprima (retro, solo T-shirt)
+ *      preview_back:  JPEG/PNG anteprima (retro: T-shirt e portachiavi)
  *
  * Il prezzo è sempre quello del prodotto WooCommerce, mai quello inviato dal browser.
  */
@@ -147,6 +147,11 @@ function sublimami_parse_item( $raw ) {
 		'quantity'   => max( 1, min( 99, (int) ( isset( $data['quantity'] ) ? $data['quantity'] : 1 ) ) ),
 		'sides'      => array( 'front' ),
 	);
+
+	/* Portachiavi in MDF: si stampano anche sul retro (facoltativo) */
+	if ( 0 === strpos( $product_key, 'keychain-' ) ) {
+		$item['sides'] = array( 'front', 'back' );
+	}
 
 	if ( in_array( $product_key, sublimami_orientable_products(), true ) ) {
 		$orientation         = isset( $data['orientation'] ) ? (string) $data['orientation'] : '';

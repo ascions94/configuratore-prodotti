@@ -591,15 +591,70 @@ button:focus-visible {
     display: none;
 }
 
-/* Dieci categorie: su computer e tablet due file da cinque */
-@media (min-width: 601px) {
-    .categories {
-        flex-wrap: wrap;
-        row-gap: 24px;
-        max-width: 720px;
-        margin-left: auto;
-        margin-right: auto;
-        overflow: visible;
+/* Riga che scorre: centrata se c'è spazio, altrimenti parte da sinistra */
+.categories {
+    justify-content: flex-start;
+    scroll-behavior: smooth;
+}
+
+.categories > .category:first-child {
+    margin-left: auto;
+}
+
+.categories > .category:last-child {
+    margin-right: auto;
+}
+
+/* Frecce per scorrere i cerchi (nascoste quando non servono) */
+.categories-carousel {
+    position: relative;
+}
+
+.categories-arrow {
+    position: absolute;
+    top: 56px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 4px 14px rgba(16, 24, 40, 0.12);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.categories-arrow svg {
+    width: 22px;
+    height: 22px;
+}
+
+.categories-arrow:hover {
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+}
+
+.categories-arrow[hidden] {
+    display: none;
+}
+
+.categories-arrow-prev {
+    left: -6px;
+}
+
+.categories-arrow-next {
+    right: -6px;
+}
+
+/* Su smartphone si scorre con il dito */
+@media (max-width: 600px) {
+    .categories-arrow {
+        display: none;
     }
 }
 

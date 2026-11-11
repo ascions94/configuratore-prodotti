@@ -1300,6 +1300,20 @@ let tshirtSize = "M";
 let tshirtFabric = "cotton"; // "cotton" (100% cotone) oppure "polyester"
 let tshirtFit = "adult";     // "adult" (adulto unisex) oppure "kids" (bambino)
 let tshirtSide = "front";
+
+/* Portachiavi in MDF: si stampano anche sul retro (facoltativo).
+   keychainSide è il lato che si sta personalizzando. */
+let keychainSide = "front";
+let keychainSideProduct = null;
+
+function isDoubleSidedProduct(productKey) {
+    return Boolean(
+        typeof products !== "undefined" &&
+        products[productKey] &&
+        products[productKey].layout === "keychain-mdf"
+    );
+}
+
 let tshirtPrintFormat = {
     front: "vertical",
     back: "vertical"
@@ -2853,6 +2867,17 @@ if (savedProductStates.tshirt) {
     }
 }
 
+/* Portachiavi in MDF: anche il retro ha il suo stato */
+Object.keys(products).forEach(function (productKey) {
+    if (
+        isDoubleSidedProduct(productKey) &&
+        productStates[productKey] &&
+        !productStates[productKey].back
+    ) {
+        productStates[productKey].back = createEmptyState();
+    }
+});
+
 /*
     ============================
     AUTOSALVATAGGIO
@@ -3121,6 +3146,10 @@ function getCurrentSide() {
 
     if (currentProduct === "tshirt") {
         return tshirtSide;
+    }
+
+    if (isDoubleSidedProduct(currentProduct)) {
+        return keychainSide;
     }
 
     return "front";
@@ -6235,6 +6264,12 @@ printArea.style.transform = "";
     }
 
 
+    /* Portachiavi: cambiando prodotto si riparte dal fronte */
+    if (keychainSideProduct !== currentProduct) {
+        keychainSideProduct = currentProduct;
+        keychainSide = "front";
+    }
+
     /* Nuovi prodotti */
     productPreview.style.width = "";
     productPreview.style.height = "";
@@ -6253,6 +6288,7 @@ printArea.style.transform = "";
 
     updateVariantButtons();
     updateOrientationButtons();
+    updateKeychainSideButtons();
 
     /* Fronte/Retro e formato su mobile seguono il prodotto scelto */
     updateMobileQuickControls();
@@ -6298,6 +6334,71 @@ function updateOrientationButtons() {
                 : "Orizzontale";
     }
 }
+
+/* =========================================
+   PORTACHIAVI: FRONTE / RETRO
+   ========================================= */
+
+function updateKeychainSideButtons() {
+
+    const options =
+        document.getElementById("keychainSideOptions");
+
+    const doubleSided =
+        isDoubleSidedProduct(currentProduct);
+
+    if (options) {
+        options.style.display = doubleSided ? "block" : "none";
+    }
+
+    document
+        .querySelectorAll("[data-keychain-side]")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.keychainSide === keychainSide
+            );
+        });
+}
+
+function setKeychainSide(side) {
+
+    side = side === "back" ? "back" : "front";
+
+    if (
+        !isDoubleSidedProduct(currentProduct) ||
+        keychainSide === side
+    ) {
+        updateKeychainSideButtons();
+        return;
+    }
+
+    /* Salva le ultime modifiche del lato che si lascia */
+    syncSelectedImageFromLegacyState();
+    syncSelectedTextFromLegacyState();
+
+    keychainSide = side;
+
+    uploadedImage.classList.remove("selected-element");
+    customText.classList.remove("selected-element");
+    selectionControls.style.display = "none";
+    selectedElementType = null;
+
+    updateProductPreview();
+
+    statusMessage.textContent =
+        side === "back"
+            ? "Stai personalizzando il retro del portachiavi."
+            : "Stai personalizzando il fronte del portachiavi.";
+}
+
+document
+    .querySelectorAll("[data-keychain-side]")
+    .forEach(function (button) {
+        button.addEventListener("click", function () {
+            setKeychainSide(button.dataset.keychainSide);
+        });
+    });
 
 function setProductOrientation(orientation) {
 
@@ -6446,11 +6547,18 @@ function applyGenericProductPreview(product) {
                 ? product.shape + "-h"
                 : product.shape;
 
+        /* Portachiavi, retro: sagoma specchiata (girandolo, il buco
+           dell'anello passa dall'altra parte) */
+        const shapeFile =
+            product.layout === "keychain-mdf" && getCurrentSide() === "back"
+                ? shapeName + "-back"
+                : shapeName;
+
         productPreview.style.backgroundImage =
-            `url("${getAssetUrl(`assets/products/${shapeName}-body.png?v=${SHAPE_ASSETS_VERSION}`)}")`;
+            `url("${getAssetUrl(`assets/products/${shapeFile}-body.png?v=${SHAPE_ASSETS_VERSION}`)}")`;
 
         printShapeMask.style.backgroundImage =
-            `url("${getAssetUrl(`assets/products/${shapeName}-mask.png?v=${SHAPE_ASSETS_VERSION}`)}")`;
+            `url("${getAssetUrl(`assets/products/${shapeFile}-mask.png?v=${SHAPE_ASSETS_VERSION}`)}")`;
 
         /* Portachiavi: anello e fascetta in un livello sopra, più grande */
         if (product.layout === "keychain-mdf") {
@@ -6460,7 +6568,7 @@ function applyGenericProductPreview(product) {
 
             productPreview.style.setProperty(
                 "--ring-image",
-                `url("${getAssetUrl(`assets/products/${shapeName}-ring.png?v=${SHAPE_ASSETS_VERSION}`)}")`
+                `url("${getAssetUrl(`assets/products/${shapeFile}-ring.png?v=${SHAPE_ASSETS_VERSION}`)}")`
             );
 
             productPreview.style.setProperty(
@@ -9962,6 +10070,15 @@ function getPrintAreaPxForCart() {
     };
 
     if (currentProduct !== "tshirt") {
+
+        /* Portachiavi: il retro ha la stessa area del fronte */
+        if (isDoubleSidedProduct(currentProduct)) {
+            return {
+                front: current,
+                back: { width: current.width, height: current.height }
+            };
+        }
+
         return {
             front: current
         };
@@ -10011,6 +10128,15 @@ function getCartItemSideState(cartItem, side) {
         return cartItem.customization
             ? cartItem.customization[side]
             : null;
+    }
+
+    /* Portachiavi fronte/retro: { front, back } */
+    if (
+        isDoubleSidedProduct(cartItem.product) &&
+        cartItem.customization &&
+        cartItem.customization.front
+    ) {
+        return cartItem.customization[side] || null;
     }
 
     return side === "front"
@@ -10251,7 +10377,8 @@ async function addPngResolution(pngBlob, dpi) {
 async function createPrintFiles(cartItem) {
 
     const sides =
-        cartItem.product === "tshirt"
+        cartItem.product === "tshirt" ||
+        isDoubleSidedProduct(cartItem.product)
             ? ["front", "back"]
             : ["front"];
 
@@ -10299,6 +10426,41 @@ async function createPrintFiles(cartItem) {
     }
 
     return files;
+}
+
+/*
+    Portachiavi: anteprima del fronte e, se è personalizzato,
+    anche del retro. Restituisce { front, back } oppure solo
+    l'immagine del fronte.
+*/
+async function captureKeychainPreviews() {
+
+    const originalSide = keychainSide;
+    const previews = {};
+
+    for (const side of ["front", "back"]) {
+
+        if (
+            side === "back" &&
+            !hasPrintContent(productStates[currentProduct].back)
+        ) {
+            continue;
+        }
+
+        if (keychainSide !== side) {
+            keychainSide = side;
+            updateProductPreview();
+        }
+
+        previews[side] = await captureCurrentProductPreview();
+    }
+
+    if (keychainSide !== originalSide) {
+        keychainSide = originalSide;
+        updateProductPreview();
+    }
+
+    return previews.back ? previews : previews.front;
 }
 
 async function captureCurrentProductPreview() {
@@ -10655,7 +10817,8 @@ function createCartPreview(item) {
     // =========================
 
     if (
-        item.product === "tshirt" &&
+        (item.product === "tshirt" ||
+            isDoubleSidedProduct(item.product)) &&
         item.previews &&
         item.previews.front &&
         item.previews.back
@@ -10780,7 +10943,11 @@ if (
 
         createPreviewContent(
             preview,
-            item.customization
+            isDoubleSidedProduct(item.product) &&
+                item.customization &&
+                item.customization.front
+                ? item.customization.front
+                : item.customization
         );
 
         wrapper.appendChild(preview);
@@ -10890,6 +11057,15 @@ function renderCart() {
             (item.orientation === "vertical"
                 ? "verticale"
                 : "orizzontale");
+    }
+
+    /* Portachiavi: lati stampati */
+    if (isDoubleSidedProduct(item.product)) {
+        details +=
+            "<br>Stampa: " +
+            (hasPrintContent(getCartItemSideState(item, "back"))
+                ? "fronte e retro"
+                : "solo fronte");
     }
 }
 
@@ -11076,6 +11252,11 @@ if (currentProduct === "tshirt") {
         await captureTshirtPreviews();
 
 
+} else if (isDoubleSidedProduct(currentProduct)) {
+
+    cartPreviews =
+        await captureKeychainPreviews();
+
 } else {
 
     cartPreviews =
@@ -11138,7 +11319,19 @@ if (currentProduct === "tshirt") {
 
 
     customization:
-    currentProduct === "tshirt"
+    isDoubleSidedProduct(currentProduct)
+        ? {
+            front:
+                createCartStateCopy(
+                    productStates[currentProduct].front
+                ),
+
+            back:
+                createCartStateCopy(
+                    productStates[currentProduct].back
+                )
+        }
+        : currentProduct === "tshirt"
         ? {
             front:
                 createCartStateCopy(
@@ -13077,11 +13270,17 @@ function updateMobileQuickControls() {
     }
 
 
-    /* Mostra i controlli solo sulla T-Shirt */
+    /* Mostra i controlli sulla T-Shirt; sui portachiavi solo Fronte/Retro */
 
     quickControls.classList.toggle(
         "visible",
-        currentProduct === "tshirt"
+        currentProduct === "tshirt" ||
+            isDoubleSidedProduct(currentProduct)
+    );
+
+    quickControls.classList.toggle(
+        "sides-only",
+        currentProduct !== "tshirt"
     );
 
     /* Fronte / Retro */
@@ -13095,7 +13294,7 @@ function updateMobileQuickControls() {
             button.classList.toggle(
                 "active",
                 button.dataset.mobileQuickSide ===
-                    tshirtSide
+                    getCurrentSide()
             );
         });
 
@@ -13132,6 +13331,13 @@ document
                 const selectedSide =
                     mobileButton.dataset
                         .mobileQuickSide;
+
+                /* Portachiavi: lato del portachiavi */
+                if (isDoubleSidedProduct(currentProduct)) {
+                    setKeychainSide(selectedSide);
+                    updateMobileQuickControls();
+                    return;
+                }
 
 
                 const originalButton =

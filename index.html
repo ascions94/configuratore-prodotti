@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
 
-    <link rel="stylesheet" href="home.css?v=07092de4a81e">
+    <link rel="stylesheet" href="home.css?v=e0ab5c60f279">
 </head>
 
 <body>
@@ -175,7 +175,12 @@
             <div class="container">
                 <h2 class="section-title" id="categorie-titolo">Cosa vuoi creare?</h2>
 
-                <div class="categories">
+                <!-- Una riga sola: scorre con le frecce (computer) o con il dito (smartphone), home.js -->
+                <div class="categories-carousel">
+                    <button type="button" class="categories-arrow categories-arrow-prev" aria-label="Categorie precedenti" aria-controls="categoriesRow" hidden>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                <div class="categories" id="categoriesRow">
                     <a href="personalizza.html?prodotto=cushion" class="category">
                         <span class="category-image"><img src="assets/home/cerchio-cuscino.jpg" alt="" class="category-photo" width="360" height="360" loading="lazy"></span>
                         Cuscini
@@ -216,6 +221,10 @@
                         <span class="category-image"><img src="assets/home/cerchio-tappetino.jpg" alt="" class="category-photo" width="360" height="360" loading="lazy"></span>
                         Tappetini mouse
                     </a>
+                </div>
+                    <button type="button" class="categories-arrow categories-arrow-next" aria-label="Categorie successive" aria-controls="categoriesRow" hidden>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
                 </div>
             </div>
         </section>
@@ -635,6 +644,6 @@
     </footer>
 
     <script src="site-config.js?v=1eb8c7c63106"></script>
-    <script src="home.js?v=0a472ae0a49b"></script>
+    <script src="home.js?v=629539f3c61c"></script>
 </body>
 </html>

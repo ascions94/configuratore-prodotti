@@ -6892,3 +6892,17 @@ a.logo {
         display: none;
     }
 }
+
+
+/* Portachiavi: fronte / retro */
+.keychain-side-note {
+    margin: 8px 0 0;
+    color: var(--muted, #6b7280);
+    font-size: 12.5px;
+    line-height: 1.4;
+}
+
+/* Smartphone, portachiavi: solo Fronte/Retro (niente formato foto) */
+#mobileTshirtQuickControls.sides-only .mobile-quick-group + .mobile-quick-group {
+    display: none;
+}

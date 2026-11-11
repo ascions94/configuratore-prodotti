@@ -236,3 +236,39 @@ document.querySelectorAll(".photo-formats").forEach(function (group) {
         });
     });
 });
+
+
+/* Cerchi "Cosa vuoi creare?": una riga che scorre con le frecce */
+(function () {
+    const row = document.getElementById("categoriesRow");
+    const prev = document.querySelector(".categories-arrow-prev");
+    const next = document.querySelector(".categories-arrow-next");
+
+    if (!row || !prev || !next) {
+        return;
+    }
+
+    function updateArrows() {
+        const max = row.scrollWidth - row.clientWidth;
+        const scrollable = max > 2;
+
+        prev.hidden = !scrollable || row.scrollLeft <= 2;
+        next.hidden = !scrollable || row.scrollLeft >= max - 2;
+    }
+
+    function scrollRow(direction) {
+        row.scrollBy({
+            left: direction * Math.max(140, row.clientWidth * 0.75),
+            behavior: "smooth"
+        });
+    }
+
+    prev.addEventListener("click", function () { scrollRow(-1); });
+    next.addEventListener("click", function () { scrollRow(1); });
+
+    row.addEventListener("scroll", updateArrows, { passive: true });
+    window.addEventListener("resize", updateArrows);
+    window.addEventListener("load", updateArrows);
+
+    updateArrows();
+})();

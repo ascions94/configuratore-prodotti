@@ -85,7 +85,11 @@ function sublimami_describe( array $data ) {
 			$rows['Orientamento'] = 'horizontal' === $data['orientation'] ? 'Orizzontale' : 'Verticale';
 		}
 
-		$rows['Stampa'] = 'Personalizzata';
+		if ( 0 === strpos( (string) $data['product'], 'keychain-' ) ) {
+			$rows['Stampa'] = ! empty( $data['print']['back'] ) ? 'Fronte e retro' : 'Solo fronte';
+		} else {
+			$rows['Stampa'] = 'Personalizzata';
+		}
 	}
 
 	return $rows;
