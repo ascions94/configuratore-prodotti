@@ -1846,52 +1846,70 @@ function getTshirtSizeInfo(fabric, fit) {
     return TSHIRT_SIZES[normalizeTshirtFit(fit)][normalizeTshirtFabric(fabric)];
 }
 
-/* AREA DI STAMPA MASSIMA (cm), lato corto × lato lungo.
-   Bambino: per ora 15x20 per tutte le taglie. */
+/* AREA DI STAMPA MASSIMA (cm) per tessuto e modello.
+   Cotone adulto: 21x30 verticale o 30x20 orizzontale.
+   Poliestere adulto: 30x40 verticale; in orizzontale la larghezza
+   non può superare 30-31 cm, quindi 30x22,5 (stesse proporzioni).
+   Bambino: 15x20 / 20x15 per entrambi i tessuti. */
 const TSHIRT_PRINT_CM = {
-    adult: { short: 20, long: 30 },
-    kids:  { short: 15, long: 20 }
+    cotton: {
+        adult: { vertical: { width: 21, height: 30 }, horizontal: { width: 30, height: 20 } },
+        kids:  { vertical: { width: 15, height: 20 }, horizontal: { width: 20, height: 15 } }
+    },
+    polyester: {
+        adult: { vertical: { width: 30, height: 40 }, horizontal: { width: 30, height: 22.5 } },
+        kids:  { vertical: { width: 15, height: 20 }, horizontal: { width: 20, height: 15 } }
+    }
 };
 
 /* Misure in cm dell'area di stampa per formato verticale/orizzontale */
-function getTshirtPrintCm(format, fit) {
+function getTshirtPrintCm(format, fit, fabric) {
 
-    const size = TSHIRT_PRINT_CM[normalizeTshirtFit(fit || tshirtFit)];
+    const sizes =
+        TSHIRT_PRINT_CM[normalizeTshirtFabric(fabric || tshirtFabric)]
+            [normalizeTshirtFit(fit || tshirtFit)];
 
-    return format === "horizontal"
-        ? { width: size.long, height: size.short }
-        : { width: size.short, height: size.long };
+    const cm = format === "horizontal" ? sizes.horizontal : sizes.vertical;
+
+    return { width: cm.width, height: cm.height };
 }
 
-/* Misure in px del riquadro tratteggiato.
-   Adulto: valori originali (desktop 95x142, mobile 70x105).
-   Bambino: stessa scala px/cm dell'adulto, così i cm restano reali. */
-function getTshirtPrintAreaPx(format, isMobile, fit) {
+/*
+    Scala del riquadro tratteggiato: la maglia disegnata ha la larghezza
+    reale della tabella taglie Roly (misura in piano): adulto M 51 cm,
+    bambino 7/8 anni 38 cm. Il busto della sagoma è largo 143 px sul
+    computer (sagoma 460 px); su smartphone la sagoma è 70/95 più piccola.
+*/
+const TSHIRT_REFERENCE_WIDTH_CM = { adult: 51, kids: 38 };
+const TSHIRT_MOCKUP_TORSO_PX = 143;
+const TSHIRT_MOBILE_SCALE = 70 / 95;
 
-    const base = isMobile
-        ? { short: 70, long: 105 }
-        : { short: 95, long: 142 };
+function getTshirtPrintAreaPx(format, isMobile, fit, fabric) {
 
-    let shortPx = base.short;
-    let longPx = base.long;
+    const fitKey = normalizeTshirtFit(fit || tshirtFit);
 
-    if (normalizeTshirtFit(fit || tshirtFit) !== "adult") {
+    const pxPerCm =
+        (TSHIRT_MOCKUP_TORSO_PX / TSHIRT_REFERENCE_WIDTH_CM[fitKey]) *
+        (isMobile ? TSHIRT_MOBILE_SCALE : 1);
 
-        const cm = TSHIRT_PRINT_CM[normalizeTshirtFit(fit || tshirtFit)];
-        const pxPerCm = base.short / TSHIRT_PRINT_CM.adult.short;
+    const cm = getTshirtPrintCm(format, fitKey, fabric);
 
-        shortPx = cm.short * pxPerCm;
-        longPx = cm.long * pxPerCm;
-    }
+    const exactWidth = cm.width * pxPerCm;
+    const exactHeight = cm.height * pxPerCm;
 
-    return format === "horizontal"
-        ? { width: longPx, height: shortPx, baseWidth: base.long, baseHeight: base.short }
-        : { width: shortPx, height: longPx, baseWidth: base.short, baseHeight: base.long };
+    /* px interi = area utile del riquadro (il bordo tratteggiato sta fuori);
+       base* restano esatti per il cambio di scala computer/smartphone */
+    return {
+        width: Math.round(exactWidth),
+        height: Math.round(exactHeight),
+        baseWidth: exactWidth,
+        baseHeight: exactHeight
+    };
 }
 
-function formatTshirtPrintCm(format, fit) {
-    const cm = getTshirtPrintCm(format, fit);
-    return cm.width + "x" + cm.height;
+function formatTshirtPrintCm(format, fit, fabric) {
+    const cm = getTshirtPrintCm(format, fit, fabric);
+    return formatCm(cm.width) + "x" + formatCm(cm.height);
 }
 
 /* PREZZI T-SHIRT: scrivi il prezzo (es. 12.50).
@@ -2040,14 +2058,15 @@ function getOrientedPrintTexts(productKey) {
 
     const product = products[productKey];
 
-    /* T-Shirt bambino: area di stampa più piccola */
-    if (productKey === "tshirt" && tshirtFit !== "adult") {
+    /* T-Shirt: misure diverse per tessuto e modello */
+    if (productKey === "tshirt") {
 
-        const cm = TSHIRT_PRINT_CM[normalizeTshirtFit(tshirtFit)];
+        const vertical = formatTshirtPrintCm("vertical");
+        const horizontal = formatTshirtPrintCm("horizontal");
 
         return {
-            print: `Area massima di stampa: ${cm.short}x${cm.long} cm`,
-            printInfo: `Area stampabile massima ${cm.short}x${cm.long} cm`
+            print: `Area massima di stampa: ${vertical} cm in verticale o ${horizontal} cm in orizzontale`,
+            printInfo: `Stampa fino a ${vertical} cm (verticale) o ${horizontal} cm (orizzontale)`
         };
     }
 
@@ -4784,6 +4803,7 @@ function getCurrentPrintAreaCm() {
             : null,
         {
             fit: tshirtFit,
+            fabric: tshirtFabric,
             orientation: getProductOrientation(currentProduct)
         }
     );
@@ -4837,8 +4857,8 @@ function getPrintAreaCm(product, format, options) {
 
     if (product === "tshirt") {
 
-        /* Adulto 20x30 / 30x20, bambino 15x20 / 20x15 */
-        return getTshirtPrintCm(format, settings.fit);
+        /* Dipende da tessuto e modello (vedi TSHIRT_PRINT_CM) */
+        return getTshirtPrintCm(format, settings.fit, settings.fabric);
     }
 
 
@@ -8353,8 +8373,18 @@ const printAreaPx = getTshirtPrintAreaPx(
     window.innerWidth <= 600
 );
 
-printArea.style.width = printAreaPx.width + "px";
-printArea.style.height = printAreaPx.height + "px";
+/* Il bordo tratteggiato non deve ridurre l'area utile (box-sizing: border-box) */
+const printAreaStyle = getComputedStyle(printArea);
+const printAreaBorderBox = printAreaStyle.boxSizing === "border-box";
+const printAreaBorderX = printAreaBorderBox
+    ? parseFloat(printAreaStyle.borderLeftWidth) + parseFloat(printAreaStyle.borderRightWidth)
+    : 0;
+const printAreaBorderY = printAreaBorderBox
+    ? parseFloat(printAreaStyle.borderTopWidth) + parseFloat(printAreaStyle.borderBottomWidth)
+    : 0;
+
+printArea.style.width = printAreaPx.width + printAreaBorderX + "px";
+printArea.style.height = printAreaPx.height + printAreaBorderY + "px";
 /* Il riquadro è centrato con translate(-50%, -50%) dal CSS:
    quello del bambino, più piccolo, resta centrato nello stesso punto */
 
@@ -9927,9 +9957,10 @@ function getPrintAreaPxForCart() {
     }
 
     /*
-        Il lato non visibile ha la stessa area
-        se ha lo stesso formato, altrimenti
-        larghezza e altezza sono invertite.
+        Il lato non visibile ha la stessa area se ha lo stesso
+        formato; altrimenti si calcola: verticale e orizzontale
+        non sono sempre lo stesso rettangolo ruotato (es. 21x30
+        e 30x20 sul cotone).
     */
     const sizes = {};
 
@@ -9939,15 +9970,23 @@ function getPrintAreaPxForCart() {
             tshirtPrintFormat[side] ===
             tshirtPrintFormat[tshirtSide];
 
-        sizes[side] = sameFormat
-            ? {
+        if (sameFormat) {
+            sizes[side] = {
                 width: current.width,
                 height: current.height
-            }
-            : {
-                width: current.height,
-                height: current.width
             };
+            return;
+        }
+
+        const otherPx = getTshirtPrintAreaPx(
+            tshirtPrintFormat[side],
+            window.innerWidth <= 600
+        );
+
+        sizes[side] = {
+            width: otherPx.width,
+            height: otherPx.height
+        };
     });
 
     return sizes;
@@ -9994,6 +10033,7 @@ function getCartItemPrintAreaCm(cartItem, side) {
         getCartItemSideFormat(cartItem, side),
         {
             fit: cartItem.tshirtFit || "adult",
+            fabric: cartItem.tshirtFabric || "cotton",
             orientation: cartItem.orientation || null
         }
     );
@@ -10806,11 +10846,11 @@ function renderCart() {
 
 
     const frontFormat =
-        formatTshirtPrintCm(item.printFormat.front, normalizeTshirtFit(item.tshirtFit));
+        formatTshirtPrintCm(item.printFormat.front, normalizeTshirtFit(item.tshirtFit), normalizeTshirtFabric(item.tshirtFabric));
 
 
     const backFormat =
-        formatTshirtPrintCm(item.printFormat.back, normalizeTshirtFit(item.tshirtFit));
+        formatTshirtPrintCm(item.printFormat.back, normalizeTshirtFit(item.tshirtFit), normalizeTshirtFabric(item.tshirtFabric));
 
 
     /* I vecchi articoli nel carrello non hanno tessuto/modello:

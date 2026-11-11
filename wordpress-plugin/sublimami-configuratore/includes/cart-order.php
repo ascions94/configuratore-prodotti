@@ -19,13 +19,32 @@ function sublimami_side_label( $side ) {
 }
 
 
-function sublimami_format_label( $format, $fit = 'adult' ) {
-	/* Misure come TSHIRT_PRINT_CM in script.js: adulto 20x30, bambino 15x20. */
-	$size = 'kids' === $fit ? array( 15, 20 ) : array( 20, 30 );
+function sublimami_format_label( $format, $fit = 'adult', $fabric = 'cotton' ) {
+	/*
+	 * Misure come TSHIRT_PRINT_CM in script.js (larghezza x altezza):
+	 * cotone adulto 21x30 / 30x20, poliestere adulto 30x40 / 30x22,5,
+	 * bambino 15x20 / 20x15.
+	 */
+	if ( 'kids' === $fit ) {
+		$sizes = array(
+			'vertical'   => '15x20',
+			'horizontal' => '20x15',
+		);
+	} elseif ( 'polyester' === $fabric ) {
+		$sizes = array(
+			'vertical'   => '30x40',
+			'horizontal' => '30x22,5',
+		);
+	} else {
+		$sizes = array(
+			'vertical'   => '21x30',
+			'horizontal' => '30x20',
+		);
+	}
 
 	return 'horizontal' === $format
-		? 'orizzontale ' . $size[1] . 'x' . $size[0] . ' cm'
-		: 'verticale ' . $size[0] . 'x' . $size[1] . ' cm';
+		? 'orizzontale ' . $sizes['horizontal'] . ' cm'
+		: 'verticale ' . $sizes['vertical'] . ' cm';
 }
 
 
@@ -56,7 +75,7 @@ function sublimami_describe( array $data ) {
 		foreach ( array( 'front', 'back' ) as $side ) {
 			if ( ! empty( $data['print'][ $side ] ) ) {
 				$format    = isset( $data['formats'][ $side ] ) ? $data['formats'][ $side ] : 'vertical';
-				$printed[] = sublimami_side_label( $side ) . ' (' . sublimami_format_label( $format, $fit ) . ')';
+				$printed[] = sublimami_side_label( $side ) . ' (' . sublimami_format_label( $format, $fit, $fabric ) . ')';
 			}
 		}
 

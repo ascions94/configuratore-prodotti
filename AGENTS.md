@@ -33,7 +33,12 @@ Le personalizzazioni dei diversi prodotti devono rimanere indipendenti.
 - Fronte e retro hanno stati indipendenti.
 - Il cambio colore non deve perdere le personalizzazioni dell'altro colore.
 - Il cambio fronte/retro non deve perdere le personalizzazioni dell'altro lato.
-- I formati di stampa disponibili sono verticale 20x30 cm e orizzontale 30x20 cm.
+- I formati di stampa dipendono da tessuto e modello (TSHIRT_PRINT_CM in script.js):
+  cotone adulto verticale 21x30 cm o orizzontale 30x20 cm; poliestere adulto
+  verticale 30x40 cm o orizzontale 30x22,5 cm (larghezza massima 30-31 cm);
+  bambino verticale 15x20 cm o orizzontale 20x15 cm.
+- Il riquadro di stampa è in scala con la larghezza reale della maglia
+  (tabella taglie Roly: adulto M 51 cm, bambino 7/8 anni 38 cm).
 - Lo zoom dell'anteprima non deve modificare le dimensioni reali della personalizzazione.
 - Non alterare la relazione geometrica tra mockup, area stampabile, immagini e testi.
 
