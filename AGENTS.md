@@ -22,6 +22,9 @@
 Il configuratore gestisce:
 
 - Cuscino 40x40 cm.
+  I cuscini quadrati (grande e piccolo) hanno il fronte bianco stampato e il
+  retro in raso colorato a scelta, senza stampa e allo stesso prezzo
+  (CUSHION_BACK_COLORS in script.js, sublimami_cushion_back_colors nel plugin).
 - T-Shirt.
 - Portachiavi 4.5x4.5 cm.
 

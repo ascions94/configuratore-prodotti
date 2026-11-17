@@ -122,6 +122,28 @@ function sublimami_orientable_products() {
 	return array( 'canvas-s', 'canvas-m', 'canvas-l', 'tile-rect', 'keychain-rect', 'slate-rect', 'puzzle-a4', 'puzzle-a3', 'magnet-parchment' );
 }
 
+
+/*
+ * Cuscini quadrati: colore del retro in raso (il fronte bianco si stampa),
+ * come CUSHION_BACK_COLORS in script.js.
+ */
+function sublimami_cushion_back_colors() {
+	return array(
+		'red'   => 'Rosso',
+		'pink'  => 'Rosa',
+		'lilac' => 'Lilla',
+		'blue'  => 'Blu',
+		'azure' => 'Azzurro',
+		'aqua'  => 'Verde acqua',
+		'green' => 'Verde',
+		'black' => 'Nero',
+	);
+}
+
+function sublimami_has_cushion_back( $product_key ) {
+	return in_array( (string) $product_key, array( 'cushion', 'cushion-small' ), true );
+}
+
 require_once SUBLIMAMI_DIR . 'includes/products.php';
 require_once SUBLIMAMI_DIR . 'includes/legal.php';
 require_once SUBLIMAMI_DIR . 'includes/app-page.php';

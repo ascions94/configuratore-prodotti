@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=be2b0b10cfc9">
+    <link rel="stylesheet" href="style.css?v=f96d30aacbb0">
 </head>
 
 <body>
@@ -418,6 +418,14 @@
                     </button>
                 </div>
                 <p class="keychain-side-note">Il retro è facoltativo: se lo lasci vuoto si stampa solo il fronte.</p>
+            </div>
+
+            <!-- CUSCINI QUADRATI: COLORE DEL RETRO
+                 (il fronte bianco è quello stampato; i pallini li crea script.js) -->
+            <div class="tool-section" id="cushionBackOptions" style="display: none">
+                <label id="cushionBackLabel">Colore del retro: <strong data-cushion-back-name>Rosso</strong></label>
+                <div class="cushion-back-swatches" data-cushion-back-swatches role="radiogroup" aria-labelledby="cushionBackLabel"></div>
+                <p class="cushion-back-note">Il fronte è bianco e si stampa con la tua foto o scritta. Il retro è in raso colorato, senza stampa.</p>
             </div>
 
             <!-- OPZIONI T-SHIRT -->
@@ -1384,6 +1392,24 @@
     <span aria-hidden="true">↻</span>
     <span class="mobile-orientation-label">Verticale</span>
 </button>
+
+<!-- COLORE DEL RETRO MOBILE (cuscini quadrati) -->
+<div class="mobile-cushion-back">
+    <button
+        type="button"
+        class="mobile-cushion-back-toggle"
+        id="mobileCushionBackToggle"
+        aria-expanded="false"
+        aria-controls="mobileCushionBackMenu"
+    >
+        <span class="mobile-cushion-back-dot" data-cushion-back-dot aria-hidden="true"></span>
+        <span>Retro: <span data-cushion-back-name>Rosso</span></span>
+    </button>
+    <div class="mobile-cushion-back-menu" id="mobileCushionBackMenu" hidden>
+        <p>Colore del retro</p>
+        <div class="cushion-back-swatches" data-cushion-back-swatches role="radiogroup" aria-label="Colore del retro"></div>
+    </div>
+</div>
 
 <!-- ZOOM T-SHIRT MOBILE -->
 <div class="mobile-tshirt-zoom" id="mobileTshirtZoom">
@@ -2889,7 +2915,7 @@
 -->
 <script
     src="storage.js?v=d50ff04e43df"
-    data-app-src="script.js?v=c310a3ebb018">
+    data-app-src="script.js?v=7f35b92e7f8f">
 </script>
 
 </body>

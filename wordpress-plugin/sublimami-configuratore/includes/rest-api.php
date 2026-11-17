@@ -7,7 +7,7 @@
  *      (così ripetere il checkout non li duplica).
  *
  * POST /wp-json/sublimami/v1/cart/items   (multipart/form-data)
- *      item:          JSON { product, quantity, tshirtColor, tshirtSize, printFormat }
+ *      item:          JSON { product, quantity, tshirtColor, tshirtSize, printFormat, cushionBackColor }
  *      print_front:   PNG del file di stampa (fronte)
  *      print_back:    PNG del file di stampa (retro: T-shirt e portachiavi)
  *      preview_front: JPEG/PNG anteprima (fronte)
@@ -153,6 +153,17 @@ function sublimami_parse_item( $raw ) {
 		$item['sides'] = array( 'front', 'back' );
 	}
 
+	/* Cuscini quadrati: colore del retro (obbligatorio) */
+	if ( sublimami_has_cushion_back( $product_key ) ) {
+		$back_color = isset( $data['cushionBackColor'] ) ? (string) $data['cushionBackColor'] : '';
+
+		if ( ! array_key_exists( $back_color, sublimami_cushion_back_colors() ) ) {
+			return new WP_Error( 'sublimami_bad_back_color', 'Scegli il colore del retro del cuscino.', array( 'status' => 400 ) );
+		}
+
+		$item['back_color'] = $back_color;
+	}
+
 	if ( in_array( $product_key, sublimami_orientable_products(), true ) ) {
 		$orientation         = isset( $data['orientation'] ) ? (string) $data['orientation'] : '';
 		$item['orientation'] = in_array( $orientation, array( 'vertical', 'horizontal' ), true ) ? $orientation : null;
@@ -278,6 +289,7 @@ function sublimami_rest_add_item( WP_REST_Request $request ) {
 			'size'        => isset( $item['size'] ) ? $item['size'] : null,
 			'formats'     => isset( $item['formats'] ) ? $item['formats'] : null,
 			'orientation' => isset( $item['orientation'] ) ? $item['orientation'] : null,
+			'back_color'  => isset( $item['back_color'] ) ? $item['back_color'] : null,
 			'print'       => $print,
 			'preview'     => $review,
 		),

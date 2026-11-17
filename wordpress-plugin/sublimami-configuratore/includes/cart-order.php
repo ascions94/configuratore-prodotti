@@ -85,6 +85,12 @@ function sublimami_describe( array $data ) {
 			$rows['Orientamento'] = 'horizontal' === $data['orientation'] ? 'Orizzontale' : 'Verticale';
 		}
 
+		/* Cuscini quadrati: colore del retro */
+		if ( ! empty( $data['back_color'] ) ) {
+			$colors               = sublimami_cushion_back_colors();
+			$rows['Colore retro'] = isset( $colors[ $data['back_color'] ] ) ? $colors[ $data['back_color'] ] : $data['back_color'];
+		}
+
 		if ( 0 === strpos( (string) $data['product'], 'keychain-' ) ) {
 			$rows['Stampa'] = ! empty( $data['print']['back'] ) ? 'Fronte e retro' : 'Solo fronte';
 		} else {

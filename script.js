@@ -1301,6 +1301,9 @@ let tshirtFabric = "cotton"; // "cotton" (100% cotone) oppure "polyester"
 let tshirtFit = "adult";     // "adult" (adulto unisex) oppure "kids" (bambino)
 let tshirtSide = "front";
 
+/* Cuscini quadrati: colore del retro (vedi CUSHION_BACK_COLORS) */
+let cushionBackColor = "red";
+
 /* Portachiavi in MDF: si stampano anche sul retro (facoltativo).
    keychainSide è il lato che si sta personalizzando. */
 let keychainSide = "front";
@@ -1779,6 +1782,56 @@ productRealPhotos["magnet-parchment"] = {
     alt: "Calamita a pergamena in MDF con la foto di una famiglia al mare",
     caption: "Calamita pergamena in MDF, con i bordi ondulati"
 };
+
+
+/* =========================================
+   CUSCINI QUADRATI: COLORE DEL RETRO
+   -----------------------------------------
+   Il fronte è bianco e si stampa; il retro è in raso
+   colorato e non si stampa. "photo" è la foto vera del
+   retro (assets/home). Stessi colori nel plugin:
+   sublimami_cushion_back_colors().
+   ========================================= */
+const CUSHION_BACK_COLORS = {
+    red:   { label: "Rosso",       hex: "#d3122f", photo: "assets/home/cuscino-retro-rosso.jpg" },
+    pink:  { label: "Rosa",        hex: "#ee5a9a", photo: "assets/home/cuscino-retro-rosa.jpg" },
+    lilac: { label: "Lilla",       hex: "#a39ce6", photo: "assets/home/cuscino-retro-lilla.jpg" },
+    blue:  { label: "Blu",         hex: "#0c6fd8", photo: "assets/home/cuscino-retro-blu.jpg" },
+    azure: { label: "Azzurro",     hex: "#13a5d8", photo: "assets/home/cuscino-retro-azzurro.jpg" },
+    aqua:  { label: "Verde acqua", hex: "#6fd3cf", photo: "assets/home/cuscino-retro-verde-acqua.jpg" },
+    green: { label: "Verde",       hex: "#12a777", photo: "assets/home/cuscino-retro-verde.jpg" },
+    black: { label: "Nero",        hex: "#232427", photo: "assets/home/cuscino-retro-nero.jpg" }
+};
+
+const CUSHION_BACK_DEFAULT = "red";
+
+function hasCushionBack(productKey) {
+    return productKey === "cushion" || productKey === "cushion-small";
+}
+
+function normalizeCushionBackColor(color) {
+    return CUSHION_BACK_COLORS[color] ? color : CUSHION_BACK_DEFAULT;
+}
+
+/* Foto "dal vero" del prodotto. Per i cuscini quadrati è
+   il retro nel colore scelto. */
+function getRealPhoto(productKey) {
+
+    if (hasCushionBack(productKey)) {
+
+        const back =
+            CUSHION_BACK_COLORS[normalizeCushionBackColor(cushionBackColor)];
+
+        return {
+            src: back.photo,
+            alt: "Retro del cuscino in raso, colore " + back.label.toLowerCase(),
+            caption: "Retro del cuscino: " + back.label + ". Il fronte bianco si stampa con la tua foto o scritta.",
+            label: "Retro"
+        };
+    }
+
+    return productRealPhotos[productKey] || null;
+}
 
 
 /* =========================================
@@ -2661,6 +2714,9 @@ function saveConfiguratorState() {
         tshirtPrintFormat:
             tshirtPrintFormat,
 
+        cushionBackColor:
+            cushionBackColor,
+
         productStates:
             productStates
     };
@@ -2865,6 +2921,10 @@ if (savedProductStates.tshirt) {
         tshirtPrintFormat =
             savedConfigurator.tshirtPrintFormat;
     }
+
+    /* I vecchi salvataggi non hanno il colore del retro */
+    cushionBackColor =
+        normalizeCushionBackColor(savedConfigurator.cushionBackColor);
 }
 
 /* Portachiavi in MDF: anche il retro ha il suo stato */
@@ -6289,6 +6349,7 @@ printArea.style.transform = "";
     updateVariantButtons();
     updateOrientationButtons();
     updateKeychainSideButtons();
+    updateCushionBackOptions();
 
     /* Fronte/Retro e formato su mobile seguono il prodotto scelto */
     updateMobileQuickControls();
@@ -6334,6 +6395,144 @@ function updateOrientationButtons() {
                 : "Orizzontale";
     }
 }
+
+/* =========================================
+   CUSCINI QUADRATI: COLORE DEL RETRO
+   ========================================= */
+
+const mobileCushionBackToggle =
+    document.getElementById("mobileCushionBackToggle");
+
+const mobileCushionBackMenu =
+    document.getElementById("mobileCushionBackMenu");
+
+function closeMobileCushionBackMenu() {
+
+    if (!mobileCushionBackMenu || mobileCushionBackMenu.hidden) {
+        return;
+    }
+
+    mobileCushionBackMenu.hidden = true;
+    mobileCushionBackToggle.setAttribute("aria-expanded", "false");
+}
+
+function updateCushionBackOptions() {
+
+    const visible =
+        hasCushionBack(currentProduct);
+
+    const options =
+        document.getElementById("cushionBackOptions");
+
+    if (options) {
+        options.style.display = visible ? "block" : "none";
+    }
+
+    /* Su smartphone mostra il pulsante "Retro" */
+    document.body.classList.toggle("product-cushion-back", visible);
+
+    if (!visible) {
+        closeMobileCushionBackMenu();
+    }
+
+    const back =
+        CUSHION_BACK_COLORS[normalizeCushionBackColor(cushionBackColor)];
+
+    document
+        .querySelectorAll("[data-cushion-back]")
+        .forEach(function (button) {
+
+            const active =
+                button.dataset.cushionBack === cushionBackColor;
+
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-checked", active ? "true" : "false");
+        });
+
+    document
+        .querySelectorAll("[data-cushion-back-name]")
+        .forEach(function (element) {
+            element.textContent = back.label;
+        });
+
+    document
+        .querySelectorAll("[data-cushion-back-dot]")
+        .forEach(function (element) {
+            element.style.backgroundColor = back.hex;
+        });
+}
+
+function setCushionBackColor(color) {
+
+    color = normalizeCushionBackColor(color);
+
+    if (color !== cushionBackColor) {
+
+        cushionBackColor = color;
+
+        saveConfiguratorState();
+
+        statusMessage.textContent =
+            "Retro del cuscino: " + CUSHION_BACK_COLORS[color].label + ".";
+    }
+
+    /* La foto "Retro" accanto all'anteprima segue il colore */
+    updateRealPhotoThumb();
+    updateCushionBackOptions();
+}
+
+/* Un pallino per colore, nel pannello e nel menu su smartphone */
+document
+    .querySelectorAll("[data-cushion-back-swatches]")
+    .forEach(function (container) {
+
+        Object.keys(CUSHION_BACK_COLORS).forEach(function (key) {
+
+            const color = CUSHION_BACK_COLORS[key];
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.className = "cushion-back-swatch";
+            button.dataset.cushionBack = key;
+            button.title = color.label;
+            button.setAttribute("role", "radio");
+            button.setAttribute("aria-label", color.label);
+            button.style.setProperty("--swatch", color.hex);
+
+            button.addEventListener("click", function () {
+                setCushionBackColor(key);
+                closeMobileCushionBackMenu();
+            });
+
+            container.appendChild(button);
+        });
+    });
+
+if (mobileCushionBackToggle && mobileCushionBackMenu) {
+
+    mobileCushionBackToggle.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const open = mobileCushionBackMenu.hidden;
+
+        mobileCushionBackMenu.hidden = !open;
+        mobileCushionBackToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    /* Tocco fuori dal menu: si chiude */
+    document.addEventListener("click", function (event) {
+        if (
+            !mobileCushionBackMenu.contains(event.target) &&
+            event.target !== mobileCushionBackToggle
+        ) {
+            closeMobileCushionBackMenu();
+        }
+    });
+}
+
+updateCushionBackOptions();
+
 
 /* =========================================
    PORTACHIAVI: FRONTE / RETRO
@@ -11059,6 +11258,20 @@ function renderCart() {
                 : "orizzontale");
     }
 
+    /* Cuscini quadrati: colore del retro */
+    if (
+        hasCushionBack(item.product) &&
+        CUSHION_BACK_COLORS[item.cushionBackColor]
+    ) {
+        const back = CUSHION_BACK_COLORS[item.cushionBackColor];
+
+        details +=
+            '<br>Retro: <span class="cart-color-dot" style="background-color:' +
+            back.hex +
+            '" aria-hidden="true"></span>' +
+            back.label;
+    }
+
     /* Portachiavi: lati stampati */
     if (isDoubleSidedProduct(item.product)) {
         details +=
@@ -11297,6 +11510,11 @@ if (currentProduct === "tshirt") {
             ? tshirtFit
             : null,
 
+    cushionBackColor:
+        hasCushionBack(currentProduct)
+            ? cushionBackColor
+            : null,
+
 
     orientation:
         getProductOrientation(currentProduct),
@@ -11370,6 +11588,9 @@ item.tshirtSize ===
 
 (item.tshirtFit || null) ===
     (cartItem.tshirtFit || null) &&
+
+(item.cushionBackColor || null) ===
+    (cartItem.cushionBackColor || null) &&
 
 JSON.stringify(item.printFormat) ===
                 JSON.stringify(cartItem.printFormat) &&
@@ -11550,6 +11771,7 @@ async function createCartItemFormData(item) {
             tshirtSize: item.tshirtSize,
             tshirtFabric: item.tshirtFabric,
             tshirtFit: item.tshirtFit,
+            cushionBackColor: item.cushionBackColor,
             orientation: item.orientation,
             printFormat: item.printFormat
         })
@@ -13576,7 +13798,7 @@ function updateRealPhotoThumb() {
     }
 
     const photo =
-        productRealPhotos[currentProduct];
+        getRealPhoto(currentProduct);
 
     thumb.classList.toggle("visible", Boolean(photo));
 
@@ -13590,6 +13812,15 @@ function updateRealPhotoThumb() {
     if (image.getAttribute("src") !== photo.src) {
         image.src = photo.src;
     }
+
+    /* "Dal vero", oppure "Retro" per i cuscini quadrati */
+    thumb.querySelector("span").textContent =
+        photo.label || "Dal vero";
+
+    thumb.title =
+        photo.label
+            ? "Guarda il retro del cuscino"
+            : "Guarda il prodotto dal vero";
 }
 
 (function () {
@@ -13606,7 +13837,7 @@ function updateRealPhotoThumb() {
 
     thumb.addEventListener("click", function () {
 
-        const photo = productRealPhotos[currentProduct];
+        const photo = getRealPhoto(currentProduct);
 
         if (!photo) {
             return;
