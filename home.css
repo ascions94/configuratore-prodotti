@@ -398,19 +398,6 @@ button:focus-visible {
     background: linear-gradient(140deg, #bdeef3, #ffe0e2);
 }
 
-.hero-tshirt {
-    position: absolute;
-    left: 10%;
-    right: 8%;
-    top: 4%;
-}
-
-.hero-tshirt img:first-child {
-    width: 100%;
-    filter: drop-shadow(0 18px 30px rgba(0, 52, 58, 0.18));
-}
-
-.hero-tshirt-design,
 .product-tshirt-design {
     position: absolute;
     left: 50%;
@@ -421,22 +408,38 @@ button:focus-visible {
     opacity: 0.95;
 }
 
+/* Prodotti veri: T-shirt al centro, davanti cuscino, ardesia e portachiavi */
 .hero-item {
     position: absolute;
+    height: auto;
     filter: drop-shadow(0 14px 24px rgba(0, 52, 58, 0.16));
 }
 
+.hero-tshirt {
+    left: 23%;
+    top: 3%;
+    width: 50%;
+    filter: drop-shadow(0 18px 30px rgba(0, 52, 58, 0.18));
+}
+
+.hero-slate {
+    right: -1%;
+    bottom: 3%;
+    width: 30%;
+    animation: float 6s ease-in-out 0.8s infinite;
+}
+
 .hero-cushion {
-    left: -2%;
+    left: -3%;
     bottom: 0;
-    width: 40%;
+    width: 42%;
     animation: float 6s ease-in-out infinite;
 }
 
 .hero-keychain {
-    right: 0;
-    bottom: 6%;
-    width: 26%;
+    right: 5%;
+    top: 17%;
+    width: 18%;
     animation: float 6s ease-in-out 1.5s infinite;
 }
 
@@ -481,6 +484,7 @@ button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
     .hero-cushion,
+    .hero-slate,
     .hero-keychain {
         animation: none;
     }
