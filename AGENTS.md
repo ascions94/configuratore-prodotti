@@ -37,9 +37,13 @@ Le personalizzazioni dei diversi prodotti devono rimanere indipendenti.
 - Il cambio colore non deve perdere le personalizzazioni dell'altro colore.
 - Il cambio fronte/retro non deve perdere le personalizzazioni dell'altro lato.
 - I formati di stampa dipendono da tessuto e modello (TSHIRT_PRINT_CM in script.js):
-  cotone adulto verticale 21x30 cm o orizzontale 30x20 cm; poliestere adulto
-  verticale 30x40 cm o orizzontale 30x22,5 cm (larghezza massima 30-31 cm);
-  bambino verticale 15x20 cm o orizzontale 20x15 cm.
+  cotone (solo adulto) 30x40 cm solo verticale; poliestere adulto verticale
+  30x40 cm o orizzontale 30x22,5 cm (larghezza massima 30-31 cm); poliestere
+  bambino verticale 15x20 cm o orizzontale 20x15 cm. Il bambino c'è solo in
+  poliestere.
+- Prezzo del cotone (TSHIRT_EXTRAS in script.js, sublimami_tshirt_extras nel
+  plugin): 15 € con scritte su un lato, +5 € se si stampano fronte e retro,
+  +5 € se c'è almeno una foto o immagine. Il poliestere costa sempre 15 €.
 - Il riquadro di stampa è in scala con la larghezza reale della maglia
   (tabella taglie Roly: adulto M 51 cm, bambino 7/8 anni 38 cm).
 - Il bordo alto del riquadro sta sotto il collo: 9 cm sull'adulto e 8 cm sul

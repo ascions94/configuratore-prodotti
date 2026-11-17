@@ -1880,9 +1880,20 @@ function getCategoryProducts(categoryKey) {
    e tra adulto e bambino: cambiano solo le opzioni
    dell'ordine (stati separati restano per Bianca/Nera).
    ========================================= */
+/* fits: modelli disponibili (il bambino c'è solo in poliestere).
+   formats: formati di stampa per modello (se manca: verticale e orizzontale). */
 const TSHIRT_FABRICS = {
-    cotton:    { label: "100% cotone", colors: ["white", "black"] },
-    polyester: { label: "Poliestere",  colors: ["white"] }
+    cotton: {
+        label: "100% cotone",
+        colors: ["white", "black"],
+        fits: ["adult"],
+        formats: { adult: ["vertical"] }
+    },
+    polyester: {
+        label: "Poliestere",
+        colors: ["white"],
+        fits: ["adult", "kids"]
+    }
 };
 
 const TSHIRT_FITS = {
@@ -1898,10 +1909,6 @@ const TSHIRT_SIZES = {
         polyester: { sizes: ["S", "M", "L", "XL", "XXL"], default: "M" }
     },
     kids: {
-        cotton: {
-            sizes: ["3-4 anni", "5-6 anni", "7-8 anni", "9-11 anni", "12-13 anni"],
-            default: "7-8 anni"
-        },
         polyester: {
             sizes: ["4-5 anni", "6-8 anni", "10-12 anni"],
             default: "6-8 anni"
@@ -1914,14 +1921,13 @@ function getTshirtSizeInfo(fabric, fit) {
 }
 
 /* AREA DI STAMPA MASSIMA (cm) per tessuto e modello.
-   Cotone adulto: 21x30 verticale o 30x20 orizzontale.
+   Cotone (solo adulto): 30x40, solo verticale.
    Poliestere adulto: 30x40 verticale; in orizzontale la larghezza
    non può superare 30-31 cm, quindi 30x22,5 (stesse proporzioni).
-   Bambino: 15x20 / 20x15 per entrambi i tessuti. */
+   Poliestere bambino: 15x20 / 20x15. */
 const TSHIRT_PRINT_CM = {
     cotton: {
-        adult: { vertical: { width: 21, height: 30 }, horizontal: { width: 30, height: 20 } },
-        kids:  { vertical: { width: 15, height: 20 }, horizontal: { width: 20, height: 15 } }
+        adult: { vertical: { width: 30, height: 40 } }
     },
     polyester: {
         adult: { vertical: { width: 30, height: 40 }, horizontal: { width: 30, height: 22.5 } },
@@ -1932,11 +1938,17 @@ const TSHIRT_PRINT_CM = {
 /* Misure in cm dell'area di stampa per formato verticale/orizzontale */
 function getTshirtPrintCm(format, fit, fabric) {
 
-    const sizes =
-        TSHIRT_PRINT_CM[normalizeTshirtFabric(fabric || tshirtFabric)]
-            [normalizeTshirtFit(fit || tshirtFit)];
+    const byFabric =
+        TSHIRT_PRINT_CM[normalizeTshirtFabric(fabric || tshirtFabric)];
 
-    const cm = format === "horizontal" ? sizes.horizontal : sizes.vertical;
+    const sizes =
+        byFabric[normalizeTshirtFit(fit || tshirtFit)] || byFabric.adult;
+
+    /* Formato non previsto (es. cotone in orizzontale): verticale */
+    const cm =
+        format === "horizontal" && sizes.horizontal
+            ? sizes.horizontal
+            : sizes.vertical;
 
     return { width: cm.width, height: cm.height };
 }
@@ -2025,9 +2037,121 @@ function formatTshirtPrintCm(format, fit, fabric) {
 /* PREZZI T-SHIRT: scrivi il prezzo (es. 12.50).
    null = "Prezzo da definire" (non si può ancora aggiungere al carrello) */
 const TSHIRT_PRICES = {
-    cotton:    { adult: 15.00, kids: 15.00 },
+    cotton:    { adult: 15.00 },
     polyester: { adult: 15.00, kids: 15.00 }
 };
+
+/* SUPPLEMENTI (solo cotone): il prezzo base vale per un lato con
+   sole scritte. +5 € se si stampano fronte e retro, +5 € se c'è
+   almeno una foto o immagine (su uno o su entrambi i lati).
+   Esempi: fronte scritte 15, fronte e retro scritte 20,
+   foto su un lato 20, foto + scritte sull'altro lato 25,
+   foto su fronte e retro 25.
+   Stessi importi nel plugin: sublimami_tshirt_extras(). */
+const TSHIRT_EXTRAS = {
+    cotton: { secondSide: 5.00, photos: 5.00 }
+};
+
+/* Modelli e formati disponibili per tessuto */
+function isTshirtFitAvailable(fabric, fit) {
+    return TSHIRT_FABRICS[normalizeTshirtFabric(fabric)].fits.indexOf(fit) !== -1;
+}
+
+function getTshirtFormats(fabric, fit) {
+
+    const fabricData =
+        TSHIRT_FABRICS[normalizeTshirtFabric(fabric || tshirtFabric)];
+
+    const fitKey =
+        normalizeTshirtFit(fit || tshirtFit);
+
+    return (fabricData.formats && fabricData.formats[fitKey]) ||
+        ["vertical", "horizontal"];
+}
+
+/* Cotone e bambino non esistono insieme; i formati non disponibili
+   tornano verticali (anche per i vecchi salvataggi) */
+function normalizeTshirtVariantState() {
+
+    tshirtFabric = normalizeTshirtFabric(tshirtFabric);
+    tshirtFit = normalizeTshirtFit(tshirtFit);
+
+    if (!isTshirtFitAvailable(tshirtFabric, tshirtFit)) {
+        tshirtFabric = "polyester";
+    }
+
+    if (!tshirtPrintFormat || typeof tshirtPrintFormat !== "object") {
+        tshirtPrintFormat = { front: "vertical", back: "vertical" };
+    }
+
+    const formats = getTshirtFormats(tshirtFabric, tshirtFit);
+
+    ["front", "back"].forEach(function (side) {
+        if (formats.indexOf(tshirtPrintFormat[side]) === -1) {
+            tshirtPrintFormat[side] = "vertical";
+        }
+    });
+}
+
+/* Un lato ha foto o immagini visibili? */
+function hasImageContent(state) {
+    return Boolean(
+        state &&
+        Array.isArray(state.images) &&
+        state.images.some(function (imageState) {
+            return imageState.visible !== false;
+        })
+    );
+}
+
+/* Cosa c'è da stampare su fronte e retro (stati di un colore,
+   oppure di un articolo del carrello) */
+function getTshirtPrintInfo(frontState, backState) {
+    return {
+        front: {
+            printed: hasPrintContent(frontState),
+            photos: hasPrintContent(frontState) && hasImageContent(frontState)
+        },
+        back: {
+            printed: hasPrintContent(backState),
+            photos: hasPrintContent(backState) && hasImageContent(backState)
+        }
+    };
+}
+
+function getTshirtExtras(fabric, info) {
+
+    const rule = TSHIRT_EXTRAS[normalizeTshirtFabric(fabric)];
+    const extras = { secondSide: 0, photos: 0, total: 0 };
+
+    if (!rule || !info) {
+        return extras;
+    }
+
+    if (info.front.printed && info.back.printed) {
+        extras.secondSide = rule.secondSide;
+    }
+
+    if (info.front.photos || info.back.photos) {
+        extras.photos = rule.photos;
+    }
+
+    extras.total = extras.secondSide + extras.photos;
+
+    return extras;
+}
+
+/* Fronte e retro della T-shirt in modifica */
+function getCurrentTshirtPrintInfo() {
+
+    const states =
+        productStates.tshirt && productStates.tshirt[tshirtColor];
+
+    return getTshirtPrintInfo(
+        states && states.front,
+        states && states.back
+    );
+}
 
 function normalizeTshirtFabric(value) {
     return TSHIRT_FABRICS[value] ? value : "cotton";
@@ -2072,12 +2196,101 @@ function getTshirtVariantLabel(fabric, fit) {
 function getCurrentUnitPrice() {
 
     if (currentProduct === "tshirt") {
-        return getTshirtPrice(tshirtFabric, tshirtFit);
+
+        const base = getTshirtPrice(tshirtFabric, tshirtFit);
+
+        if (typeof base !== "number") {
+            return null;
+        }
+
+        /* Cotone: +5 € fronte e retro, +5 € con le foto */
+        return base +
+            getTshirtExtras(tshirtFabric, getCurrentTshirtPrintInfo()).total;
     }
 
     const price = products[currentProduct].price;
 
     return typeof price === "number" ? price : null;
+}
+
+
+/* T-shirt: prezzo aggiornato mentre si aggiungono foto e scritte,
+   con la spiegazione dei supplementi (solo cotone) */
+function updateTshirtPriceDisplay() {
+
+    const note = document.getElementById("productPriceNote");
+
+    if (currentProduct !== "tshirt") {
+        if (note) {
+            note.hidden = true;
+        }
+
+        const mobilePrice = document.getElementById("mobileTshirtPrice");
+
+        if (mobilePrice) {
+            mobilePrice.hidden = true;
+        }
+        return;
+    }
+
+    const unitPrice = getCurrentUnitPrice();
+
+    productPrice.textContent = formatProductPrice(unitPrice);
+
+    productPrice.classList.toggle(
+        "price-pending",
+        typeof unitPrice !== "number"
+    );
+
+    if (!note) {
+        return;
+    }
+
+    const rule = TSHIRT_EXTRAS[normalizeTshirtFabric(tshirtFabric)];
+
+    if (!rule || typeof unitPrice !== "number") {
+        note.hidden = true;
+
+        const mobilePrice = document.getElementById("mobileTshirtPrice");
+
+        if (mobilePrice) {
+            mobilePrice.hidden = true;
+        }
+        return;
+    }
+
+    const extras =
+        getTshirtExtras(tshirtFabric, getCurrentTshirtPrintInfo());
+
+    const parts = [];
+
+    if (extras.secondSide) {
+        parts.push("fronte e retro +" + formatProductPrice(extras.secondSide));
+    }
+
+    if (extras.photos) {
+        parts.push("foto +" + formatProductPrice(extras.photos));
+    }
+
+    /* Su smartphone il prezzo sta accanto a Fronte / Retro */
+    const mobilePrice = document.getElementById("mobileTshirtPrice");
+
+    if (mobilePrice) {
+        mobilePrice.textContent = formatProductPrice(unitPrice);
+        mobilePrice.title = parts.length
+            ? "Compreso: " + parts.join(", ")
+            : "Prezzo con scritte su un lato";
+        mobilePrice.hidden = false;
+    }
+
+    note.textContent = parts.length
+        ? "Compreso: " + parts.join(", ") + "."
+        : "Prezzo con scritte su un lato. Fronte e retro +" +
+            formatProductPrice(rule.secondSide) +
+            ", con foto +" +
+            formatProductPrice(rule.photos) + ".";
+
+    note.hidden = false;
 }
 
 
@@ -2173,6 +2386,14 @@ function getOrientedPrintTexts(productKey) {
 
         const vertical = formatTshirtPrintCm("vertical");
         const horizontal = formatTshirtPrintCm("horizontal");
+
+        /* Cotone: solo verticale */
+        if (getTshirtFormats().indexOf("horizontal") === -1) {
+            return {
+                print: `Area massima di stampa: ${vertical} cm, in verticale`,
+                printInfo: `Stampa fino a ${vertical} cm (verticale)`
+            };
+        }
 
         return {
             print: `Area massima di stampa: ${vertical} cm in verticale o ${horizontal} cm in orizzontale`,
@@ -2922,6 +3143,9 @@ if (savedProductStates.tshirt) {
             savedConfigurator.tshirtPrintFormat;
     }
 
+    /* Regole nuove: cotone solo adulto e solo verticale */
+    normalizeTshirtVariantState();
+
     /* I vecchi salvataggi non hanno il colore del retro */
     cushionBackColor =
         normalizeCushionBackColor(savedConfigurator.cushionBackColor);
@@ -3096,6 +3320,8 @@ function restoreHistorySnapshot(snapshot) {
 
     tshirtPrintFormat =
         data.tshirtPrintFormat;
+
+    normalizeTshirtVariantState();
 
     selectedElementType = null;
 
@@ -6269,6 +6495,8 @@ function updateProductPreview() {
 
     printAreaInfo.textContent = printTexts.printInfo;
 
+    updateTshirtPriceDisplay();
+
     updateRealPhotoThumb();
 
 
@@ -6983,13 +7211,27 @@ function updateVariantButtons() {
    T-SHIRT: TESSUTO E MODELLO
    ========================================= */
 
-function setTshirtVariant(fabric, fit) {
+function setTshirtVariant(fabric, fit, changed) {
 
     fabric = normalizeTshirtFabric(fabric);
     fit = normalizeTshirtFit(fit);
 
+    /* Il bambino c'è solo in poliestere: se si sceglie "Bambino"
+       col cotone passa al poliestere, se si sceglie il cotone
+       col bambino passa all'adulto */
+    if (!isTshirtFitAvailable(fabric, fit)) {
+        if (changed === "fit") {
+            fabric = "polyester";
+        } else {
+            fit = TSHIRT_FABRICS[fabric].fits[0];
+        }
+    }
+
     tshirtFabric = fabric;
     tshirtFit = fit;
+
+    /* Cotone: solo formato verticale */
+    normalizeTshirtVariantState();
 
     /* Il poliestere esiste solo bianco */
     if (TSHIRT_FABRICS[fabric].colors.indexOf(tshirtColor) === -1) {
@@ -7023,6 +7265,9 @@ function setTshirtVariant(fabric, fit) {
 
         /* Il poliestere ha la sua sagoma */
         updateTshirtMockup();
+
+        /* Su smartphone il formato orizzontale non c'è per il cotone */
+        updateMobileQuickControls();
     }
 }
 
@@ -7048,6 +7293,8 @@ function refreshProductHeader() {
     const printTexts = getOrientedPrintTexts(currentProduct);
     printDimensions.textContent = printTexts.print;
     printAreaInfo.textContent = printTexts.printInfo;
+
+    updateTshirtPriceDisplay();
 }
 
 /* Testo "Dimensione / Taglie" del riquadro prodotto */
@@ -7103,6 +7350,14 @@ function syncTshirtOptionButtons() {
             );
         });
 
+    /* Cotone: niente bambino (nota sotto "Modello") */
+    const fitNote = document.getElementById("tshirtFitNote");
+
+    if (fitNote) {
+        fitNote.style.display =
+            isTshirtFitAvailable(tshirtFabric, "kids") ? "none" : "block";
+    }
+
     const onlyWhite =
         TSHIRT_FABRICS[tshirtFabric].colors.length < 2;
 
@@ -7145,7 +7400,10 @@ function syncTshirtOptionButtons() {
             );
         });
 
-    /* Testo dei pulsanti Verticale / Orizzontale con le misure giuste */
+    /* Testo dei pulsanti Verticale / Orizzontale con le misure giuste;
+       il cotone si stampa solo in verticale */
+    const formats = getTshirtFormats();
+
     document
         .querySelectorAll(".print-format-button[data-format]")
         .forEach(function (button) {
@@ -7154,6 +7412,14 @@ function syncTshirtOptionButtons() {
                     ? "Orizzontale "
                     : "Verticale ") +
                 formatTshirtPrintCm(button.dataset.format);
+
+            button.hidden =
+                formats.indexOf(button.dataset.format) === -1;
+
+            button.classList.toggle(
+                "active",
+                button.dataset.format === tshirtPrintFormat[tshirtSide]
+            );
         });
 
     const sizeLabel = document.getElementById("tshirtSizeLabel");
@@ -8602,7 +8868,7 @@ document
     .forEach(function (button) {
 
         button.addEventListener("click", function () {
-            setTshirtVariant(this.dataset.tshirtFabric, tshirtFit);
+            setTshirtVariant(this.dataset.tshirtFabric, tshirtFit, "fabric");
         });
     });
 
@@ -8611,7 +8877,7 @@ document
     .forEach(function (button) {
 
         button.addEventListener("click", function () {
-            setTshirtVariant(tshirtFabric, this.dataset.tshirtFit);
+            setTshirtVariant(tshirtFabric, this.dataset.tshirtFit, "fit");
         });
     });
 
@@ -8685,6 +8951,10 @@ updateTshirtPrintFormat();
                 .forEach(function (item) {
                     item.classList.remove("active");
                 });
+
+            if (getTshirtFormats().indexOf(this.dataset.format) === -1) {
+                return;
+            }
 
             this.classList.add("active");
 
@@ -11242,6 +11512,7 @@ function renderCart() {
     `${fabricLabel} · ${fitLabel}` +
     `<br>Colore: ${color}` +
     `<br>Taglia: ${item.tshirtSize || "Non specificata"}` +
+    `<br>Stampa: ${describeTshirtCartPrint(item)}` +
     `<br>Fronte: ${frontFormat}` +
     `<br>Retro: ${backFormat}`;
 } else if (product && product.dimensions) {
@@ -11757,6 +12028,38 @@ async function sendShopRequest(config, path, formData) {
 }
 
 
+/* T-shirt nel carrello: lati con foto (servono per i supplementi) */
+function getCartItemPhotoSides(item) {
+
+    if (item.product !== "tshirt") {
+        return [];
+    }
+
+    return ["front", "back"].filter(function (side) {
+        const state = getCartItemSideState(item, side);
+        return hasPrintContent(state) && hasImageContent(state);
+    });
+}
+
+function describeTshirtCartPrint(item) {
+
+    const info = getTshirtPrintInfo(
+        getCartItemSideState(item, "front"),
+        getCartItemSideState(item, "back")
+    );
+
+    const sides =
+        info.front.printed && info.back.printed
+            ? "fronte e retro"
+            : info.back.printed
+            ? "solo retro"
+            : "solo fronte";
+
+    return sides +
+        (info.front.photos || info.back.photos ? ", con foto" : ", solo scritte");
+}
+
+
 async function createCartItemFormData(item) {
 
     const formData =
@@ -11772,6 +12075,7 @@ async function createCartItemFormData(item) {
             tshirtFabric: item.tshirtFabric,
             tshirtFit: item.tshirtFit,
             cushionBackColor: item.cushionBackColor,
+            photoSides: getCartItemPhotoSides(item),
             orientation: item.orientation,
             printFormat: item.printFormat
         })
@@ -12801,6 +13105,17 @@ document
             mobileTshirtDraft.fabric =
                 normalizeTshirtFabric(button.dataset.mobileTshirtFabric);
 
+            const fits =
+                TSHIRT_FABRICS[mobileTshirtDraft.fabric].fits;
+
+            /* Cotone: solo adulto, si passa subito al colore */
+            if (fits.length === 1) {
+                mobileTshirtDraft.fit = fits[0];
+                closeMobileTshirtModels();
+                continueMobileTshirtAfterFit();
+                return;
+            }
+
             document.getElementById("mobileTshirtFitSubtitle").textContent =
                 "T-Shirt " + TSHIRT_FABRICS[mobileTshirtDraft.fabric].label;
 
@@ -12849,17 +13164,23 @@ document
 
             closeMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
 
-            if (TSHIRT_FABRICS[mobileTshirtDraft.fabric].colors.length > 1) {
-                openMobileTshirtColors();
-                return;
-            }
-
-            /* Poliestere: solo bianca */
-            mobileTshirtDraft.color = "white";
-            applyMobileTshirtDraft();
-            openMobileTshirtSizes("flow");
+            continueMobileTshirtAfterFit();
         });
     });
+
+/* Dopo il modello: colore (solo cotone) oppure taglia */
+function continueMobileTshirtAfterFit() {
+
+    if (TSHIRT_FABRICS[mobileTshirtDraft.fabric].colors.length > 1) {
+        openMobileTshirtColors();
+        return;
+    }
+
+    /* Poliestere: solo bianca */
+    mobileTshirtDraft.color = "white";
+    applyMobileTshirtDraft();
+    openMobileTshirtSizes("flow");
+}
 
 
 /* Entra nella T-Shirt con tessuto, modello e colore scelti */
@@ -12874,7 +13195,7 @@ function applyMobileTshirtDraft() {
         );
     }
 
-    setTshirtVariant(mobileTshirtDraft.fabric, mobileTshirtDraft.fit);
+    setTshirtVariant(mobileTshirtDraft.fabric, mobileTshirtDraft.fit, "fit");
 
     if (tshirtColor !== mobileTshirtDraft.color) {
 
@@ -12933,6 +13254,12 @@ mobileTshirtColorBack.addEventListener(
     function () {
 
         closeMobileTshirtColors();
+
+        /* Cotone: niente passo Adulto / Bambino, si torna ai tessuti */
+        if (TSHIRT_FABRICS[mobileTshirtDraft.fabric].fits.length === 1) {
+            openMobileTshirtModels();
+            return;
+        }
 
         openMobileSheet(mobileTshirtFitSheet, mobileTshirtFitOverlay);
     }
@@ -13502,7 +13829,8 @@ function updateMobileQuickControls() {
 
     quickControls.classList.toggle(
         "sides-only",
-        currentProduct !== "tshirt"
+        currentProduct !== "tshirt" ||
+            getTshirtFormats().length < 2
     );
 
     /* Fronte / Retro */
@@ -13658,10 +13986,18 @@ updateMobileQuickControls();
    ========================================= */
 
 var tshirtThumbsTimer = null;
+
+/* "var": la funzione qui sotto viene chiamata anche prima di questa riga */
+var tshirtPriceTimer = null;
 var tshirtThumbsRun = 0;
 
 
 function scheduleTshirtSideThumbs() {
+
+    /* Il prezzo della T-shirt cambia con foto e lati stampati.
+       Subito dopo: il campo testo aggiorna lo stato dopo questo evento */
+    clearTimeout(tshirtPriceTimer);
+    tshirtPriceTimer = setTimeout(updateTshirtPriceDisplay, 0);
 
     clearTimeout(tshirtThumbsTimer);
 

@@ -7,7 +7,7 @@
  *      (così ripetere il checkout non li duplica).
  *
  * POST /wp-json/sublimami/v1/cart/items   (multipart/form-data)
- *      item:          JSON { product, quantity, tshirtColor, tshirtSize, printFormat, cushionBackColor }
+ *      item:          JSON { product, quantity, tshirtColor, tshirtSize, printFormat, cushionBackColor, photoSides }
  *      print_front:   PNG del file di stampa (fronte)
  *      print_back:    PNG del file di stampa (retro: T-shirt e portachiavi)
  *      preview_front: JPEG/PNG anteprima (fronte)
@@ -177,7 +177,7 @@ function sublimami_parse_item( $raw ) {
 		$size    = isset( $data['tshirtSize'] ) ? (string) $data['tshirtSize'] : '';
 		$formats = isset( $data['printFormat'] ) && is_array( $data['printFormat'] ) ? $data['printFormat'] : array();
 
-		if ( ! isset( $options['fabrics'][ $fabric ] ) || ! isset( $options['fits'][ $fit ] ) ) {
+		if ( ! isset( $options['fabrics'][ $fabric ] ) || ! in_array( $fit, $options['fabrics'][ $fabric ]['fits'], true ) ) {
 			return new WP_Error( 'sublimami_bad_variant', 'Tessuto o modello della T-shirt non valido.', array( 'status' => 400 ) );
 		}
 
@@ -199,8 +199,12 @@ function sublimami_parse_item( $raw ) {
 
 		foreach ( $item['sides'] as $side ) {
 			$format = isset( $formats[ $side ] ) ? (string) $formats[ $side ] : 'vertical';
-			$item['formats'][ $side ] = in_array( $format, array( 'vertical', 'horizontal' ), true ) ? $format : 'vertical';
+			$item['formats'][ $side ] = in_array( $format, $options['fabrics'][ $fabric ]['formats'], true ) ? $format : 'vertical';
 		}
+
+		/* Lati con foto: servono per il supplemento del cotone */
+		$photo_sides         = isset( $data['photoSides'] ) && is_array( $data['photoSides'] ) ? $data['photoSides'] : array();
+		$item['photo_sides'] = array_values( array_intersect( array( 'front', 'back' ), array_map( 'strval', $photo_sides ) ) );
 	}
 
 	return $item;
@@ -279,6 +283,27 @@ function sublimami_rest_add_item( WP_REST_Request $request ) {
 		return new WP_Error( 'sublimami_empty', 'Un articolo nel carrello non ha nessuna foto o scritta da stampare.', array( 'status' => 400 ) );
 	}
 
+	/*
+	 * T-shirt in cotone: supplementi sul prezzo del prodotto.
+	 * I lati stampati sono quelli con il file di stampa; le foto le
+	 * indica il configuratore (si vedono comunque nel file di stampa).
+	 */
+	$extra  = 0.0;
+	$photos = false;
+
+	if ( 'tshirt' === $item['product'] ) {
+		$extras = sublimami_tshirt_extras( $item['fabric'] );
+		$photos = (bool) array_intersect( $item['photo_sides'], array_keys( $print ) );
+
+		if ( count( $print ) > 1 ) {
+			$extra += $extras['second_side'];
+		}
+
+		if ( $photos ) {
+			$extra += $extras['photos'];
+		}
+	}
+
 	$cart_item_data = array(
 		'sublimami' => array(
 			'token'       => $token,
@@ -290,6 +315,8 @@ function sublimami_rest_add_item( WP_REST_Request $request ) {
 			'formats'     => isset( $item['formats'] ) ? $item['formats'] : null,
 			'orientation' => isset( $item['orientation'] ) ? $item['orientation'] : null,
 			'back_color'  => isset( $item['back_color'] ) ? $item['back_color'] : null,
+			'photos'      => $photos,
+			'extra'       => $extra,
 			'print'       => $print,
 			'preview'     => $review,
 		),

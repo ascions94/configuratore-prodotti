@@ -63,8 +63,12 @@ function sublimami_products() {
 		'keychain-heart'  => array( 'name' => 'Portachiavi cuore personalizzato', 'price' => '10.00' ),
 	);
 
-	foreach ( sublimami_tshirt_options()['fabrics'] as $fabric => $fabric_data ) {
-		foreach ( sublimami_tshirt_options()['fits'] as $fit => $fit_label ) {
+	$tshirt_options = sublimami_tshirt_options();
+
+	foreach ( $tshirt_options['fabrics'] as $fabric => $fabric_data ) {
+		foreach ( $fabric_data['fits'] as $fit ) {
+			$fit_label = $tshirt_options['fits'][ $fit ];
+
 			$products[ sublimami_tshirt_product_key( $fabric, $fit ) ] = array(
 				'name'  => 'T-shirt ' . $fabric_data['label'] . ' ' . strtolower( $fit_label ) . ' personalizzata',
 				'price' => '15.00',
@@ -79,17 +83,23 @@ function sublimami_products() {
 /*
  * Opzioni della T-shirt, come in script.js (TSHIRT_FABRICS, TSHIRT_FITS,
  * TSHIRT_SIZES): servono a controllare i dati che arrivano dal configuratore.
+ * Il cotone è solo adulto e solo verticale (30x40 cm); il bambino è solo
+ * in poliestere.
  */
 function sublimami_tshirt_options() {
 	return array(
 		'fabrics' => array(
 			'cotton'    => array(
-				'label'  => '100% cotone',
-				'colors' => array( 'white', 'black' ),
+				'label'   => '100% cotone',
+				'colors'  => array( 'white', 'black' ),
+				'fits'    => array( 'adult' ),
+				'formats' => array( 'vertical' ),
 			),
 			'polyester' => array(
-				'label'  => 'Poliestere',
-				'colors' => array( 'white' ),
+				'label'   => 'Poliestere',
+				'colors'  => array( 'white' ),
+				'fits'    => array( 'adult', 'kids' ),
+				'formats' => array( 'vertical', 'horizontal' ),
 			),
 		),
 		'fits'    => array(
@@ -102,7 +112,6 @@ function sublimami_tshirt_options() {
 				'polyester' => array( 'S', 'M', 'L', 'XL', 'XXL' ),
 			),
 			'kids'  => array(
-				'cotton'    => array( '3-4 anni', '5-6 anni', '7-8 anni', '9-11 anni', '12-13 anni' ),
 				'polyester' => array( '4-5 anni', '6-8 anni', '10-12 anni' ),
 			),
 		),
@@ -112,6 +121,26 @@ function sublimami_tshirt_options() {
 
 function sublimami_tshirt_product_key( $fabric, $fit ) {
 	return 'tshirt-' . $fabric . '-' . $fit;
+}
+
+
+/*
+ * Supplementi della T-shirt, come TSHIRT_EXTRAS in script.js (solo cotone):
+ * il prezzo del prodotto vale per un lato con sole scritte; +5 € se si
+ * stampano fronte e retro, +5 € se c'è almeno una foto o immagine.
+ */
+function sublimami_tshirt_extras( $fabric ) {
+	if ( 'cotton' === $fabric ) {
+		return array(
+			'second_side' => 5.0,
+			'photos'      => 5.0,
+		);
+	}
+
+	return array(
+		'second_side' => 0.0,
+		'photos'      => 0.0,
+	);
 }
 
 

@@ -198,8 +198,8 @@ function sublimami_get_display_prices() {
 		$prices[ $product_key ] = (float) wc_get_price_to_display( $product );
 	}
 
-	foreach ( array_keys( $options['fabrics'] ) as $fabric ) {
-		foreach ( array_keys( $options['fits'] ) as $fit ) {
+	foreach ( $options['fabrics'] as $fabric => $fabric_data ) {
+		foreach ( $fabric_data['fits'] as $fit ) {
 			$key = sublimami_tshirt_product_key( $fabric, $fit );
 
 			if ( isset( $prices[ $key ] ) ) {

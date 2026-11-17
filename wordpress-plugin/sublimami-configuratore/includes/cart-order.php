@@ -22,9 +22,13 @@ function sublimami_side_label( $side ) {
 function sublimami_format_label( $format, $fit = 'adult', $fabric = 'cotton' ) {
 	/*
 	 * Misure come TSHIRT_PRINT_CM in script.js (larghezza x altezza):
-	 * cotone adulto 21x30 / 30x20, poliestere adulto 30x40 / 30x22,5,
-	 * bambino 15x20 / 20x15.
+	 * cotone (solo adulto) 30x40 solo verticale, poliestere adulto
+	 * 30x40 / 30x22,5, poliestere bambino 15x20 / 20x15.
 	 */
+	if ( 'cotton' === $fabric && 'kids' !== $fit ) {
+		return 'verticale 30x40 cm';
+	}
+
 	if ( 'kids' === $fit ) {
 		$sizes = array(
 			'vertical'   => '15x20',
@@ -80,6 +84,23 @@ function sublimami_describe( array $data ) {
 		}
 
 		$rows['Stampa'] = implode( ', ', $printed );
+		$rows['Foto']   = ! empty( $data['photos'] ) ? 'Sì' : 'No, solo scritte';
+
+		/* Cotone: supplementi già compresi nel prezzo */
+		if ( ! empty( $data['extra'] ) ) {
+			$extras = sublimami_tshirt_extras( $fabric );
+			$parts  = array();
+
+			if ( count( $data['print'] ) > 1 && $extras['second_side'] > 0 ) {
+				$parts[] = 'fronte e retro +' . number_format_i18n( $extras['second_side'], 2 ) . ' €';
+			}
+
+			if ( ! empty( $data['photos'] ) && $extras['photos'] > 0 ) {
+				$parts[] = 'foto +' . number_format_i18n( $extras['photos'], 2 ) . ' €';
+			}
+
+			$rows['Supplementi'] = implode( ', ', $parts );
+		}
 	} else {
 		if ( ! empty( $data['orientation'] ) ) {
 			$rows['Orientamento'] = 'horizontal' === $data['orientation'] ? 'Orizzontale' : 'Verticale';
@@ -100,6 +121,35 @@ function sublimami_describe( array $data ) {
 
 	return $rows;
 }
+
+
+/*
+ * PREZZO: T-shirt in cotone con supplementi (fronte e retro, foto).
+ * Prezzo del prodotto WooCommerce + "extra" calcolato all'aggiunta.
+ */
+add_action(
+	'woocommerce_before_calculate_totals',
+	function ( $cart ) {
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return;
+		}
+
+		foreach ( $cart->get_cart() as $cart_item ) {
+			if ( empty( $cart_item['sublimami']['extra'] ) ) {
+				continue;
+			}
+
+			$product = wc_get_product( $cart_item['data']->get_id() );
+
+			if ( ! $product ) {
+				continue;
+			}
+
+			$cart_item['data']->set_price( (float) $product->get_price( 'edit' ) + (float) $cart_item['sublimami']['extra'] );
+		}
+	},
+	20
+);
 
 
 /*

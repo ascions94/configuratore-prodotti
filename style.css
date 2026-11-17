@@ -7038,3 +7038,43 @@ a.logo {
         height: 38px;
     }
 }
+
+
+/* T-shirt in cotone: spiegazione dei supplementi sotto il prezzo */
+.price-note {
+    margin: 4px 0 0;
+    color: var(--muted, #6b7280);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.price-note[hidden] {
+    display: none;
+}
+
+/* Formato non disponibile (es. orizzontale sul cotone) */
+.print-format-button[hidden] {
+    display: none;
+}
+
+/* Smartphone, T-shirt in cotone: prezzo accanto a Fronte / Retro
+   (al posto del formato, che per il cotone è solo verticale) */
+.mobile-quick-price {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    #mobileTshirtQuickControls.sides-only .mobile-quick-price:not([hidden]) {
+        display: inline-flex;
+        align-items: center;
+        justify-self: end;
+        align-self: center;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: #ffffff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+        color: #1f2328;
+        font-size: 15px;
+        font-weight: 900;
+    }
+}
