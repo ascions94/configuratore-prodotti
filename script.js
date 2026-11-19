@@ -1414,7 +1414,7 @@ Object.assign(products, {
         orientable: true,
         marginNote: "canvas",
         layout: "canvas",
-        price: null // DA DEFINIRE
+        price: 11.99
     },
 
     "canvas-m": {
@@ -1428,7 +1428,7 @@ Object.assign(products, {
         orientable: true,
         marginNote: "canvas",
         layout: "canvas",
-        price: null // DA DEFINIRE
+        price: 17.99
     },
 
     "canvas-l": {
@@ -1442,7 +1442,7 @@ Object.assign(products, {
         orientable: true,
         marginNote: "canvas",
         layout: "canvas",
-        price: null // DA DEFINIRE
+        price: 29.90
     },
 
     "tile-square": {
@@ -1453,7 +1453,7 @@ Object.assign(products, {
         printInfo: "Area stampabile 20x20 cm (con margine)",
         printCm: { width: 20.5, height: 20.5 },
         layout: "tile",
-        price: null // DA DEFINIRE
+        price: 19.99
     },
 
     "tile-rect": {
@@ -1467,7 +1467,7 @@ Object.assign(products, {
         orientable: true,
         marginNote: "tile",
         layout: "tile",
-        price: null // DA DEFINIRE
+        price: 14.99
     },
 
     "tile-small": {
@@ -1478,7 +1478,7 @@ Object.assign(products, {
         printInfo: "Area stampabile 10x10 cm (con margine)",
         printCm: { width: 10.5, height: 10.5 },
         layout: "tile",
-        price: null // DA DEFINIRE
+        price: 9.99
     },
 
     /* ARDESIE: area di stampa = misura della pietra; la sagoma
@@ -1493,7 +1493,7 @@ Object.assign(products, {
         printCm: { width: 15, height: 15 },
         layout: "slate",
         shape: "slate-square",
-        price: null // DA DEFINIRE
+        price: 19.99
     },
 
     "slate-20": {
@@ -1505,7 +1505,7 @@ Object.assign(products, {
         printCm: { width: 20, height: 20 },
         layout: "slate",
         shape: "slate-square",
-        price: null // DA DEFINIRE
+        price: 29.99
     },
 
     "slate-rect": {
@@ -1520,7 +1520,7 @@ Object.assign(products, {
         marginNote: "slate",
         layout: "slate",
         shape: "slate-rect",
-        price: null // DA DEFINIRE
+        price: 24.99
     },
 
     "slate-heart": {
@@ -1532,7 +1532,7 @@ Object.assign(products, {
         printCm: { width: 15, height: 13.8 },
         layout: "slate",
         shape: "slate-heart",
-        price: null // DA DEFINIRE
+        price: 19.99
     },
 
     /* PUZZLE: ogni formato ha la sua sagoma (foto del puzzle bianco):
@@ -1550,7 +1550,7 @@ Object.assign(products, {
         marginNote: "none",
         layout: "puzzle",
         shape: "puzzle-a4",
-        price: null // DA DEFINIRE
+        price: 12.00
     },
 
     "puzzle-a3": {
@@ -1565,7 +1565,7 @@ Object.assign(products, {
         marginNote: "none",
         layout: "puzzle",
         shape: "puzzle-a3",
-        price: null // DA DEFINIRE
+        price: 20.00
     },
 
     /* CALAMITE IN MDF
@@ -1584,7 +1584,7 @@ Object.assign(products, {
         marginNote: "parchment",
         layout: "magnet",
         shape: "magnet-parchment",
-        price: null // DA DEFINIRE
+        price: 5.00
     },
 
     mousepad: {
