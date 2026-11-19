@@ -1376,7 +1376,7 @@ Object.assign(products, {
         printInfo: "Area stampabile 16x16 cm",
         printCm: { width: 16, height: 16 },
         layout: "cushion",
-        price: 10.00
+        price: 14.99
     },
 
     "heart-small": {
@@ -1388,7 +1388,7 @@ Object.assign(products, {
         printCm: { width: 14.4, height: 14.7 },
         layout: "heart",
         shape: "heart-small",
-        price: 10.00
+        price: 14.99
     },
 
     "heart-large": {

@@ -40,8 +40,8 @@ if ( ! defined( 'SUBLIMAMI_MAX_FILE_BYTES' ) ) {
 function sublimami_products() {
 	$products = array(
 		'cushion'         => array( 'name' => 'Cuscino grande 40x40 cm personalizzato', 'price' => '15.00' ),
-		'cushion-small'   => array( 'name' => 'Cuscino quadrato piccolo personalizzato', 'price' => '10.00' ),
-		'heart-small'     => array( 'name' => 'Cuscino a cuore piccolo personalizzato', 'price' => '10.00' ),
+		'cushion-small'   => array( 'name' => 'Cuscino quadrato piccolo personalizzato', 'price' => '14.99' ),
+		'heart-small'     => array( 'name' => 'Cuscino a cuore piccolo personalizzato', 'price' => '14.99' ),
 		'heart-large'     => array( 'name' => 'Cuscino a cuore grande personalizzato', 'price' => '15.00' ),
 		'canvas-s'        => array( 'name' => 'Tela 18x24 cm personalizzata', 'price' => '11.99' ),
 		'canvas-m'        => array( 'name' => 'Tela 20x30 cm personalizzata', 'price' => '17.99' ),
