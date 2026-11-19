@@ -3639,6 +3639,13 @@ nav a {
     }
 
 
+    /* Cotone 24x30 (con foto) */
+    .mobile-format-shape.portrait {
+        width: 68px;
+        height: 85px;
+    }
+
+
     .mobile-format-label {
         padding: 10px 5px 5px;
 
@@ -7083,5 +7090,34 @@ a.logo {
     /* Prima del design i controlli rapidi stanno sopra la card */
     body:not(.mobile-customizing):not(.mobile-design-open) .mobile-quick-price {
         bottom: max(calc(100% + 8px), 160px);
+    }
+}
+
+
+/* T-shirt in cotone: con le foto il 30x40 non si può scegliere
+   (solo scritte); il pulsante resta cliccabile per spiegarlo */
+.print-format-button.format-locked,
+.mobile-quick-button.format-locked,
+.mobile-format-card.format-locked {
+    opacity: 0.45;
+}
+
+.mobile-quick-button[hidden],
+.mobile-format-card[hidden] {
+    display: none;
+}
+
+/* Pannello: tre formati del cotone su una riga senza andare a capo */
+.side-buttons:has(.print-format-button[data-format="portrait"]:not([hidden])) .print-format-button {
+    padding-left: 4px;
+    padding-right: 4px;
+    white-space: nowrap;
+}
+
+/* Tre formati del cotone sui pulsanti rapidi dello smartphone */
+@media (max-width: 600px) {
+
+    .mobile-quick-group:has([data-mobile-quick-format="portrait"]:not([hidden])) {
+        grid-template-columns: repeat(3, 1fr);
     }
 }

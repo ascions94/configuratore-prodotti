@@ -22,11 +22,17 @@ function sublimami_side_label( $side ) {
 function sublimami_format_label( $format, $fit = 'adult', $fabric = 'cotton' ) {
 	/*
 	 * Misure come TSHIRT_PRINT_CM in script.js (larghezza x altezza):
-	 * cotone (solo adulto) 30x40 o 30x24, poliestere adulto
+	 * cotone (solo adulto) 30x40, 24x30 o 30x24, poliestere adulto
 	 * 30x40 / 30x22,5, poliestere bambino 15x20 / 20x15.
 	 */
 	if ( 'cotton' === $fabric && 'kids' !== $fit ) {
-		return 'horizontal' === $format ? '30x24 cm' : '30x40 cm';
+		$cotton = array(
+			'vertical'   => '30x40 cm',
+			'portrait'   => '24x30 cm',
+			'horizontal' => '30x24 cm',
+		);
+
+		return isset( $cotton[ $format ] ) ? $cotton[ $format ] : $cotton['vertical'];
 	}
 
 	if ( 'kids' === $fit ) {

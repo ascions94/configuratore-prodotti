@@ -83,8 +83,9 @@ function sublimami_products() {
 /*
  * Opzioni della T-shirt, come in script.js (TSHIRT_FABRICS, TSHIRT_FITS,
  * TSHIRT_SIZES): servono a controllare i dati che arrivano dal configuratore.
- * Il cotone è solo adulto, in 30x40 cm ("vertical") o 30x24 cm
- * ("horizontal": 30 largo, 24 alto); il bambino è solo in poliestere.
+ * Il cotone è solo adulto, in 30x40 cm ("vertical", solo scritte), 24x30 cm
+ * ("portrait": 24 largo, 30 alto) o 30x24 cm ("horizontal": 30 largo,
+ * 24 alto); il bambino è solo in poliestere.
  */
 function sublimami_tshirt_options() {
 	return array(
@@ -93,7 +94,7 @@ function sublimami_tshirt_options() {
 				'label'   => '100% cotone',
 				'colors'  => array( 'white', 'black' ),
 				'fits'    => array( 'adult' ),
-				'formats' => array( 'vertical', 'horizontal' ),
+				'formats' => array( 'vertical', 'portrait', 'horizontal' ),
 			),
 			'polyester' => array(
 				'label'   => 'Poliestere',
@@ -129,8 +130,8 @@ function sublimami_tshirt_product_key( $fabric, $fit ) {
  * Il prezzo del prodotto vale per un lato.
  * - 30x40 ("vertical"): +5 € se si stampano fronte e retro, +5 € se c'è
  *   almeno una foto o immagine.
- * - 30x24 ("horizontal"): +5 € solo se si stampano fronte e retro e c'è
- *   almeno una foto.
+ * - 30x24 ("horizontal") e 24x30 ("portrait"): +5 € solo se si stampano
+ *   fronte e retro e c'è almeno una foto.
  * Se almeno un lato stampato è in 30x40 valgono le regole del 30x40.
  * Restituisce il totale e le righe da mostrare nell'ordine.
  */
@@ -148,7 +149,7 @@ function sublimami_tshirt_extras( $fabric, array $formats, array $printed_sides,
 	$large      = false;
 
 	foreach ( $printed_sides as $side ) {
-		if ( ! isset( $formats[ $side ] ) || 'horizontal' !== $formats[ $side ] ) {
+		if ( ! isset( $formats[ $side ] ) || 'vertical' === $formats[ $side ] ) {
 			$large = true;
 		}
 	}

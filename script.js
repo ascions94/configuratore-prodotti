@@ -1887,8 +1887,9 @@ const TSHIRT_FABRICS = {
         label: "100% cotone",
         colors: ["white", "black"],
         fits: ["adult"],
-        /* 30x40 ("vertical") e 30x24 ("horizontal": 30 largo, 24 alto) */
-        formats: { adult: ["vertical", "horizontal"] }
+        /* 30x40 ("vertical", solo scritte), 24x30 ("portrait": 24 largo,
+           30 alto) e 30x24 ("horizontal": 30 largo, 24 alto) */
+        formats: { adult: ["vertical", "portrait", "horizontal"] }
     },
     polyester: {
         label: "Poliestere",
@@ -1922,13 +1923,18 @@ function getTshirtSizeInfo(fabric, fit) {
 }
 
 /* AREA DI STAMPA MASSIMA (cm) per tessuto e modello.
-   Cotone (solo adulto): 30x40 oppure 30x24 (30 largo, 24 alto).
+   Cotone (solo adulto): 30x40 con sole scritte; con le foto al massimo
+   24x30 (24 largo, 30 alto) o 30x24 (30 largo, 24 alto).
    Poliestere adulto: 30x40 verticale; in orizzontale la larghezza
    non può superare 30-31 cm, quindi 30x22,5 (stesse proporzioni).
    Poliestere bambino: 15x20 / 20x15. */
 const TSHIRT_PRINT_CM = {
     cotton: {
-        adult: { vertical: { width: 30, height: 40 }, horizontal: { width: 30, height: 24 } }
+        adult: {
+            vertical:   { width: 30, height: 40 },
+            portrait:   { width: 24, height: 30 },
+            horizontal: { width: 30, height: 24 }
+        }
     },
     polyester: {
         adult: { vertical: { width: 30, height: 40 }, horizontal: { width: 30, height: 22.5 } },
@@ -1945,11 +1951,9 @@ function getTshirtPrintCm(format, fit, fabric) {
     const sizes =
         byFabric[normalizeTshirtFit(fit || tshirtFit)] || byFabric.adult;
 
-    /* Formato non previsto (es. cotone in orizzontale): verticale */
+    /* Formato non previsto (es. 24x30 sul poliestere): verticale */
     const cm =
-        format === "horizontal" && sizes.horizontal
-            ? sizes.horizontal
-            : sizes.vertical;
+        sizes[format] || sizes.vertical;
 
     return { width: cm.width, height: cm.height };
 }
@@ -2035,7 +2039,7 @@ function formatTshirtPrintCm(format, fit, fabric) {
     return formatCm(cm.width) + "x" + formatCm(cm.height);
 }
 
-/* Nome del formato: il cotone usa le misure (30x40 / 30x24),
+/* Nome del formato: il cotone usa le misure (30x40 / 24x30 / 30x24),
    il poliestere Verticale / Orizzontale */
 function getTshirtFormatName(format, fabric) {
 
@@ -2070,11 +2074,14 @@ const TSHIRT_PRICES = {
      +5 € se c'è almeno una foto o immagine.
      Scritte fronte 15, scritte fronte e retro 20, foto su un lato 20,
      foto + scritte sull'altro lato 25, foto su fronte e retro 25.
-   - Formato 30x24 ("horizontal"): +5 € solo se si stampano fronte e
-     retro e c'è almeno una foto.
+   - Formati 30x24 ("horizontal") e 24x30 ("portrait"): +5 € solo se
+     si stampano fronte e retro e c'è almeno una foto.
      Foto solo fronte 15, scritte fronte 15, scritte fronte e retro 15,
      foto fronte e retro 20, foto e scritte (in qualsiasi ordine) 20.
    Se almeno un lato stampato è in 30x40 valgono le regole del 30x40.
+   Il 30x40 è solo per le scritte (TSHIRT_PHOTO_FORMATS): un lato con
+   foto in 30x40 c'è solo insieme all'altro lato in 24x30/30x24
+   (es. scritte fronte 30x40 + foto retro 24x30 = 25 €).
    Stessi importi nel plugin: sublimami_tshirt_extras(). */
 const TSHIRT_EXTRAS = {
     cotton: {
@@ -2082,6 +2089,20 @@ const TSHIRT_EXTRAS = {
         horizontal: { secondSideWithPhotos: 5.00 }
     }
 };
+
+/* FORMATI CON LE FOTO (solo cotone): con foto o immagini visibili il
+   lato si stampa al massimo 24x30 o 30x24; il 30x40 resta per le
+   scritte. Aggiungendo una foto a un lato in 30x40 si passa al primo
+   formato della lista. */
+const TSHIRT_PHOTO_FORMATS = {
+    cotton: ["portrait", "horizontal"]
+};
+
+const TSHIRT_PHOTO_FORMAT_MESSAGE =
+    "Con le foto la stampa è al massimo 24x30 o 30x24 cm: il lato è passato al 24x30.";
+
+const TSHIRT_PHOTO_FORMAT_LOCKED_MESSAGE =
+    "Il 30x40 è solo per le scritte: con le foto scegli 24x30 o 30x24.";
 
 /* Modelli e formati disponibili per tessuto */
 function isTshirtFitAvailable(fabric, fit) {
@@ -2121,7 +2142,112 @@ function normalizeTshirtVariantState() {
         if (formats.indexOf(tshirtPrintFormat[side]) === -1) {
             tshirtPrintFormat[side] = "vertical";
         }
+
+        /* Cotone: un lato con foto non può restare in 30x40 */
+        if (!isTshirtFormatAllowed(tshirtPrintFormat[side], side)) {
+            tshirtPrintFormat[side] = getTshirtPhotoFormats()[0];
+        }
     });
+}
+
+function getTshirtPhotoFormats(fabric) {
+    return TSHIRT_PHOTO_FORMATS[normalizeTshirtFabric(fabric || tshirtFabric)] || null;
+}
+
+/* Il lato del colore in modifica ha foto visibili? */
+function tshirtSideHasPhotos(side) {
+
+    const states =
+        productStates &&
+        productStates.tshirt &&
+        productStates.tshirt[tshirtColor];
+
+    return hasImageContent(states && states[side]);
+}
+
+/* Il formato va bene per quel lato? (cotone: con foto niente 30x40) */
+function isTshirtFormatAllowed(format, side) {
+
+    const photoFormats = getTshirtPhotoFormats();
+
+    return (
+        !photoFormats ||
+        photoFormats.indexOf(format) !== -1 ||
+        !tshirtSideHasPhotos(side)
+    );
+}
+
+/*
+    Dopo una modifica (foto aggiunta, resa visibile, cambio colore o
+    tessuto): un lato con foto in 30x40 passa al 24x30. Aggiorna il
+    riquadro se cambia il lato in modifica. true se ha cambiato qualcosa.
+*/
+function enforceTshirtPhotoFormat() {
+
+    const before = {
+        front: tshirtPrintFormat.front,
+        back: tshirtPrintFormat.back
+    };
+
+    normalizeTshirtVariantState();
+
+    const changed =
+        before.front !== tshirtPrintFormat.front ||
+        before.back !== tshirtPrintFormat.back;
+
+    if (!changed) {
+        return false;
+    }
+
+    if (currentProduct === "tshirt") {
+
+        syncTshirtFormatButtons();
+
+        if (before[tshirtSide] !== tshirtPrintFormat[tshirtSide]) {
+            updateTshirtPrintFormat();
+        }
+
+        statusMessage.textContent = TSHIRT_PHOTO_FORMAT_MESSAGE;
+    }
+
+    return true;
+}
+
+/* Pulsanti del formato: attivo e "solo scritte" (computer e smartphone) */
+function syncTshirtFormatButtons() {
+
+    document
+        .querySelectorAll(".print-format-button[data-format]")
+        .forEach(function (button) {
+            button.classList.toggle(
+                "active",
+                button.dataset.format === tshirtPrintFormat[tshirtSide]
+            );
+        });
+
+    document
+        .querySelectorAll(
+            ".print-format-button[data-format], [data-mobile-quick-format], [data-mobile-format]"
+        )
+        .forEach(function (button) {
+
+            const format =
+                button.dataset.format ||
+                button.dataset.mobileQuickFormat ||
+                button.dataset.mobileFormat;
+
+            const locked = !isTshirtFormatAllowed(format, tshirtSide);
+
+            button.classList.toggle("format-locked", locked);
+
+            if (locked) {
+                button.title = "Solo scritte: con le foto massimo 24x30 o 30x24 cm";
+            } else {
+                button.removeAttribute("title");
+            }
+        });
+
+    updateMobileQuickControls();
 }
 
 /* Un lato ha foto o immagini visibili? */
@@ -2169,8 +2295,9 @@ function getTshirtExtrasRule(fabric, info, formats) {
 
     const sides = printedSides.length ? printedSides : [tshirtSide];
 
+    /* 30x24 e 24x30 hanno le stesse regole */
     const large = sides.some(function (side) {
-        return formats[side] !== "horizontal";
+        return (formats[side] || "vertical") === "vertical";
     });
 
     return rules[large ? "vertical" : "horizontal"];
@@ -2346,8 +2473,7 @@ function updateTshirtPriceDisplay() {
             formatProductPrice(rule.secondSideWithPhotos) + "."
         : "Prezzo con scritte su un lato. Fronte e retro +" +
             formatProductPrice(rule.secondSide) +
-            ", con foto +" +
-            formatProductPrice(rule.photos) + ".";
+            ". Con le foto la stampa è al massimo 24x30 o 30x24 cm.";
 
     note.hidden = false;
 }
@@ -2446,11 +2572,14 @@ function getOrientedPrintTexts(productKey) {
         const vertical = formatTshirtPrintCm("vertical");
         const horizontal = formatTshirtPrintCm("horizontal");
 
-        /* Cotone: due misure, 30x40 e 30x24 */
+        /* Cotone: 30x40 con sole scritte, con foto 24x30 o 30x24 */
         if (normalizeTshirtFabric(tshirtFabric) === "cotton") {
+
+            const portrait = formatTshirtPrintCm("portrait");
+
             return {
-                print: `Formati di stampa: ${vertical} cm o ${horizontal} cm`,
-                printInfo: `Stampa ${vertical} cm o ${horizontal} cm`
+                print: `Stampa ${vertical} cm con sole scritte; con foto ${portrait} o ${horizontal} cm`,
+                printInfo: `Scritte ${vertical} cm · foto ${portrait} o ${horizontal} cm`
             };
         }
 
@@ -5230,7 +5359,7 @@ function getCurrentPrintAreaCm() {
 /*
     Misure reali di stampa di un prodotto: servono all'editor e ai
     file di stampa degli articoli nel carrello.
-    - format: solo T-shirt ("vertical" o "horizontal")
+    - format: solo T-shirt ("vertical", "horizontal"; cotone anche "portrait")
     - options.fit: modello T-shirt (adulto / bambino)
     - options.orientation: prodotti orientabili (tele, mattonelle)
 */
@@ -5422,6 +5551,12 @@ if (
 
     heartXcm = 6.5;
     heartYcm = -12;
+
+} else if (tshirtPrintFormat[tshirtSide] === "portrait") {
+
+    /* 24x30: circa 8 cm sotto il bordo alto, come nel 30x40 */
+    heartXcm = 6.5;
+    heartYcm = -7;
 
 } else {
 
@@ -7417,6 +7552,14 @@ function syncTshirtOptionButtons() {
             isTshirtFitAvailable(tshirtFabric, "kids") ? "none" : "block";
     }
 
+    /* Cotone: con le foto niente 30x40 (nota sotto i formati) */
+    const formatNote = document.getElementById("tshirtFormatNote");
+
+    if (formatNote) {
+        formatNote.style.display =
+            getTshirtPhotoFormats() ? "block" : "none";
+    }
+
     const onlyWhite =
         TSHIRT_FABRICS[tshirtFabric].colors.length < 2;
 
@@ -7731,6 +7874,11 @@ state.images.push(
     newImage
 );
 
+/* T-shirt in cotone: con le foto al massimo 24x30 / 30x24 */
+const photoFormatChanged =
+    currentProduct === "tshirt" &&
+    enforceTshirtPhotoFormat();
+
 
                 setSelectedImage(
                     newImage.id
@@ -7762,7 +7910,8 @@ state.images.push(
 
 
                 statusMessage.textContent =
-                    `Foto aggiunta. Totale: ${state.images.length}`;
+                    `Foto aggiunta. Totale: ${state.images.length}.` +
+                    (photoFormatChanged ? " " + TSHIRT_PHOTO_FORMAT_MESSAGE : "");
             };
 
 
@@ -9002,15 +9151,22 @@ updateTshirtPrintFormat();
 
         button.addEventListener("click", function () {
 
+            if (getTshirtFormats().indexOf(this.dataset.format) === -1) {
+                return;
+            }
+
+            /* Cotone: il 30x40 è solo per le scritte */
+            if (!isTshirtFormatAllowed(this.dataset.format, tshirtSide)) {
+                statusMessage.textContent = TSHIRT_PHOTO_FORMAT_LOCKED_MESSAGE;
+                syncTshirtFormatButtons();
+                return;
+            }
+
             document
                 .querySelectorAll(".print-format-button")
                 .forEach(function (item) {
                     item.classList.remove("active");
                 });
-
-            if (getTshirtFormats().indexOf(this.dataset.format) === -1) {
-                return;
-            }
 
             this.classList.add("active");
 
@@ -13766,6 +13922,16 @@ function updateMobileFormatSheet() {
             );
         }
     );
+
+    const subtitle = document.getElementById("mobileFormatSubtitle");
+
+    if (subtitle) {
+        subtitle.textContent = getTshirtPhotoFormats()
+            ? "Con le foto massimo 24x30 o 30x24 cm: il 30x40 è solo per le scritte"
+            : "Scegli l'orientamento dell'area di stampa";
+    }
+
+    syncTshirtFormatButtons();
 }
 
 
@@ -13931,6 +14097,9 @@ function updateMobileQuickControls() {
             button.textContent =
                 getTshirtFormatName(button.dataset.mobileQuickFormat);
 
+            button.hidden =
+                getTshirtFormats().indexOf(button.dataset.mobileQuickFormat) === -1;
+
             button.classList.toggle(
                 "active",
                 button.dataset.mobileQuickFormat ===
@@ -13997,6 +14166,13 @@ document
                 const selectedFormat =
                     mobileButton.dataset
                         .mobileQuickFormat;
+
+                /* Cotone con foto: il 30x40 non si può scegliere,
+                   la scheda Formato spiega perché */
+                if (!isTshirtFormatAllowed(selectedFormat, tshirtSide)) {
+                    openMobileFormatSheet();
+                    return;
+                }
 
 
                 const originalButton =
@@ -14071,7 +14247,16 @@ function scheduleTshirtSideThumbs() {
     /* Il prezzo della T-shirt cambia con foto e lati stampati.
        Subito dopo: il campo testo aggiorna lo stato dopo questo evento */
     clearTimeout(tshirtPriceTimer);
-    tshirtPriceTimer = setTimeout(updateTshirtPriceDisplay, 0);
+    tshirtPriceTimer = setTimeout(function () {
+
+        /* Cotone: foto rese visibili, cambio colore... niente 30x40 */
+        if (currentProduct === "tshirt") {
+            enforceTshirtPhotoFormat();
+            syncTshirtFormatButtons();
+        }
+
+        updateTshirtPriceDisplay();
+    }, 0);
 
     clearTimeout(tshirtThumbsTimer);
 

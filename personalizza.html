@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
 
-    <link rel="stylesheet" href="style.css?v=ca235b6cf79f">
+    <link rel="stylesheet" href="style.css?v=7bfd24425605">
 </head>
 
 <body>
@@ -649,11 +649,24 @@
 
         <button
             class="print-format-button"
+            data-format="portrait"
+            hidden
+        >
+            24x30 cm
+        </button>
+
+        <button
+            class="print-format-button"
             data-format="horizontal"
         >
             Orizzontale 30x20
         </button>
     </div>
+
+    <!-- Cotone: con le foto al massimo 24x30 / 30x24 (script.js) -->
+    <p class="tshirt-color-note" id="tshirtFormatNote">
+        Con le foto la stampa è al massimo 24x30 o 30x24 cm: il 30x40 è solo per le scritte.
+    </p>
 
 </div>
                 </div>
@@ -1488,6 +1501,15 @@
             data-mobile-quick-format="vertical"
         >
             Verticale
+        </button>
+
+        <button
+            type="button"
+            class="mobile-quick-button"
+            data-mobile-quick-format="portrait"
+            hidden
+        >
+            24x30
         </button>
 
         <button
@@ -2670,7 +2692,7 @@
 
     </div>
 
-    <p class="mobile-sheet-subtitle">
+    <p class="mobile-sheet-subtitle" id="mobileFormatSubtitle">
         Scegli l'orientamento dell'area di stampa
     </p>
 
@@ -2696,6 +2718,37 @@
                 <div>
                     <strong>Verticale</strong>
                     <small>20 × 30 cm</small>
+                </div>
+
+                <span class="mobile-format-check">
+                    ✓
+                </span>
+
+            </div>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="mobile-format-card"
+            data-mobile-format="portrait"
+            hidden
+        >
+
+            <div class="mobile-format-preview">
+
+                <div class="mobile-format-shape portrait">
+                    <span>24 × 30</span>
+                </div>
+
+            </div>
+
+            <div class="mobile-format-label">
+
+                <div>
+                    <strong>24x30</strong>
+                    <small>24 × 30 cm</small>
                 </div>
 
                 <span class="mobile-format-check">
@@ -2925,7 +2978,7 @@
 -->
 <script
     src="storage.js?v=d50ff04e43df"
-    data-app-src="script.js?v=c45eb9befcca">
+    data-app-src="script.js?v=b231c52761cc">
 </script>
 
 </body>
