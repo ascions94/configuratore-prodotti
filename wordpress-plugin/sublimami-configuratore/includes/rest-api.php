@@ -292,16 +292,9 @@ function sublimami_rest_add_item( WP_REST_Request $request ) {
 	$photos = false;
 
 	if ( 'tshirt' === $item['product'] ) {
-		$extras = sublimami_tshirt_extras( $item['fabric'] );
 		$photos = (bool) array_intersect( $item['photo_sides'], array_keys( $print ) );
-
-		if ( count( $print ) > 1 ) {
-			$extra += $extras['second_side'];
-		}
-
-		if ( $photos ) {
-			$extra += $extras['photos'];
-		}
+		$extras = sublimami_tshirt_extras( $item['fabric'], $item['formats'], array_keys( $print ), $photos );
+		$extra  = $extras['total'];
 	}
 
 	$cart_item_data = array(

@@ -22,11 +22,11 @@ function sublimami_side_label( $side ) {
 function sublimami_format_label( $format, $fit = 'adult', $fabric = 'cotton' ) {
 	/*
 	 * Misure come TSHIRT_PRINT_CM in script.js (larghezza x altezza):
-	 * cotone (solo adulto) 30x40 solo verticale, poliestere adulto
+	 * cotone (solo adulto) 30x40 o 30x24, poliestere adulto
 	 * 30x40 / 30x22,5, poliestere bambino 15x20 / 20x15.
 	 */
 	if ( 'cotton' === $fabric && 'kids' !== $fit ) {
-		return 'verticale 30x40 cm';
+		return 'horizontal' === $format ? '30x24 cm' : '30x40 cm';
 	}
 
 	if ( 'kids' === $fit ) {
@@ -88,18 +88,10 @@ function sublimami_describe( array $data ) {
 
 		/* Cotone: supplementi già compresi nel prezzo */
 		if ( ! empty( $data['extra'] ) ) {
-			$extras = sublimami_tshirt_extras( $fabric );
-			$parts  = array();
+			$formats = isset( $data['formats'] ) && is_array( $data['formats'] ) ? $data['formats'] : array();
+			$extras  = sublimami_tshirt_extras( $fabric, $formats, array_keys( $data['print'] ), ! empty( $data['photos'] ) );
 
-			if ( count( $data['print'] ) > 1 && $extras['second_side'] > 0 ) {
-				$parts[] = 'fronte e retro +' . number_format_i18n( $extras['second_side'], 2 ) . ' €';
-			}
-
-			if ( ! empty( $data['photos'] ) && $extras['photos'] > 0 ) {
-				$parts[] = 'foto +' . number_format_i18n( $extras['photos'], 2 ) . ' €';
-			}
-
-			$rows['Supplementi'] = implode( ', ', $parts );
+			$rows['Supplementi'] = implode( ', ', $extras['parts'] );
 		}
 	} else {
 		if ( ! empty( $data['orientation'] ) ) {

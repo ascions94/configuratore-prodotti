@@ -83,8 +83,8 @@ function sublimami_products() {
 /*
  * Opzioni della T-shirt, come in script.js (TSHIRT_FABRICS, TSHIRT_FITS,
  * TSHIRT_SIZES): servono a controllare i dati che arrivano dal configuratore.
- * Il cotone è solo adulto e solo verticale (30x40 cm); il bambino è solo
- * in poliestere.
+ * Il cotone è solo adulto, in 30x40 cm ("vertical") o 30x24 cm
+ * ("horizontal": 30 largo, 24 alto); il bambino è solo in poliestere.
  */
 function sublimami_tshirt_options() {
 	return array(
@@ -93,7 +93,7 @@ function sublimami_tshirt_options() {
 				'label'   => '100% cotone',
 				'colors'  => array( 'white', 'black' ),
 				'fits'    => array( 'adult' ),
-				'formats' => array( 'vertical' ),
+				'formats' => array( 'vertical', 'horizontal' ),
 			),
 			'polyester' => array(
 				'label'   => 'Poliestere',
@@ -125,22 +125,50 @@ function sublimami_tshirt_product_key( $fabric, $fit ) {
 
 
 /*
- * Supplementi della T-shirt, come TSHIRT_EXTRAS in script.js (solo cotone):
- * il prezzo del prodotto vale per un lato con sole scritte; +5 € se si
- * stampano fronte e retro, +5 € se c'è almeno una foto o immagine.
+ * Supplementi della T-shirt, come TSHIRT_EXTRAS in script.js (solo cotone).
+ * Il prezzo del prodotto vale per un lato.
+ * - 30x40 ("vertical"): +5 € se si stampano fronte e retro, +5 € se c'è
+ *   almeno una foto o immagine.
+ * - 30x24 ("horizontal"): +5 € solo se si stampano fronte e retro e c'è
+ *   almeno una foto.
+ * Se almeno un lato stampato è in 30x40 valgono le regole del 30x40.
+ * Restituisce il totale e le righe da mostrare nell'ordine.
  */
-function sublimami_tshirt_extras( $fabric ) {
-	if ( 'cotton' === $fabric ) {
-		return array(
-			'second_side' => 5.0,
-			'photos'      => 5.0,
-		);
+function sublimami_tshirt_extras( $fabric, array $formats, array $printed_sides, $photos ) {
+	$result = array(
+		'total' => 0.0,
+		'parts' => array(),
+	);
+
+	if ( 'cotton' !== $fabric || empty( $printed_sides ) ) {
+		return $result;
 	}
 
-	return array(
-		'second_side' => 0.0,
-		'photos'      => 0.0,
-	);
+	$both_sides = count( $printed_sides ) > 1;
+	$large      = false;
+
+	foreach ( $printed_sides as $side ) {
+		if ( ! isset( $formats[ $side ] ) || 'horizontal' !== $formats[ $side ] ) {
+			$large = true;
+		}
+	}
+
+	if ( $large ) {
+		if ( $both_sides ) {
+			$result['total']  += 5.0;
+			$result['parts'][] = 'fronte e retro +5,00 €';
+		}
+
+		if ( $photos ) {
+			$result['total']  += 5.0;
+			$result['parts'][] = 'foto +5,00 €';
+		}
+	} elseif ( $both_sides && $photos ) {
+		$result['total']  += 5.0;
+		$result['parts'][] = 'fronte e retro con foto +5,00 €';
+	}
+
+	return $result;
 }
 
 
