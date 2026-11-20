@@ -1331,7 +1331,7 @@ const products = {
         dimensions: "Dimensione: 40x40 cm",
         print: "Area di stampa: 30x30 cm",
         printInfo: "Area stampabile 30x30 cm",
-        price: 15.00
+        price: 14.99
     },
 
     tshirt: {
@@ -1376,7 +1376,7 @@ Object.assign(products, {
         printInfo: "Area stampabile 16x16 cm",
         printCm: { width: 16, height: 16 },
         layout: "cushion",
-        price: 14.99
+        price: 7.99
     },
 
     "heart-small": {
@@ -1388,7 +1388,7 @@ Object.assign(products, {
         printCm: { width: 14.4, height: 14.7 },
         layout: "heart",
         shape: "heart-small",
-        price: 14.99
+        price: 7.99
     },
 
     "heart-large": {
@@ -1400,7 +1400,7 @@ Object.assign(products, {
         printCm: { width: 35, height: 30.2 },
         layout: "heart",
         shape: "heart-large",
-        price: 15.00
+        price: 14.99
     },
 
     "canvas-s": {
